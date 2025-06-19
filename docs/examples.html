@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PerlinDOM Examples</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1, h2 {
+      color: #2c3e50;
+    }
+    
+    .example-container {
+      margin-bottom: 40px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      height: 300px;
+      background-color: #f9f9f9;
+    }
+    
+    .code-block {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    
+    /* Example 1: Basic Animation */
+    .basic-element {
+      width: 80px;
+      height: 80px;
+      background-color: #3498db;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      filter: blur(5px);
+    }
+    
+    /* Example 2: Horizontal Only */
+    .horizontal-element {
+      width: 60px;
+      height: 60px;
+      background-color: #e74c3c;
+      border-radius: 10px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    /* Example 3: Multiple Elements */
+    .particle {
+      width: 30px;
+      height: 30px;
+      background-color: #2ecc71;
+      border-radius: 50%;
+      position: absolute;
+      opacity: 0.7;
+    }
+    
+    /* Example 4: Background Effect */
+    .bg-container {
+      background-color: #34495e;
+      position: relative;
+    }
+    
+    .bg-element {
+      position: absolute;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .bg-element-1 {
+      width: 100px;
+      height: 100px;
+      left: 20%;
+      top: 30%;
+    }
+    
+    .bg-element-2 {
+      width: 150px;
+      height: 150px;
+      left: 60%;
+      top: 50%;
+    }
+    
+    .bg-element-3 {
+      width: 80px;
+      height: 80px;
+      left: 40%;
+      top: 70%;
+    }
+    
+    .content {
+      position: relative;
+      z-index: 10;
+      color: white;
+      text-align: center;
+      padding-top: 120px;
+    }
+    
+    /* Example 5: Interactive Element */
+    .interactive-container {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .controls {
+      width: 40%;
+    }
+    
+    .preview {
+      width: 55%;
+      height: 200px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .interactive-element {
+      width: 50px;
+      height: 50px;
+      background-color: #9b59b6;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .control-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+    }
+    
+    .value-display {
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>PerlinDOM Examples</h1>
+  <p>This page demonstrates various ways to use the PerlinDOM library for creating smooth, organic animations.</p>
+  
+  <!-- Example 1: Basic Animation -->
+  <h2>1. Basic Animation</h2>
+  <div class="code-block">
+    const basicAnimation = new PerlinDOM({<br>
+    &nbsp;&nbsp;element: document.querySelector('.basic-element'),<br>
+    &nbsp;&nbsp;x: { min: -50, max: 50 },<br>
+    &nbsp;&nbsp;y: { min: -50, max: 50 },<br>
+    &nbsp;&nbsp;speed: 0.01,<br>
+    &nbsp;&nbsp;seed: 123<br>
+    });
+  </div>
+  <div class="example-container">
+    <div class="basic-element"></div>
+  </div>
+  
+  <!-- Example 2: Horizontal Only -->
+  <h2>2. Horizontal-Only Movement</h2>
+  <div class="code-block">
+    const horizontalAnimation = new PerlinDOM({<br>
+    &nbsp;&nbsp;element: document.querySelector('.horizontal-element'),<br>
+    &nbsp;&nbsp;x: { min: -100, max: 100 },<br>
+    &nbsp;&nbsp;y: null, // No vertical movement<br>
+    &nbsp;&nbsp;speed: 0.02<br>
+    });
+  </div>
+  <div class="example-container">
+    <div class="horizontal-element"></div>
+  </div>
+  
+  <!-- Example 3: Multiple Elements -->
+  <h2>3. Multiple Elements with Different Seeds</h2>
+  <div class="code-block">
+    document.querySelectorAll('.particle').forEach((el, index) => {<br>
+    &nbsp;&nbsp;new PerlinDOM({<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;element: el,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;x: { min: -100, max: 100 },<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;y: { min: -100, max: 100 },<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;speed: 0.01,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;seed: index * 100 // Different seed for each element<br>
+    &nbsp;&nbsp;});<br>
+    });
+  </div>
+  <div class="example-container">
+    <div class="particle" style="left: 30%; top: 30%"></div>
+    <div class="particle" style="left: 50%; top: 50%"></div>
+    <div class="particle" style="left: 70%; top: 70%"></div>
+    <div class="particle" style="left: 30%; top: 70%"></div>
+    <div class="particle" style="left: 70%; top: 30%"></div>
+  </div>
+  
+  <!-- Example 4: Background Effect -->
+  <h2>4. Creating a Background Effect</h2>
+  <div class="code-block">
+    document.querySelectorAll('.bg-element').forEach(el => {<br>
+    &nbsp;&nbsp;new PerlinDOM({<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;element: el,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;x: { min: -10, max: 10 },<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;y: { min: -10, max: 10 },<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;speed: 0.002, // Very slow movement<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;seed: Math.random() * 2000<br>
+    &nbsp;&nbsp;});<br>
+    });
+  </div>
+  <div class="example-container bg-container">
+    <div class="bg-element bg-element-1"></div>
+    <div class="bg-element bg-element-2"></div>
+    <div class="bg-element bg-element-3"></div>
+    <div class="content">
+      <h3>Subtle Background Animation</h3>
+      <p>Perfect for creating depth in UI elements</p>
+    </div>
+  </div>
+  
+  <!-- Example 5: Interactive Controls -->
+  <h2>5. Interactive Controls</h2>
+  <div class="code-block">
+    // Create the animation with initial settings<br>
+    const interactiveAnimation = new PerlinDOM({<br>
+    &nbsp;&nbsp;element: document.querySelector('.interactive-element'),<br>
+    &nbsp;&nbsp;x: { min: -50, max: 50 },<br>
+    &nbsp;&nbsp;y: { min: -50, max: 50 },<br>
+    &nbsp;&nbsp;speed: 0.01,<br>
+    &nbsp;&nbsp;seed: 0<br>
+    });<br><br>
+    
+    // Update settings based on user input<br>
+    speedControl.addEventListener('input', () => {<br>
+    &nbsp;&nbsp;// Stop current animation<br>
+    &nbsp;&nbsp;interactiveAnimation.destroy();<br>
+    &nbsp;&nbsp;<br>
+    &nbsp;&nbsp;// Reinitialize with new settings<br>
+    &nbsp;&nbsp;interactiveAnimation.speed = parseFloat(speedControl.value);<br>
+    &nbsp;&nbsp;interactiveAnimation.init(seedControl.value);<br>
+    });
+  </div>
+  <div class="example-container">
+    <div class="interactive-container">
+      <div class="controls">
+        <div class="control-group">
+          <label for="x-range">X Range:</label>
+          <input type="range" id="x-range" min="0" max="100" value="50">
+          <div class="value-display">-50 to 50</div>
+        </div>
+        
+        <div class="control-group">
+          <label for="y-range">Y Range:</label>
+          <input type="range" id="y-range" min="0" max="100" value="50">
+          <div class="value-display">-50 to 50</div>
+        </div>
+        
+        <div class="control-group">
+          <label for="speed">Speed:</label>
+          <input type="range" id="speed" min="0.001" max="0.05" step="0.001" value="0.01">
+          <div class="value-display">0.01</div>
+        </div>
+        
+        <div class="control-group">
+          <label for="seed">Seed:</label>
+          <input type="range" id="seed" min="0" max="1000" step="1" value="0">
+          <div class="value-display">0</div>
+        </div>
+      </div>
+      
+      <div class="preview">
+        <div class="interactive-element"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load PerlinDOM library -->
+  <script type="module">
+    import PerlinDOM from '../dist/perlindom.es.js';
+    
+    // Example 1: Basic Animation
+    const basicAnimation = new PerlinDOM({
+      element: document.querySelector('.basic-element'),
+      x: { min: -50, max: 50 },
+      y: { min: -50, max: 50 },
+      speed: 0.01,
+      seed: 123
+    });
+    
+    // Example 2: Horizontal Only
+    const horizontalAnimation = new PerlinDOM({
+      element: document.querySelector('.horizontal-element'),
+      x: { min: -100, max: 100 },
+      y: null, // No vertical movement
+      speed: 0.02
+    });
+    
+    // Example 3: Multiple Elements
+    document.querySelectorAll('.particle').forEach((el, index) => {
+      new PerlinDOM({
+        element: el,
+        x: { min: -100, max: 100 },
+        y: { min: -100, max: 100 },
+        speed: 0.01,
+        seed: index * 100 // Different seed for each element
+      });
+    });
+    
+    // Example 4: Background Effect
+    document.querySelectorAll('.bg-element').forEach(el => {
+      new PerlinDOM({
+        element: el,
+        x: { min: -10, max: 10 },
+        y: { min: -10, max: 10 },
+        speed: 0.002, // Very slow movement
+        seed: Math.random() * 2000
+      });
+    });
+    
+    // Example 5: Interactive Controls
+    let interactiveAnimation;
+    
+    function initInteractiveAnimation() {
+      // Destroy previous instance if it exists
+      if (interactiveAnimation) {
+        interactiveAnimation.destroy();
+      }
+      
+      // Get current values
+      const xRange = parseInt(document.getElementById('x-range').value);
+      const yRange = parseInt(document.getElementById('y-range').value);
+      const speed = parseFloat(document.getElementById('speed').value);
+      const seed = parseInt(document.getElementById('seed').value);
+      
+      // Create new instance
+      interactiveAnimation = new PerlinDOM({
+        element: document.querySelector('.interactive-element'),
+        x: { min: -xRange, max: xRange },
+        y: { min: -yRange, max: yRange },
+        speed: speed,
+        seed: seed
+      });
+      
+      // Update displays
+      document.querySelector('#x-range + .value-display').textContent = `-${xRange} to ${xRange}`;
+      document.querySelector('#y-range + .value-display').textContent = `-${yRange} to ${yRange}`;
+      document.querySelector('#speed + .value-display').textContent = speed.toFixed(3);
+      document.querySelector('#seed + .value-display').textContent = seed;
+    }
+    
+    // Initialize
+    initInteractiveAnimation();
+    
+    // Add event listeners
+    document.getElementById('x-range').addEventListener('input', initInteractiveAnimation);
+    document.getElementById('y-range').addEventListener('input', initInteractiveAnimation);
+    document.getElementById('speed').addEventListener('input', initInteractiveAnimation);
+    document.getElementById('seed').addEventListener('input', initInteractiveAnimation);
+  </script>
+</body>
+</html>

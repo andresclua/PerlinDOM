@@ -1,0 +1,20 @@
+.spacer{
+  padding:120px;
+  border:1px solid red;
+  position:relative;
+  overflow: hidden;
+}
+
+
+.box{
+  width:120px;
+  height:120px;
+  border-radius: 50%;
+  background-color: blue;
+  position:absolute;
+  left:0;
+  top:-20%;
+  filter: blur(40px) drop-shadow(0 0 20px rgba(0, 0, 255, 0.5)); 
+
+  
+}
