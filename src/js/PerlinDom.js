@@ -39,8 +39,14 @@ class PerlinDOM {
       this.lastX = 0;
       this.lastY = 0;
   
-      this.initialX = element.offsetLeft;
-      this.initialY = element.offsetTop;
+      // Solo inicializar estas propiedades si el elemento no es null
+      if (element) {
+        this.initialX = element.offsetLeft;
+        this.initialY = element.offsetTop;
+      } else {
+        this.initialX = 0;
+        this.initialY = 0;
+      }
       
       this.animate = this.animate.bind(this);
       
@@ -185,8 +191,11 @@ class PerlinDOM {
         this.lastY = valY;
     
         // Update position using left/top instead of transform
-        this.el.style.left = `${this.initialX + valX}px`;
-        this.el.style.top = `${this.initialY + valY}px`;
+        // Solo actualizar el elemento si existe
+        if (this.el) {
+          this.el.style.left = `${this.initialX + valX}px`;
+          this.el.style.top = `${this.initialY + valY}px`;
+        }
       }
   
       // Continue animation if not completely paused or still transitioning

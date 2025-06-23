@@ -14,26 +14,642 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="./scss/style.scss" />
+        <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              line-height: 1.6;
+              color: #333;
+              max-width: 1200px;
+              margin: 0 auto;
+              padding: 20px;
+              background-color: #f0f0f0;
+              overflow-x: hidden;
+              overflow: visible!important;
+            }
+            
+            h1, h2 {
+              color: #2c3e50;
+            }
+            
+            .example-container {
+              margin-bottom: 40px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              padding: 20px;
+              position: relative;
+              overflow: hidden;
+              height: 300px;
+              background-color: #f9f9f9;
+            }
+            
+            .code-block {
+              background-color: #f5f5f5;
+              padding: 15px;
+              border-radius: 5px;
+              overflow-x: auto;
+              margin-bottom: 20px;
+              font-family: monospace;
+              font-size: 14px;
+            }
+            
+            /* Example 1: Basic Animation */
+            .basic-element {
+              width: 80px;
+              height: 80px;
+              background-color: #3498db;
+              border-radius: 50%;
+              position: absolute;
+              left: calc(50% - 40px); /* 50% - half width */
+              top: calc(50% - 40px); /* 50% - half height */
+              filter: blur(5px);
+            }
+            
+            /* Example 2: Horizontal Only */
+            .horizontal-element {
+              width: 60px;
+              height: 60px;
+              background-color: #e74c3c;
+              border-radius: 10px;
+              position: absolute;
+              left: calc(50% - 30px); /* 50% - half width */
+              top: calc(50% - 30px); /* 50% - half height */
+            }
+            
+            /* Example 3: Multiple Elements */
+            .particle {
+              width: 230px;
+              height: 230px;
+              background:linear-gradient(to bottom right, #8e44ad, #3498db);
+              border-radius: 50%;
+              position: absolute;
+              /* opacity: 0.2; */
+              filter: blur(10px);
+            }
+            
+            /* Example 4: Background Effect */
+            .bg-container {
+              background-color: #34495e;
+              position: relative;
+            }
+            
+            .bg-element {
+              position: absolute;
+              border-radius: 50%;
+              background-color: rgba(255, 255, 255, 0.1);
+              filter: blur(5px);
+              transform: scale(3.2);
+            }
+            
+            .bg-element-1 {
+              width: 100px;
+              height: 100px;
+              left: 20%;
+              top: 30%;
+            }
+            
+            .bg-element-2 {
+              width: 150px;
+              height: 150px;
+              left: 60%;
+              top: 50%;
+            }
+            
+            .bg-element-3 {
+              width: 80px;
+              height: 80px;
+              left: 40%;
+              top: 70%;
+            }
+            
+            .content {
+              position: relative;
+              z-index: 10;
+              color: white;
+              text-align: center;
+              padding-top: 120px;
+            }
+            
+            /* Example 5: Pause Play Element */
+            .pause-play-container {
+              position: relative;
+              cursor: pointer;
+              height: 200px;
+              border: 1px dashed #ccc;
+              border-radius: 8px;
+              margin-top: 20px;
+            }
+            
+            .pause-play-element {
+              width: 70px;
+              height: 70px;
+              background-color: #f39c12;
+              border-radius: 50%;
+              position: absolute;
+              left: calc(50% - 35px);
+              top: calc(50% - 35px);
+              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            
+            .status-display {
+              position: absolute;
+              bottom: 20px;
+              left: 0;
+              width: 100%;
+              text-align: center;
+              font-weight: bold;
+            }
+            
+            .status-indicator {
+              color: #2980b9;
+            }
+            
+            .instruction {
+              font-size: 14px;
+              color: #7f8c8d;
+              margin-top: 5px;
+            }
+            
+            .pause-play-settings {
+              margin-bottom: 20px;
+            }
+            
+            .setting-description {
+              font-size: 12px;
+              color: #7f8c8d;
+              margin-top: 5px;
+            }
+            
+            .lerp-value {
+              font-weight: bold;
+              color: #e67e22;
+            }
+            
+            /* Example 6: Interactive Element */
+            .interactive-container {
+              display: flex;
+              justify-content: space-between;
+            }
+            
+            .controls {
+              width: 40%;
+            }
+            
+            .preview {
+              width: 55%;
+              height: 200px;
+              border: 1px solid #ddd;
+              border-radius: 5px;
+              position: relative;
+              overflow: hidden;
+            }
+            
+            .interactive-element {
+              width: 50px;
+              height: 50px;
+              background-color: #9b59b6;
+              border-radius: 50%;
+              position: absolute;
+              left: calc(50% - 25px); /* 50% - half width */
+              top: calc(50% - 25px); /* 50% - half height */
+            }
+            
+            .control-group {
+              margin-bottom: 15px;
+            }
+            
+            label {
+              display: block;
+              margin-bottom: 5px;
+              font-weight: bold;
+            }
+            
+            input[type="range"] {
+              width: 100%;
+            }
+            
+            .value-display {
+              font-size: 12px;
+              color: #666;
+            }
+            
+            .container {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              text-align: center;
+              margin-bottom: 40px;
+            }
+            
+            .instructions {
+              position: fixed;
+              bottom: 20px;
+              left: 0;
+              right: 0;
+              text-align: center;
+              color: white;
+              font-size: 1.2rem;
+              z-index: 10;
+              text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            }
+            
+            /* Example 7: Animated Button with Circles */
+            .animated-button-container {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100%;
+            }
+            
+            .animated-button {
+              position: relative;
+              display: inline-block;
+              padding: 15px 30px;
+              background-color: #3498db;
+              color: white;
+              text-decoration: none;
+              font-weight: bold;
+              border-radius: 5px;
+              overflow: visible;
+              transition: background-color 0.3s;
+            }
+            
+            .animated-button:hover {
+              background-color: #2980b9;
+            }
+            
+            .animated-button .circle {
+              position: absolute;
+              width: 60px;
+              height: 60px;
+              background-color:#3498db;
+              border-radius: 50%;
+              opacity: 0;
+              transition: opacity 0.3s;
+              pointer-events: none;
+              filter: blur(19px);
+              z-index: 1;
+            }
+            
+            .animated-button:hover .circle {
+              opacity: 1;
+            }
+            
+            .animated-button .circle:nth-child(1) {
+              left: -15px;
+              top: 50%;
+            }
+            
+            .animated-button .circle:nth-child(2) {
+              left: 50%;
+              top: -15px;
+            }
+            
+            .animated-button .circle:nth-child(3) {
+              right: -15px;
+              top: 50%;
+            }
+            
+            .animated-button .circle:nth-child(4) {
+              left: 50%;
+              bottom: -15px;
+            }
+            
+            .animated-button .button-text {
+              position: relative;
+              z-index: 10;
+            }
+            
+            /* Example 8: ClipPath Triangle with Animated Vertex */
+            .triangle-container {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100%;
+            }
+            
+            .triangle-svg {
+              width: 300px;
+              height: 300px;
+              overflow: visible;
+            }
+            
+            .triangle-content {
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(135deg, #3498db, #e74c3c, #9b59b6);
+              animation: gradientShift 10s ease infinite;
+            }
+            
+            @keyframes gradientShift {
+              0% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+              100% { background-position: 0% 50%; }
+            }
+        </style>
     </head>
 
     <body>
-        <div class="f--container">
-            <div class="f--row">
-                <div class="f--col-12">
-                    <h1 class="f--mb-3 f--mt-3 f--font-a">Perlin DOM</h1>
-                </div>
+
+
+        <div class="container">
+            <h1>PerlinSVG Example</h1>
+        </div>
+        
+
+        <h1>PerlinDOM Examples</h1>
+        <p>This page demonstrates various ways to use the PerlinDOM library for creating smooth, organic animations.</p>
+        
+        <!-- Example 1: Basic Animation -->
+        <h2>1. Basic Animation</h2>
+        <div class="code-block">
+          const basicAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.basic-element'),<br>
+          &nbsp;&nbsp;x: { min: -50, max: 50 },<br>
+          &nbsp;&nbsp;y: { min: -50, max: 50 },<br>
+          &nbsp;&nbsp;speed: 0.01,<br>
+          &nbsp;&nbsp;seed: 123<br>
+          });
+        </div>
+        <div class="example-container">
+          <div class="basic-element"></div>
+        </div>
+        
+        <!-- Example 2: Horizontal Only -->
+        <h2>2. Horizontal-Only Movement</h2>
+        <div class="code-block">
+          const horizontalAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.horizontal-element'),<br>
+          &nbsp;&nbsp;x: { min: -100, max: 100 },<br>
+          &nbsp;&nbsp;y: null, // No vertical movement<br>
+          &nbsp;&nbsp;speed: 0.02<br>
+          });
+        </div>
+        <div class="example-container">
+          <div class="horizontal-element"></div>
+        </div>
+        
+        <!-- Example 3: Multiple Elements -->
+        <h2>3. Multiple Elements with Different Seeds</h2>
+        <div class="code-block">
+          document.querySelectorAll('.particle').forEach((el, index) => {<br>
+          &nbsp;&nbsp;new PerlinDOM({<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;element: el,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;x: { min: -100, max: 100 },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;y: { min: -100, max: 100 },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;speed: 0.01,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;seed: index * 100 // Different seed for each element<br>
+          &nbsp;&nbsp;});<br>
+          });
+        </div>
+        <div class="example-container">
+          <div class="particle" style="left: 30%; top: 30%"></div>
+          <div class="particle" style="left: 50%; top: 50%"></div>
+          <div class="particle" style="left: 70%; top: 70%"></div>
+          <div class="particle" style="left: 30%; top: 70%"></div>
+          <div class="particle" style="left: 70%; top: 30%"></div>
+        </div>
+        
+        <!-- Example 4: Background Effect -->
+        <h2>4. Creating a Background Effect</h2>
+        <div class="code-block">
+          document.querySelectorAll('.bg-element').forEach(el => {<br>
+          &nbsp;&nbsp;new PerlinDOM({<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;element: el,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;x: { min: -10, max: 10 },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;y: { min: -10, max: 10 },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;speed: 0.002, // Very slow movement<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;seed: Math.random() * 2000<br>
+          &nbsp;&nbsp;});<br>
+          });
+        </div>
+        <div class="example-container bg-container">
+          <div class="bg-element bg-element-1"></div>
+          <div class="bg-element bg-element-2"></div>
+          <div class="bg-element bg-element-3"></div>
+          <div class="content">
+            <h3>Subtle Background Animation</h3>
+            <p>Perfect for creating depth in UI elements</p>
+          </div>
+        </div>
+        
+        <!-- Example 5: Pause and Play with Mouse Events -->
+        <h2>5. Smooth Pause and Play with Mouse Events</h2>
+        <div class="code-block">
+          const pausePlayAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.pause-play-element'),<br>
+          &nbsp;&nbsp;x: { min: -80, max: 80 },<br>
+          &nbsp;&nbsp;y: { min: -80, max: 80 },<br>
+          &nbsp;&nbsp;speed: 0.01,<br>
+          &nbsp;&nbsp;seed: 42,<br>
+          &nbsp;&nbsp;lerpSpeed: 0.05 // Controls how smooth the transition is<br>
+          });<br><br>
+          
+          // Pause on mouse leave<br>
+          document.querySelector('.pause-play-container').addEventListener('mouseleave', () => {<br>
+          &nbsp;&nbsp;pausePlayAnimation.pause();<br>
+          &nbsp;&nbsp;document.querySelector('.status-indicator').textContent = 'Pausing...';<br>
+          });<br><br>
+          
+          // Play on mouse enter<br>
+          document.querySelector('.pause-play-container').addEventListener('mouseenter', () => {<br>
+          &nbsp;&nbsp;pausePlayAnimation.play();<br>
+          &nbsp;&nbsp;document.querySelector('.status-indicator').textContent = 'Playing...';<br>
+          });<br><br>
+          
+          // Update lerpSpeed when slider changes<br>
+          document.getElementById('lerp-speed').addEventListener('input', (e) => {<br>
+          &nbsp;&nbsp;const newSpeed = parseFloat(e.target.value);<br>
+          &nbsp;&nbsp;pausePlayAnimation.lerpSpeed = newSpeed;<br>
+          &nbsp;&nbsp;document.querySelector('.lerp-value').textContent = newSpeed.toFixed(2);<br>
+          });
+        </div>
+        <div class="example-container">
+          <div class="pause-play-settings">
+            <label for="lerp-speed">Transition Speed: <span class="lerp-value">0.05</span></label>
+            <input type="range" id="lerp-speed" min="0.01" max="0.2" step="0.01" value="0.05">
+            <p class="setting-description">Lower values = smoother, slower transitions</p>
+          </div>
+          <div class="pause-play-container">
+            <div class="pause-play-element"></div>
+            <div class="status-display">
+              Status: <span class="status-indicator">Playing</span>
+              <p class="instruction">Hover over this orange circle to play, move mouse out to pause</p>
             </div>
+          </div>
+        </div>
+        
+        <!-- Example 6: Interactive Controls -->
+        <h2>6. Interactive Controls</h2>
+        <div class="code-block">
+          // Create the animation with initial settings<br>
+          const interactiveAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.interactive-element'),<br>
+          &nbsp;&nbsp;x: { min: -50, max: 50 },<br>
+          &nbsp;&nbsp;y: { min: -50, max: 50 },<br>
+          &nbsp;&nbsp;speed: 0.01,<br>
+          &nbsp;&nbsp;seed: 0<br>
+          });<br><br>
+          
+          // Update settings based on user input<br>
+          speedControl.addEventListener('input', () => {<br>
+          &nbsp;&nbsp;// Stop current animation<br>
+          &nbsp;&nbsp;interactiveAnimation.destroy();<br>
+          &nbsp;&nbsp;<br>
+          &nbsp;&nbsp;// Reinitialize with new settings<br>
+          &nbsp;&nbsp;interactiveAnimation.speed = parseFloat(speedControl.value);<br>
+          &nbsp;&nbsp;interactiveAnimation.init(seedControl.value);<br>
+          });
+        </div>
+        <div class="example-container">
+          <div class="interactive-container">
+            <div class="controls">
+              <div class="control-group">
+                <label for="x-range">X Range:</label>
+                <input type="range" id="x-range" min="0" max="100" value="50">
+                <div class="value-display">-50 to 50</div>
+              </div>
+              
+              <div class="control-group">
+                <label for="y-range">Y Range:</label>
+                <input type="range" id="y-range" min="0" max="100" value="50">
+                <div class="value-display">-50 to 50</div>
+              </div>
+              
+              <div class="control-group">
+                <label for="speed">Speed:</label>
+                <input type="range" id="speed" min="0.001" max="0.05" step="0.001" value="0.01">
+                <div class="value-display">0.01</div>
+              </div>
+              
+              <div class="control-group">
+                <label for="seed">Seed:</label>
+                <input type="range" id="seed" min="0" max="1000" step="1" value="0">
+                <div class="value-display">0</div>
+              </div>
+            </div>
+            
+            <div class="preview">
+              <div class="interactive-element"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="f--container">
-            <div class="f--row">
-                <div class="f--col-12">
-                    <div class="spacer">
-                        <div class="box"></div>
-                    </div>
-                </div>
-            </div>
+        <!-- Example 7: Animated Button with Circles -->
+        <h2>7. Animated Button with Circles on Hover</h2>
+        <div class="code-block">
+          // Get all the circle elements inside the button<br>
+          const circleElements = document.querySelectorAll('.animated-button .circle');<br><br>
+          
+          // Create an array to store the animation instances<br>
+          let circleAnimations = [];<br><br>
+          
+          // Function to initialize animations<br>
+          function initCircleAnimations() {<br>
+          &nbsp;&nbsp;// Clear any existing animations<br>
+          &nbsp;&nbsp;circleAnimations.forEach(anim => anim.destroy());<br>
+          &nbsp;&nbsp;circleAnimations = [];<br><br>
+          
+          &nbsp;&nbsp;// Create new animations for each circle<br>
+          &nbsp;&nbsp;circleElements.forEach((el, index) => {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;const animation = new PerlinDOM({<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;element: el,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: { min: -15, max: 15 },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: { min: -15, max: 15 },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;speed: 0.03,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seed: index * 1000,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lerpSpeed: 0.1<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;circleAnimations.push(animation);<br>
+          &nbsp;&nbsp;});<br>
+          }<br><br>
+          
+          // Add event listeners to the button<br>
+          document.querySelector('.animated-button').addEventListener('mouseenter', () => {<br>
+          &nbsp;&nbsp;initCircleAnimations();<br>
+          &nbsp;&nbsp;circleAnimations.forEach(anim => anim.play());<br>
+          });<br><br>
+          
+          document.querySelector('.animated-button').addEventListener('mouseleave', () => {<br>
+          &nbsp;&nbsp;circleAnimations.forEach(anim => anim.pause());<br>
+          });
         </div>
+        <div class="example-container">
+          <div class="animated-button-container">
+            <a href="#" class="animated-button">
+              <span class="circle"></span>
+              <span class="circle"></span>
+              <span class="circle"></span>
+              <span class="circle"></span>
+              <span class="button-text">Button Text</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Example 8: ClipPath Triangle with Animated Vertex -->
+        <h2>8. ClipPath Triangle with Animated Vertex</h2>
+        <div class="code-block">
+          // Get the polygon element<br>
+          const trianglePath = document.getElementById('trianglePath');<br><br>
+          
+          // Store the original points<br>
+          const originalPoints = {<br>
+          &nbsp;&nbsp;x1: 150, y1: 50,  // Top vertex<br>
+          &nbsp;&nbsp;x2: 250, y2: 250, // Bottom right<br>
+          &nbsp;&nbsp;x3: 50,  y3: 250  // Bottom left<br>
+          };<br><br>
+          
+          // Create a custom animation function<br>
+          function animateTriangle() {<br>
+          &nbsp;&nbsp;// Create a PerlinDOM instance for the top vertex<br>
+          &nbsp;&nbsp;const topVertexAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;element: null, // We're not moving a DOM element directly<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;x: { min: -30, max: 30 },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;y: { min: -20, max: 20 },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;speed: 0.005,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;seed: 42<br>
+          &nbsp;&nbsp;});<br><br>
+          
+          &nbsp;&nbsp;// Animation function<br>
+          &nbsp;&nbsp;function updateTriangle() {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;// Get the current noise values<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;const offsetX = topVertexAnimation.lastX;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;const offsetY = topVertexAnimation.lastY;<br><br>
+          
+          &nbsp;&nbsp;&nbsp;&nbsp;// Update the polygon points<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;const newPoints = `${originalPoints.x1 + offsetX},${originalPoints.y1 + offsetY} ${originalPoints.x2},${originalPoints.y2} ${originalPoints.x3},${originalPoints.y3}`;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;trianglePath.setAttribute('points', newPoints);<br><br>
+          
+          &nbsp;&nbsp;&nbsp;&nbsp;// Continue animation<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;requestAnimationFrame(updateTriangle);<br>
+          &nbsp;&nbsp;}<br><br>
+          
+          &nbsp;&nbsp;// Start the animation<br>
+          &nbsp;&nbsp;updateTriangle();<br>
+          }<br><br>
+          
+          // Initialize the animation<br>
+          animateTriangle();
+        </div>
+        <div class="example-container">
+          <div class="triangle-container">
+            <svg class="triangle-svg" viewBox="0 0 300 300">
+              <defs>
+                <clipPath id="triangleClip">
+                  <polygon id="trianglePath" points="150,50 250,250 50,250"></polygon>
+                </clipPath>
+              </defs>
+              <rect class="triangle-content" width="300" height="300" clip-path="url(#triangleClip)"></rect>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Load all scripts -->
         <script type="module" src="./js/index.js"></script>
+        <script type="module" src="./js/basic-examples.js"></script>
+        <script type="module" src="./js/pause-play.js"></script>
+        <script type="module" src="./js/interactive-controls.js"></script>
+        <script type="module" src="./js/animated-button.js"></script>
+        <script type="module" src="./js/triangle-animation.js"></script>
     </body>
 </html>

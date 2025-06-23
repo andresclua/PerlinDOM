@@ -1,244 +1,276 @@
 # PerlinDOM
 
-A lightweight JavaScript library for creating smooth, organic animations for DOM elements using Perlin noise.
+A lightweight JavaScript library for creating organic and fluid animations on DOM elements using Perlin noise.
 
-## Overview
+## Description
 
-PerlinDOM uses Perlin noise algorithms to generate natural-looking, random movements for HTML elements. Unlike traditional animations that follow predictable paths, Perlin noise creates smooth, organic motion that appears more natural and less mechanical.
-
-The PerlinDOM class provides a way to animate DOM elements using Perlin noise, creating smooth, organic, and natural-looking movements. This implementation uses a 2D Perlin noise algorithm to generate values that change smoothly over time, which are then mapped to x and y coordinates for element positioning.
+PerlinDOM allows you to animate HTML elements with natural and organic movements based on Perlin noise. This technique creates movements that appear random but are smooth and predictable, perfect for subtle and attractive visual effects.
 
 ## Features
 
-- **Smooth Organic Animations**: Create natural-looking movements for any DOM element
-- **Configurable Parameters**: Customize the range, speed, and randomness of animations
-- **Deterministic Randomness**: Use seeds to create reproducible animations
-- **Playback Control**: Pause and resume animations as needed
-- **Lightweight**: No dependencies, minimal footprint
-- **Easy to Use**: Simple API with minimal setup required
-- **Efficient Rendering**: Uses requestAnimationFrame for optimal performance
+- **Organic animations**: Natural movements that avoid the rigidity of traditional animations
+- **Customizable**: Control over movement ranges, speed, and noise seed
+- **Lightweight**: Minimal implementation with no external dependencies
+- **Easy to use**: Simple API to implement complex effects
+- **Optimized performance**: Uses requestAnimationFrame for smooth animations
 
 ## Installation
 
 ```bash
-npm install @andresclua/perlinDOM
+npm install perlin-dom
+```
+
+Or simply include the JavaScript files in your project:
+
+```html
+<script src="path/to/PerlinDom.js" type="module"></script>
 ```
 
 ## Basic Usage
 
 ```javascript
-import PerlinDOM from '@andresclua/perlinDOM';
+import PerlinDOM from './PerlinDom.js';
 
-// Select elements to animate
-const elements = document.querySelectorAll('.animated-element');
-
-// Initialize PerlinDOM for each element
-elements.forEach(element => {
-  new PerlinDOM({
-    element: element,
-    x: { min: -50, max: 50 },
-    y: { min: -50, max: 50 },
-    speed: 0.01,
-    seed: Math.random() * 1000
-  });
-});
-```
-
-## API Reference
-
-### Constructor Options
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `element` | DOM Element | *required* | The DOM element to animate |
-| `x` | Object or null | null | The range of horizontal movement: `{ min: Number, max: Number }` |
-| `y` | Object or null | null | The range of vertical movement: `{ min: Number, max: Number }` |
-| `speed` | Number | 0.01 | The speed of the animation (higher values = faster movement) |
-| `seed` | Number | 0 | The random seed for the Perlin noise (same seed = same animation pattern) |
-| `lerpSpeed` | Number | 0.1 | The speed of transition between play and pause states (higher values = faster transitions) |
-
-### Methods
-
-#### `init(seed)`
-
-Initializes the Perlin noise generator with the given seed and starts the animation.
-
-**Parameters:**
-- `seed` (Number): The random seed to use for the Perlin noise generator
-
-```javascript
-// This is called automatically by the constructor
-perlinInstance.init(42); // Initialize with a specific seed
-```
-
-#### `pause()`
-
-Gradually slows down the animation until it pauses completely, using a smooth transition.
-
-```javascript
-// Smoothly pause the animation
-perlinInstance.pause();
-
-// You can later resume it with play()
-```
-
-#### `play()`
-
-Gradually speeds up a paused animation until it reaches full speed, using a smooth transition.
-
-```javascript
-// Smoothly resume a paused animation
-perlinInstance.play();
-```
-
-#### `animate()`
-
-The animation loop function that updates the element's position based on Perlin noise values. This method is bound to the instance and called automatically via requestAnimationFrame.
-
-#### `destroy()`
-
-Stops the animation by canceling the animation frame request.
-
-```javascript
+// Create a basic animation
 const animation = new PerlinDOM({
   element: document.querySelector('.my-element'),
-  x: { min: -100, max: 100 },
-  y: { min: -100, max: 100 }
+  x: { min: -50, max: 50 },  // Horizontal movement range in pixels
+  y: { min: -50, max: 50 },  // Vertical movement range in pixels
+  speed: 0.01,               // Animation speed
+  seed: 123                  // Seed for the noise generator
 });
-
-// Later, when you want to stop the animation:
-animation.destroy();
 ```
+
+## Configuration Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `element` | HTMLElement | The DOM element to animate |
+| `x` | Object or null | Horizontal movement configuration: `{min: value, max: value}`. Use `null` to disable horizontal movement |
+| `y` | Object or null | Vertical movement configuration: `{min: value, max: value}`. Use `null` to disable vertical movement |
+| `speed` | Number | Animation speed (smaller values = slower movement) |
+| `seed` | Number | Seed for the Perlin noise generator |
+| `lerpSpeed` | Number | Interpolation speed for smooth transitions (default: 0.1) |
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `play()` | Starts or resumes the animation |
+| `pause()` | Pauses the animation |
+| `destroy()` | Stops the animation and cleans up resources |
+| `init(seed)` | Reinitializes the animation with an optional new seed |
 
 ## Examples
 
-### Basic Animation
+### 1. Basic Animation
+
+Create an element with smooth movement on both axes.
 
 ```javascript
-import PerlinDOM from '@andresclua/perlinDOM';
-
-// Create a floating element
-const floater = new PerlinDOM({
-  element: document.querySelector('.floating-element'),
-  x: { min: -20, max: 20 },
-  y: { min: -20, max: 20 },
-  speed: 0.005 // Slow, gentle movement
+const basicAnimation = new PerlinDOM({
+  element: document.querySelector('.element'),
+  x: { min: -50, max: 50 },
+  y: { min: -50, max: 50 },
+  speed: 0.01,
+  seed: 123
 });
 ```
 
-### Horizontal-Only Movement
+### 2. Horizontal-Only Movement
+
+Animate an element only on the horizontal axis.
 
 ```javascript
-// Create an element that only moves horizontally
-const slider = new PerlinDOM({
-  element: document.querySelector('.sliding-element'),
+const horizontalAnimation = new PerlinDOM({
+  element: document.querySelector('.horizontal-element'),
   x: { min: -100, max: 100 },
   y: null, // No vertical movement
   speed: 0.02
 });
 ```
 
-### Multiple Elements with Different Seeds
+### 3. Multiple Elements with Different Seeds
+
+Animate multiple elements with different patterns.
 
 ```javascript
-// Animate multiple elements with different patterns
 document.querySelectorAll('.particle').forEach((el, index) => {
   new PerlinDOM({
     element: el,
-    x: { min: -50, max: 50 },
-    y: { min: -50, max: 50 },
+    x: { min: -100, max: 100 },
+    y: { min: -100, max: 100 },
     speed: 0.01,
     seed: index * 100 // Different seed for each element
   });
 });
 ```
 
-### Creating a Background Effect
+### 4. Background Effect
+
+Create a dynamic background with slowly moving elements.
 
 ```javascript
-// Create a subtle background animation
-const bgElements = document.querySelectorAll('.background-element');
-bgElements.forEach(el => {
+document.querySelectorAll('.bg-element').forEach(el => {
   new PerlinDOM({
     element: el,
-    x: { min: -5, max: 5 },
-    y: { min: -5, max: 5 },
+    x: { min: -10, max: 10 },
+    y: { min: -10, max: 10 },
     speed: 0.002, // Very slow movement
     seed: Math.random() * 2000
   });
 });
 ```
 
-### Pause and Play with Mouse Events
+### 5. Pause and Play with Mouse Events
+
+Control the animation with mouse events.
 
 ```javascript
-// Create an animation that pauses when mouse leaves the container
-const animation = new PerlinDOM({
-  element: document.querySelector('.animated-element'),
-  x: { min: -50, max: 50 },
-  y: { min: -50, max: 50 },
-  speed: 0.01
+const pausePlayAnimation = new PerlinDOM({
+  element: document.querySelector('.pause-element'),
+  x: { min: -80, max: 80 },
+  y: { min: -80, max: 80 },
+  speed: 0.01,
+  seed: 42,
+  lerpSpeed: 0.05 // Controls how smooth the transition is
 });
 
 // Pause on mouse leave
 document.querySelector('.container').addEventListener('mouseleave', () => {
-  animation.pause();
+  pausePlayAnimation.pause();
 });
 
-// Resume on mouse enter
+// Play on mouse enter
 document.querySelector('.container').addEventListener('mouseenter', () => {
-  animation.play();
+  pausePlayAnimation.play();
 });
 ```
 
-## Technical Details
+### 6. Interactive Controls
 
-### Perlin Noise Implementation
+Allow the user to adjust animation parameters.
 
-This library uses a 2D implementation of Perlin noise, which generates smooth, continuous, pseudo-random values. The algorithm:
+```javascript
+// Create the animation with initial settings
+const interactiveAnimation = new PerlinDOM({
+  element: document.querySelector('.interactive-element'),
+  x: { min: -50, max: 50 },
+  y: { min: -50, max: 50 },
+  speed: 0.01,
+  seed: 0
+});
 
-1. Uses a permutation table generated from the seed value
-2. Applies interpolation and gradient functions to create smooth transitions between points in a 2D space
-3. Outputs values between -1 and 1, which are then mapped to the specified ranges
-4. Creates more natural and varied movement patterns than 1D noise
+// Update settings based on user input
+speedControl.addEventListener('input', () => {
+  interactiveAnimation.speed = parseFloat(speedControl.value);
+  interactiveAnimation.init(); // Restart with new settings
+});
+```
 
-### Animation Process
+### 7. Animated Button with Circles
 
-1. The `animate` method is called on each animation frame
-2. The time value is incremented by the speed parameter
-3. Perlin noise values are generated for both x and y coordinates
-4. These values are mapped to the specified ranges
-5. The element's position is updated using CSS left/top properties
-6. The next animation frame is requested
+Create a button with animated hover effects.
 
-### Playback Control
+```javascript
+// Get all the circle elements inside the button
+const circleElements = document.querySelectorAll('.animated-button .circle');
+let circleAnimations = [];
 
-The library provides smooth playback control with transitions between states:
-- When pausing, the animation gradually slows down until it stops completely
-- When playing, the animation gradually speeds up until it reaches full speed
-- The transition speed is controlled by the `lerpSpeed` parameter
+// Function to initialize animations
+function initCircleAnimations() {
+  // Clear existing animations
+  circleAnimations.forEach(anim => anim.destroy());
+  circleAnimations = [];
+  
+  // Create new animations for each circle
+  circleElements.forEach((el, index) => {
+    const animation = new PerlinDOM({
+      element: el,
+      x: { min: -15, max: 15 },
+      y: { min: -15, max: 15 },
+      speed: 0.03,
+      seed: index * 1000,
+      lerpSpeed: 0.1
+    });
+    circleAnimations.push(animation);
+  });
+}
 
-This creates more natural-looking transitions between play and pause states, rather than abrupt stops and starts.
+// Add event listeners to the button
+document.querySelector('.animated-button').addEventListener('mouseenter', () => {
+  initCircleAnimations();
+  circleAnimations.forEach(anim => anim.play());
+});
 
-### Performance Considerations
+document.querySelector('.animated-button').addEventListener('mouseleave', () => {
+  circleAnimations.forEach(anim => anim.pause());
+});
+```
 
-- The library uses `requestAnimationFrame` for optimal performance and battery efficiency
-- CSS left/top properties are used for positioning elements
-- The initial position of the element is cached to avoid reflows
-- The animation can be paused when not visible to save resources
+### 8. Triangle with Animated Vertex
 
-## Browser Support
+Use PerlinDOM to animate a vertex of an SVG polygon.
+
+```javascript
+// Get the polygon element
+const trianglePath = document.getElementById('trianglePath');
+
+// Store the original points
+const originalPoints = {
+  x1: 150, y1: 50,  // Top vertex
+  x2: 250, y2: 250, // Bottom right
+  x3: 50,  y3: 250  // Bottom left
+};
+
+// Create a custom animation function
+function animateTriangle() {
+  // Create a PerlinDOM instance for the top vertex
+  const topVertexAnimation = new PerlinDOM({
+    element: null, // We're not moving a DOM element directly
+    x: { min: -30, max: 30 },
+    y: { min: -20, max: 20 },
+    speed: 0.005,
+    seed: 42
+  });
+
+  // Animation function
+  function updateTriangle() {
+    // Get the current noise values
+    const offsetX = topVertexAnimation.lastX;
+    const offsetY = topVertexAnimation.lastY;
+
+    // Update the polygon points
+    const newPoints = `${originalPoints.x1 + offsetX},${originalPoints.y1 + offsetY} ${originalPoints.x2},${originalPoints.y2} ${originalPoints.x3},${originalPoints.y3}`;
+    trianglePath.setAttribute('points', newPoints);
+
+    // Continue animation
+    requestAnimationFrame(updateTriangle);
+  }
+
+  // Start the animation
+  updateTriangle();
+}
+
+// Initialize the animation
+animateTriangle();
+```
+
+## Use Cases
+
+- **Background elements**: Create dynamic and organic backgrounds
+- **Hover effects**: Enhance the interactivity of buttons and links
+- **Data visualizations**: Add subtle movement to charts and visualizations
+- **Decorative elements**: Bring decorative elements to life on your website
+- **User interfaces**: Create more dynamic and attractive interfaces
+
+## Compatibility
 
 PerlinDOM works in all modern browsers that support:
-- ES6 Classes and private methods/fields
+- ES6 (ECMAScript 2015)
 - requestAnimationFrame
-- CSS Positioning
-
-## Known Limitations
-
-- Elements must have a position (relative, absolute, or fixed) for the animation to work properly
-- Very high speed values may cause the animation to appear less smooth
+- CSS transform
 
 ## License
 
-MIT © Andres Clua
+MIT
