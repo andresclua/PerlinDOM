@@ -6,6 +6,15 @@ A lightweight JavaScript library for creating organic and fluid animations on DO
 
 PerlinDOM allows you to animate HTML elements with natural and organic movements based on Perlin noise. This technique creates movements that appear random but are smooth and predictable, perfect for subtle and attractive visual effects.
 
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `play()` | Starts or resumes the animation |
+| `pause()` | Pauses the animation |
+| `destroy()` | Stops the animation and cleans up resources |
+| `init(seed)` | Reinitializes the animation with an optional new seed |
+
 ## Features
 
 - **Organic animations**: Natural movements that avoid the rigidity of traditional animations
@@ -17,19 +26,14 @@ PerlinDOM allows you to animate HTML elements with natural and organic movements
 ## Installation
 
 ```bash
-npm install perlin-dom
+npm install @andresclua/PerlinDOM
 ```
 
-Or simply include the JavaScript files in your project:
-
-```html
-<script src="path/to/PerlinDom.js" type="module"></script>
-```
 
 ## Basic Usage
 
 ```javascript
-import PerlinDOM from './PerlinDom.js';
+import PerlinDOM from '@andresclua/PerlinDOM';
 
 // Create a basic animation
 const animation = new PerlinDOM({
@@ -51,15 +55,6 @@ const animation = new PerlinDOM({
 | `speed` | Number | Animation speed (smaller values = slower movement) |
 | `seed` | Number | Seed for the Perlin noise generator |
 | `lerpSpeed` | Number | Interpolation speed for smooth transitions (default: 0.1) |
-
-## Methods
-
-| Method | Description |
-|--------|-------------|
-| `play()` | Starts or resumes the animation |
-| `pause()` | Pauses the animation |
-| `destroy()` | Stops the animation and cleans up resources |
-| `init(seed)` | Reinitializes the animation with an optional new seed |
 
 ## Examples
 
