@@ -14,7 +14,7 @@ export default defineConfig({
         entry: entryPath,
         name: 'PerlinDOM', // Library name as : Counter | etc
         formats: ['es', 'umd'], // Output formats as : es | umd, es is for modern browsers, umd is for older browsers
-        fileName: (format,name) => `perlindom.${format}.js`, // File naming as : reveal-it | collapsify | etc
+        fileName: (format,name) => `PerlinDOM.${format}.js`, // File naming as : reveal-it | collapsify | etc
       },
       outDir, 
       emptyOutDir: true, 
