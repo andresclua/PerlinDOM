@@ -18,6 +18,18 @@ class PerlinDOM {
       }
       return permutation.concat(permutation);
     }
+
+    // Helper to check if a value is a percentage string
+    static #isPercentage(value) {
+      return typeof value === 'string' && value.endsWith('%');
+    }
+
+    // Helper to convert percentage to pixels
+    static #percentToPixels(percentage, dimension) {
+      if (!PerlinDOM.#isPercentage(percentage)) return percentage;
+      const value = parseFloat(percentage);
+      return (value / 100) * dimension;
+    }
   
     constructor({
       element,
@@ -38,11 +50,24 @@ class PerlinDOM {
       this.targetLerpFactor = 1; // Target state (1 = play, 0 = pause)
       this.lastX = 0;
       this.lastY = 0;
+      
+      // Check if we have percentage values
+      this.hasPercentages = false;
+      if (x && (PerlinDOM.#isPercentage(x.min) || PerlinDOM.#isPercentage(x.max)) ||
+          y && (PerlinDOM.#isPercentage(y.min) || PerlinDOM.#isPercentage(y.max))) {
+        this.hasPercentages = true;
+      }
   
       // Solo inicializar estas propiedades si el elemento no es null
       if (element) {
         this.initialX = element.offsetLeft;
         this.initialY = element.offsetTop;
+        
+        // If using percentages, add resize listener
+        if (this.hasPercentages) {
+          this.handleResize = this.handleResize.bind(this);
+          window.addEventListener('resize', this.handleResize);
+        }
       } else {
         this.initialX = 0;
         this.initialY = 0;
@@ -60,6 +85,15 @@ class PerlinDOM {
       this.targetLerpFactor = 1;
       this.raf = requestAnimationFrame(this.animate);
       console.log('PerlinDOM initialized');
+    }
+    
+  // Handle window resize for percentage-based values
+  handleResize() {
+      // Only recalculate if we're using percentages
+      if (this.hasPercentages && this.el) {
+        // Force a recalculation on next animation frame
+        this.needsRecalculation = true;
+      }
     }
     
   pause() {
@@ -178,23 +212,73 @@ class PerlinDOM {
         const noiseX = this.noise.perlin2(this.time, 0);
         const noiseY = this.noise.perlin2(this.time, 100); // Different slice of the noise field
     
-        const valX = this.xRange
-          ? this.#map(noiseX, -1, 1, this.xRange.min, this.xRange.max)
-          : 0;
-    
-        const valY = this.yRange
-          ? this.#map(noiseY, -1, 1, this.yRange.min, this.yRange.max)
-          : 0;
-        
-        // Store current values for interpolation
-        this.lastX = valX;
-        this.lastY = valY;
-    
-        // Update position using left/top instead of transform
-        // Solo actualizar el elemento si existe
+        // Only process if we have an element
         if (this.el) {
+          let minX, maxX, minY, maxY;
+          
+          // Get parent dimensions for percentage calculations if needed
+          if (this.hasPercentages) {
+            const parent = this.el.parentElement || document.body;
+            const parentWidth = parent.clientWidth;
+            const parentHeight = parent.clientHeight;
+            
+            // Convert percentage values to pixels if needed
+            if (this.xRange) {
+              minX = PerlinDOM.#isPercentage(this.xRange.min) 
+                ? PerlinDOM.#percentToPixels(this.xRange.min, parentWidth)
+                : this.xRange.min;
+              
+              maxX = PerlinDOM.#isPercentage(this.xRange.max)
+                ? PerlinDOM.#percentToPixels(this.xRange.max, parentWidth)
+                : this.xRange.max;
+            }
+            
+            if (this.yRange) {
+              minY = PerlinDOM.#isPercentage(this.yRange.min)
+                ? PerlinDOM.#percentToPixels(this.yRange.min, parentHeight)
+                : this.yRange.min;
+              
+              maxY = PerlinDOM.#isPercentage(this.yRange.max)
+                ? PerlinDOM.#percentToPixels(this.yRange.max, parentHeight)
+                : this.yRange.max;
+            }
+          } else {
+            // Use the original values if not using percentages
+            minX = this.xRange?.min;
+            maxX = this.xRange?.max;
+            minY = this.yRange?.min;
+            maxY = this.yRange?.max;
+          }
+          
+          // Calculate the actual pixel values
+          const valX = this.xRange
+            ? this.#map(noiseX, -1, 1, minX, maxX)
+            : 0;
+      
+          const valY = this.yRange
+            ? this.#map(noiseY, -1, 1, minY, maxY)
+            : 0;
+          
+          // Store current values for interpolation
+          this.lastX = valX;
+          this.lastY = valY;
+      
+          // Update position using left/top
           this.el.style.left = `${this.initialX + valX}px`;
           this.el.style.top = `${this.initialY + valY}px`;
+        } else {
+          // If no element, just calculate and store the values
+          const valX = this.xRange
+            ? this.#map(noiseX, -1, 1, this.xRange.min, this.xRange.max)
+            : 0;
+      
+          const valY = this.yRange
+            ? this.#map(noiseY, -1, 1, this.yRange.min, this.yRange.max)
+            : 0;
+          
+          // Store current values for interpolation
+          this.lastX = valX;
+          this.lastY = valY;
         }
       }
   
@@ -210,6 +294,11 @@ class PerlinDOM {
   
     destroy() {
       cancelAnimationFrame(this.raf);
+      
+      // Remove resize listener if it was added
+      if (this.hasPercentages) {
+        window.removeEventListener('resize', this.handleResize);
+      }
     }
   }
   export default PerlinDOM;

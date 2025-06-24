@@ -19,6 +19,7 @@ PerlinDOM allows you to animate HTML elements with natural and organic movements
 
 - **Organic animations**: Natural movements that avoid the rigidity of traditional animations
 - **Customizable**: Control over movement ranges, speed, and noise seed
+- **Responsive**: Support for percentage-based values that adapt to container size
 - **Lightweight**: Minimal implementation with no external dependencies
 - **Easy to use**: Simple API to implement complex effects
 - **Optimized performance**: Uses requestAnimationFrame for smooth animations
@@ -50,11 +51,41 @@ const animation = new PerlinDOM({
 | Option | Type | Description |
 |--------|------|-------------|
 | `element` | HTMLElement | The DOM element to animate |
-| `x` | Object or null | Horizontal movement configuration: `{min: value, max: value}`. Use `null` to disable horizontal movement |
-| `y` | Object or null | Vertical movement configuration: `{min: value, max: value}`. Use `null` to disable vertical movement |
+| `x` | Object or null | Horizontal movement configuration: `{min: value, max: value}`. Values can be numbers (pixels) or strings with '%' (percentage of parent width). Use `null` to disable horizontal movement |
+| `y` | Object or null | Vertical movement configuration: `{min: value, max: value}`. Values can be numbers (pixels) or strings with '%' (percentage of parent height). Use `null` to disable vertical movement |
 | `speed` | Number | Animation speed (smaller values = slower movement) |
 | `seed` | Number | Seed for the Perlin noise generator |
 | `lerpSpeed` | Number | Interpolation speed for smooth transitions (default: 0.1) |
+
+> **⚠️ Important**: For PerlinDOM to work correctly, the animated element **must** have a CSS `position` property set to `absolute`, `relative`, or `fixed`. Without this property, the animation will not function as expected.
+
+## Percentage-Based Values
+
+PerlinDOM now supports percentage-based values for movement ranges, allowing for responsive animations that adapt to the size of the parent container:
+
+```javascript
+const responsiveAnimation = new PerlinDOM({
+  element: document.querySelector('.responsive-element'),
+  x: { min: '-10%', max: '10%' },  // 10% of parent width in each direction
+  y: { min: '-5%', max: '5%' },    // 5% of parent height in each direction
+  speed: 0.01,
+  seed: 123
+});
+```
+
+You can also mix pixel and percentage values:
+
+```javascript
+const mixedAnimation = new PerlinDOM({
+  element: document.querySelector('.mixed-element'),
+  x: { min: '-10%', max: '10%' },  // Percentage-based horizontal movement
+  y: { min: -20, max: 20 },        // Pixel-based vertical movement
+  speed: 0.01,
+  seed: 456
+});
+```
+
+When using percentage values, PerlinDOM automatically recalculates the movement range when the window is resized, ensuring that your animations remain proportional to their container.
 
 ## Examples
 
@@ -251,6 +282,23 @@ function animateTriangle() {
 animateTriangle();
 ```
 
+### 9. Responsive Animation with Percentage Values
+
+Create an animation that adapts to the size of its container.
+
+```javascript
+const responsiveAnimation = new PerlinDOM({
+  element: document.querySelector('.responsive-element'),
+  x: { min: '-15%', max: '15%' },  // 15% of parent width in each direction
+  y: { min: '-10%', max: '10%' },  // 10% of parent height in each direction
+  speed: 0.008,
+  seed: 789
+});
+
+// The animation will automatically adjust when the window is resized
+// No additional code needed for responsiveness
+```
+
 ## Use Cases
 
 - **Background elements**: Create dynamic and organic backgrounds
@@ -264,7 +312,7 @@ animateTriangle();
 PerlinDOM works in all modern browsers that support:
 - ES6 (ECMAScript 2015)
 - requestAnimationFrame
-- CSS transform
+- CSS positioning (absolute, relative, fixed)
 
 ## License
 

@@ -644,6 +644,96 @@
           </div>
         </div>
 
+        <!-- Example 9: Pixel vs. Percentage Values -->
+        <h2>9. Pixel vs. Percentage Values</h2>
+        <div class="code-block">
+          // Pixel-based animation (fixed size)<br>
+          const pixelAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.pixel-element'),<br>
+          &nbsp;&nbsp;x: { min: -50, max: 50 },<br>
+          &nbsp;&nbsp;y: { min: -50, max: 50 },<br>
+          &nbsp;&nbsp;speed: 0.01,<br>
+          &nbsp;&nbsp;seed: 123<br>
+          });<br><br>
+          
+          // Percentage-based animation (responsive)<br>
+          const percentageAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.percentage-element'),<br>
+          &nbsp;&nbsp;x: { min: '-20%', max: '20%' },<br>
+          &nbsp;&nbsp;y: { min: '-20%', max: '20%' },<br>
+          &nbsp;&nbsp;speed: 0.01,<br>
+          &nbsp;&nbsp;seed: 123<br>
+          });
+        </div>
+        <div class="example-container">
+          <div style="display: flex; justify-content: space-between; height: 100%;">
+            <div style="width: 48%; height: 100%; position: relative; border: 1px dashed #ccc; border-radius: 5px; overflow: hidden;">
+              <div style="position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-weight: bold; color: #7f8c8d; z-index: 10;">Pixel Values (Fixed)</div>
+              <div class="pixel-element" style="width: 80px; height: 80px; background-color: #3498db; border-radius: 50%; position: absolute; left: calc(50% - 40px); top: calc(50% - 40px); filter: blur(5px);"></div>
+              <div style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #7f8c8d;">Resize your browser window - animation range stays the same</div>
+            </div>
+            <div style="width: 48%; height: 100%; position: relative; border: 1px dashed #ccc; border-radius: 5px; overflow: hidden;">
+              <div style="position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-weight: bold; color: #7f8c8d; z-index: 10;">Percentage Values (Responsive)</div>
+              <div class="percentage-element" style="width: 80px; height: 80px; background-color: #e74c3c; border-radius: 50%; position: absolute; left: calc(50% - 40px); top: calc(50% - 40px); filter: blur(5px);"></div>
+              <div style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #7f8c8d;">Resize your browser window - animation range adapts</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Example 10: Resizable Container with Percentage Values -->
+        <h2>10. Resizable Container with Percentage Values</h2>
+        <div class="code-block">
+          const responsiveAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.responsive-element'),<br>
+          &nbsp;&nbsp;x: { min: '-25%', max: '25%' },<br>
+          &nbsp;&nbsp;y: { min: '-25%', max: '25%' },<br>
+          &nbsp;&nbsp;speed: 0.008,<br>
+          &nbsp;&nbsp;seed: 456<br>
+          });
+        </div>
+        <div class="example-container">
+          <div style="height: 100%; position: relative; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; resize: both; min-width: 200px; min-height: 200px; background-color: #f0f0f0;">
+            <div class="responsive-element" style="width: 60px; height: 60px; background-color: #9b59b6; border-radius: 50%; position: absolute; left: calc(50% - 30px); top: calc(50% - 30px);"></div>
+            <div style="position: absolute; bottom: 10px; right: 10px; font-size: 12px; color: #7f8c8d;">↘️ Drag this corner to resize the container</div>
+          </div>
+        </div>
+        
+        <!-- Example 11: Mixed Pixel and Percentage Values -->
+        <h2>11. Mixed Pixel and Percentage Values</h2>
+        <div class="code-block">
+          // Horizontal percentage, vertical pixel<br>
+          const horizontalPercentAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.horizontal-percent-element'),<br>
+          &nbsp;&nbsp;x: { min: '-30%', max: '30%' },<br>
+          &nbsp;&nbsp;y: { min: -40, max: 40 },<br>
+          &nbsp;&nbsp;speed: 0.01,<br>
+          &nbsp;&nbsp;seed: 789<br>
+          });<br><br>
+          
+          // Horizontal pixel, vertical percentage<br>
+          const verticalPercentAnimation = new PerlinDOM({<br>
+          &nbsp;&nbsp;element: document.querySelector('.vertical-percent-element'),<br>
+          &nbsp;&nbsp;x: { min: -80, max: 80 },<br>
+          &nbsp;&nbsp;y: { min: '-20%', max: '20%' },<br>
+          &nbsp;&nbsp;speed: 0.01,<br>
+          &nbsp;&nbsp;seed: 789<br>
+          });
+        </div>
+        <div class="example-container">
+          <div style="display: flex; justify-content: space-between; height: 100%;">
+            <div style="width: 48%; height: 100%; position: relative; border: 1px dashed #ccc; border-radius: 5px; overflow: hidden;">
+              <div style="position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-weight: bold; color: #7f8c8d; z-index: 10;">Horizontal % / Vertical px</div>
+              <div class="horizontal-percent-element" style="width: 60px; height: 60px; background-color: #f39c12; border-radius: 10px; position: absolute; left: calc(50% - 30px); top: calc(50% - 30px);"></div>
+              <div style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #7f8c8d;">Horizontal movement adapts to width, vertical is fixed</div>
+            </div>
+            <div style="width: 48%; height: 100%; position: relative; border: 1px dashed #ccc; border-radius: 5px; overflow: hidden;">
+              <div style="position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-weight: bold; color: #7f8c8d; z-index: 10;">Horizontal px / Vertical %</div>
+              <div class="vertical-percent-element" style="width: 60px; height: 60px; background-color: #f39c12; border-radius: 10px; position: absolute; left: calc(50% - 30px); top: calc(50% - 30px);"></div>
+              <div style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #7f8c8d;">Horizontal movement is fixed, vertical adapts to height</div>
+            </div>
+          </div>
+        </div>
+
         <!-- Load all scripts -->
         <script type="module" src="./js/index.js"></script>
         <script type="module" src="./js/basic-examples.js"></script>
@@ -651,5 +741,51 @@
         <script type="module" src="./js/interactive-controls.js"></script>
         <script type="module" src="./js/animated-button.js"></script>
         <script type="module" src="./js/triangle-animation.js"></script>
+        <script type="module">
+          import PerlinDOM from './js/PerlinDom.js';
+          
+          // Example 9: Pixel vs. Percentage Values
+          const pixelAnimation = new PerlinDOM({
+            element: document.querySelector('.pixel-element'),
+            x: { min: -50, max: 50 },
+            y: { min: -50, max: 50 },
+            speed: 0.01,
+            seed: 123
+          });
+          
+          const percentageAnimation = new PerlinDOM({
+            element: document.querySelector('.percentage-element'),
+            x: { min: '-20%', max: '20%' },
+            y: { min: '-20%', max: '20%' },
+            speed: 0.01,
+            seed: 123
+          });
+          
+          // Example 10: Resizable Container
+          const responsiveAnimation = new PerlinDOM({
+            element: document.querySelector('.responsive-element'),
+            x: { min: '-25%', max: '25%' },
+            y: { min: '-25%', max: '25%' },
+            speed: 0.008,
+            seed: 456
+          });
+          
+          // Example 11: Mixed Values
+          const horizontalPercentAnimation = new PerlinDOM({
+            element: document.querySelector('.horizontal-percent-element'),
+            x: { min: '-30%', max: '30%' },
+            y: { min: -40, max: 40 },
+            speed: 0.01,
+            seed: 789
+          });
+          
+          const verticalPercentAnimation = new PerlinDOM({
+            element: document.querySelector('.vertical-percent-element'),
+            x: { min: -80, max: 80 },
+            y: { min: '-20%', max: '20%' },
+            speed: 0.01,
+            seed: 789
+          });
+        </script>
     </body>
 </html>
