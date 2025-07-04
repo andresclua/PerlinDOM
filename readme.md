@@ -1,319 +1,351 @@
 # PerlinDOM
 
-A lightweight JavaScript library for creating organic and fluid animations on DOM elements using Perlin noise.
+[![npm version](https://badge.fury.io/js/@andresclua%2Fperlindom.svg)](https://badge.fury.io/js/@andresclua%2Fperlindom)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
-## Description
+A lightweight JavaScript library for creating smooth, organic animations on DOM elements using Perlin noise. Create natural, fluid movements that bring your web interfaces to life.
 
-PerlinDOM allows you to animate HTML elements with natural and organic movements based on Perlin noise. This technique creates movements that appear random but are smooth and predictable, perfect for subtle and attractive visual effects.
+## 📋 Table of Contents
 
-## Methods
+- [Features](#-features)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Configuration](#-configuration)
+- [Examples](#-examples)
+- [Best Practices](#-best-practices)
+- [API Reference](#-api-reference)
+- [Troubleshooting](#-troubleshooting)
+- [Browser Compatibility](#-browser-compatibility)
+- [Changelog](#-changelog)
+- [License](#-license)
 
-| Method | Description |
-|--------|-------------|
-| `play()` | Starts or resumes the animation |
-| `pause()` | Pauses the animation |
-| `destroy()` | Stops the animation and cleans up resources |
-| `init(seed)` | Reinitializes the animation with an optional new seed |
+## ✨ Features
 
-## Features
+- **🌊 Organic Animations**: Natural movements using Perlin noise that avoid mechanical rigidity
+- **📱 Responsive Design**: Support for percentage-based values that adapt to container size
+- **🎯 Smart Positioning**: Automatically works from element's current position (CSS or inline styles)
+- **⚡ High Performance**: Uses `transform` and `requestAnimationFrame` for smooth 60fps animations
+- **🎛️ Full Control**: Play, pause, and destroy animations with smooth transitions
+- **📦 Lightweight**: Minimal footprint with zero dependencies
+- **🔧 Easy Integration**: Simple API that works with any DOM element
+- **🎨 Flexible**: Mix pixel and percentage values, animate on single or both axes
 
-- **Organic animations**: Natural movements that avoid the rigidity of traditional animations
-- **Customizable**: Control over movement ranges, speed, and noise seed
-- **Responsive**: Support for percentage-based values that adapt to container size
-- **Lightweight**: Minimal implementation with no external dependencies
-- **Easy to use**: Simple API to implement complex effects
-- **Optimized performance**: Uses requestAnimationFrame for smooth animations
-
-## Installation
+## 📦 Installation
 
 ```bash
-npm install @andresclua/PerlinDOM
+npm install @andresclua/perlindom
 ```
 
+Or include directly in your HTML:
 
-## Basic Usage
+```html
+<script type="module">
+  import PerlinDOM from 'https://unpkg.com/@andresclua/perlindom/dist/perlindom.es.js';
+</script>
+```
+
+## 🚀 Quick Start
 
 ```javascript
-import PerlinDOM from '@andresclua/PerlinDOM';
+import PerlinDOM from '@andresclua/perlindom';
 
-// Create a basic animation
+// Basic animation - element will animate from its current position
 const animation = new PerlinDOM({
   element: document.querySelector('.my-element'),
-  x: { min: -50, max: 50 },  // Horizontal movement range in pixels
-  y: { min: -50, max: 50 },  // Vertical movement range in pixels
+  x: { min: -50, max: 50 },  // Move ±50px horizontally
+  y: { min: -30, max: 30 },  // Move ±30px vertically
   speed: 0.01,               // Animation speed
-  seed: 123                  // Seed for the noise generator
+  seed: 123                  // Reproducible pattern
 });
+
+// Control the animation
+animation.pause();  // Smooth pause
+animation.play();   // Resume
+animation.destroy(); // Clean up
 ```
 
-## Configuration Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `element` | HTMLElement | The DOM element to animate |
-| `x` | Object or null | Horizontal movement configuration: `{min: value, max: value}`. Values can be numbers (pixels) or strings with '%' (percentage of parent width). Use `null` to disable horizontal movement |
-| `y` | Object or null | Vertical movement configuration: `{min: value, max: value}`. Values can be numbers (pixels) or strings with '%' (percentage of parent height). Use `null` to disable vertical movement |
-| `speed` | Number | Animation speed (smaller values = slower movement) |
-| `seed` | Number | Seed for the Perlin noise generator |
-| `lerpSpeed` | Number | Interpolation speed for smooth transitions (default: 0.1) |
-
-> **⚠️ Important**: For PerlinDOM to work correctly, the animated element **must** have a CSS `position` property set to `absolute`, `relative`, or `fixed`. Without this property, the animation will not function as expected.
-
-## Percentage-Based Values
-
-PerlinDOM now supports percentage-based values for movement ranges, allowing for responsive animations that adapt to the size of the parent container:
-
-```javascript
-const responsiveAnimation = new PerlinDOM({
-  element: document.querySelector('.responsive-element'),
-  x: { min: '-10%', max: '10%' },  // 10% of parent width in each direction
-  y: { min: '-5%', max: '5%' },    // 5% of parent height in each direction
-  speed: 0.01,
-  seed: 123
-});
-```
-
-You can also mix pixel and percentage values:
-
-```javascript
-const mixedAnimation = new PerlinDOM({
-  element: document.querySelector('.mixed-element'),
-  x: { min: '-10%', max: '10%' },  // Percentage-based horizontal movement
-  y: { min: -20, max: 20 },        // Pixel-based vertical movement
-  speed: 0.01,
-  seed: 456
-});
-```
-
-When using percentage values, PerlinDOM automatically recalculates the movement range when the window is resized, ensuring that your animations remain proportional to their container.
-
-## Examples
-
-### 1. Basic Animation
-
-Create an element with smooth movement on both axes.
-
-```javascript
-const basicAnimation = new PerlinDOM({
-  element: document.querySelector('.element'),
-  x: { min: -50, max: 50 },
-  y: { min: -50, max: 50 },
-  speed: 0.01,
-  seed: 123
-});
-```
-
-### 2. Horizontal-Only Movement
-
-Animate an element only on the horizontal axis.
-
-```javascript
-const horizontalAnimation = new PerlinDOM({
-  element: document.querySelector('.horizontal-element'),
-  x: { min: -100, max: 100 },
-  y: null, // No vertical movement
-  speed: 0.02
-});
-```
-
-### 3. Multiple Elements with Different Seeds
-
-Animate multiple elements with different patterns.
-
-```javascript
-document.querySelectorAll('.particle').forEach((el, index) => {
-  new PerlinDOM({
-    element: el,
-    x: { min: -100, max: 100 },
-    y: { min: -100, max: 100 },
-    speed: 0.01,
-    seed: index * 100 // Different seed for each element
-  });
-});
-```
-
-### 4. Background Effect
-
-Create a dynamic background with slowly moving elements.
-
-```javascript
-document.querySelectorAll('.bg-element').forEach(el => {
-  new PerlinDOM({
-    element: el,
-    x: { min: -10, max: 10 },
-    y: { min: -10, max: 10 },
-    speed: 0.002, // Very slow movement
-    seed: Math.random() * 2000
-  });
-});
-```
-
-### 5. Pause and Play with Mouse Events
-
-Control the animation with mouse events.
-
-```javascript
-const pausePlayAnimation = new PerlinDOM({
-  element: document.querySelector('.pause-element'),
-  x: { min: -80, max: 80 },
-  y: { min: -80, max: 80 },
-  speed: 0.01,
-  seed: 42,
-  lerpSpeed: 0.05 // Controls how smooth the transition is
-});
-
-// Pause on mouse leave
-document.querySelector('.container').addEventListener('mouseleave', () => {
-  pausePlayAnimation.pause();
-});
-
-// Play on mouse enter
-document.querySelector('.container').addEventListener('mouseenter', () => {
-  pausePlayAnimation.play();
-});
-```
-
-### 6. Interactive Controls
-
-Allow the user to adjust animation parameters.
-
-```javascript
-// Create the animation with initial settings
-const interactiveAnimation = new PerlinDOM({
-  element: document.querySelector('.interactive-element'),
-  x: { min: -50, max: 50 },
-  y: { min: -50, max: 50 },
-  speed: 0.01,
-  seed: 0
-});
-
-// Update settings based on user input
-speedControl.addEventListener('input', () => {
-  interactiveAnimation.speed = parseFloat(speedControl.value);
-  interactiveAnimation.init(); // Restart with new settings
-});
-```
-
-### 7. Animated Button with Circles
-
-Create a button with animated hover effects.
-
-```javascript
-// Get all the circle elements inside the button
-const circleElements = document.querySelectorAll('.animated-button .circle');
-let circleAnimations = [];
-
-// Function to initialize animations
-function initCircleAnimations() {
-  // Clear existing animations
-  circleAnimations.forEach(anim => anim.destroy());
-  circleAnimations = [];
-  
-  // Create new animations for each circle
-  circleElements.forEach((el, index) => {
-    const animation = new PerlinDOM({
-      element: el,
-      x: { min: -15, max: 15 },
-      y: { min: -15, max: 15 },
-      speed: 0.03,
-      seed: index * 1000,
-      lerpSpeed: 0.1
-    });
-    circleAnimations.push(animation);
-  });
+```css
+/* Your element needs positioning for transforms to work */
+.my-element {
+  position: relative; /* or absolute, or fixed */
+  /* PerlinDOM will animate from wherever this element is positioned */
 }
-
-// Add event listeners to the button
-document.querySelector('.animated-button').addEventListener('mouseenter', () => {
-  initCircleAnimations();
-  circleAnimations.forEach(anim => anim.play());
-});
-
-document.querySelector('.animated-button').addEventListener('mouseleave', () => {
-  circleAnimations.forEach(anim => anim.pause());
-});
 ```
 
-### 8. Triangle with Animated Vertex
+## ⚙️ Configuration
 
-Use PerlinDOM to animate a vertex of an SVG polygon.
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `element` | `HTMLElement` | **required** | The DOM element to animate |
+| `x` | `Object \| null` | `null` | Horizontal movement: `{min: number, max: number}` |
+| `y` | `Object \| null` | `null` | Vertical movement: `{min: number, max: number}` |
+| `speed` | `number` | `0.01` | Animation speed (lower = slower) |
+| `seed` | `number` | `0` | Seed for reproducible patterns |
+| `lerpSpeed` | `number` | `0.1` | Transition smoothness for pause/play |
 
-```javascript
-// Get the polygon element
-const trianglePath = document.getElementById('trianglePath');
+### Value Types
 
-// Store the original points
-const originalPoints = {
-  x1: 150, y1: 50,  // Top vertex
-  x2: 250, y2: 250, // Bottom right
-  x3: 50,  y3: 250  // Bottom left
-};
+- **Pixels**: `{ min: -50, max: 50 }` - Fixed pixel movement
+- **Percentages**: `{ min: '-10%', max: '10%' }` - Responsive to parent size
+- **Mixed**: `x: { min: '-5%', max: '5%' }, y: { min: -20, max: 20 }`
+- **Single Axis**: Set unused axis to `null`
 
-// Create a custom animation function
-function animateTriangle() {
-  // Create a PerlinDOM instance for the top vertex
-  const topVertexAnimation = new PerlinDOM({
-    element: null, // We're not moving a DOM element directly
-    x: { min: -30, max: 30 },
-    y: { min: -20, max: 20 },
-    speed: 0.005,
-    seed: 42
-  });
+## 📚 Examples
 
-  // Animation function
-  function updateTriangle() {
-    // Get the current noise values
-    const offsetX = topVertexAnimation.lastX;
-    const offsetY = topVertexAnimation.lastY;
+### 1. Basic Element Animation
 
-    // Update the polygon points
-    const newPoints = `${originalPoints.x1 + offsetX},${originalPoints.y1 + offsetY} ${originalPoints.x2},${originalPoints.y2} ${originalPoints.x3},${originalPoints.y3}`;
-    trianglePath.setAttribute('points', newPoints);
+```html
+<div class="floating-card">Content</div>
+```
 
-    // Continue animation
-    requestAnimationFrame(updateTriangle);
-  }
-
-  // Start the animation
-  updateTriangle();
+```css
+.floating-card {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
-
-// Initialize the animation
-animateTriangle();
 ```
 
-### 9. Responsive Animation with Percentage Values
-
-Create an animation that adapts to the size of its container.
-
 ```javascript
-const responsiveAnimation = new PerlinDOM({
-  element: document.querySelector('.responsive-element'),
-  x: { min: '-15%', max: '15%' },  // 15% of parent width in each direction
-  y: { min: '-10%', max: '10%' },  // 10% of parent height in each direction
+new PerlinDOM({
+  element: document.querySelector('.floating-card'),
+  x: { min: -20, max: 20 },
+  y: { min: -15, max: 15 },
   speed: 0.008,
-  seed: 789
+  seed: 42
 });
-
-// The animation will automatically adjust when the window is resized
-// No additional code needed for responsiveness
 ```
 
-## Use Cases
+### 2. Responsive Background Elements
 
-- **Background elements**: Create dynamic and organic backgrounds
-- **Hover effects**: Enhance the interactivity of buttons and links
-- **Data visualizations**: Add subtle movement to charts and visualizations
-- **Decorative elements**: Bring decorative elements to life on your website
-- **User interfaces**: Create more dynamic and attractive interfaces
+```javascript
+// Elements adapt to container size changes
+document.querySelectorAll('.bg-particle').forEach((el, index) => {
+  new PerlinDOM({
+    element: el,
+    x: { min: '-15%', max: '15%' },  // 15% of parent width
+    y: { min: '-10%', max: '10%' },  // 10% of parent height
+    speed: 0.003,
+    seed: index * 1000
+  });
+});
+```
 
-## Compatibility
+### 3. Interactive Hover Effects
 
-PerlinDOM works in all modern browsers that support:
-- ES6 (ECMAScript 2015)
-- requestAnimationFrame
-- CSS positioning (absolute, relative, fixed)
+```javascript
+const button = document.querySelector('.animated-button');
+let animation;
 
-## License
+button.addEventListener('mouseenter', () => {
+  animation = new PerlinDOM({
+    element: button.querySelector('.effect'),
+    x: { min: -5, max: 5 },
+    y: { min: -5, max: 5 },
+    speed: 0.02,
+    lerpSpeed: 0.15
+  });
+});
 
-MIT
+button.addEventListener('mouseleave', () => {
+  animation?.pause();
+});
+```
+
+### 4. Multiple Elements with Synchronized Patterns
+
+```javascript
+// Same seed = synchronized movement
+document.querySelectorAll('.sync-element').forEach(el => {
+  new PerlinDOM({
+    element: el,
+    x: { min: -30, max: 30 },
+    y: { min: -30, max: 30 },
+    speed: 0.01,
+    seed: 12345  // Same seed for all elements
+  });
+});
+```
+
+### 5. Custom Animation Patterns
+
+```javascript
+// Horizontal-only movement for sliding effects
+new PerlinDOM({
+  element: document.querySelector('.slider'),
+  x: { min: -100, max: 100 },
+  y: null,  // No vertical movement
+  speed: 0.005
+});
+
+// Vertical-only for floating effects
+new PerlinDOM({
+  element: document.querySelector('.floater'),
+  x: null,  // No horizontal movement
+  y: { min: -40, max: 40 },
+  speed: 0.008
+});
+```
+
+### 6. Advanced: SVG Path Animation
+
+```javascript
+// Animate SVG elements or paths
+const svgElement = document.querySelector('#animated-path');
+const pathAnimation = new PerlinDOM({
+  element: null,  // No direct element
+  x: { min: -20, max: 20 },
+  y: { min: -15, max: 15 },
+  speed: 0.01,
+  seed: 999
+});
+
+function updatePath() {
+  const offsetX = pathAnimation.lastX;
+  const offsetY = pathAnimation.lastY;
+  
+  // Update SVG path or transform
+  svgElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  
+  requestAnimationFrame(updatePath);
+}
+updatePath();
+```
+
+## 💡 Best Practices
+
+### ✅ Do
+
+- **Use CSS for initial positioning**: Position elements with CSS classes rather than inline styles
+- **Set proper positioning**: Ensure elements have `position: relative`, `absolute`, or `fixed`
+- **Use percentage values for responsive designs**: Great for mobile-friendly animations
+- **Choose appropriate speeds**: Start with `0.01` and adjust based on desired effect
+- **Clean up animations**: Call `destroy()` when removing elements from DOM
+
+### ❌ Don't
+
+- **Don't rely on inline positioning**: PerlinDOM works from any position, but CSS is cleaner
+- **Don't use on static elements**: Transform won't work without proper positioning
+- **Don't forget to destroy**: Memory leaks can occur if animations aren't cleaned up
+- **Don't use extreme speeds**: Very high speeds can cause jittery animations
+
+### 🎯 Performance Tips
+
+```javascript
+// Good: Reuse animation instances
+const sharedAnimation = new PerlinDOM({...});
+
+// Good: Use percentage values for responsive design
+x: { min: '-5%', max: '5%' }
+
+// Good: Appropriate speeds for smooth animation
+speed: 0.01  // Smooth and natural
+
+// Good: Clean up when done
+animation.destroy();
+```
+
+## 📖 API Reference
+
+### Constructor
+
+```javascript
+new PerlinDOM(options)
+```
+
+### Methods
+
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `play()` | Start or resume animation | `void` |
+| `pause()` | Smoothly pause animation | `void` |
+| `destroy()` | Stop animation and clean up resources | `void` |
+| `init(seed?)` | Reinitialize with optional new seed | `void` |
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `lastX` | `number` | Current X offset value |
+| `lastY` | `number` | Current Y offset value |
+| `isPlaying` | `boolean` | Current animation state |
+| `speed` | `number` | Animation speed (writable) |
+| `lerpSpeed` | `number` | Transition speed (writable) |
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**❓ Animation not visible**
+```css
+/* Ensure element has positioning */
+.my-element {
+  position: relative; /* or absolute/fixed */
+}
+```
+
+**❓ Element jumps on initialization**
+- PerlinDOM automatically detects current position
+- If element has conflicting inline styles, consider moving to CSS
+
+**❓ Animation too fast/slow**
+```javascript
+// Adjust speed value
+speed: 0.001  // Very slow
+speed: 0.01   // Normal
+speed: 0.1    // Fast
+```
+
+**❓ Percentage values not working**
+- Ensure parent container has defined dimensions
+- PerlinDOM calculates percentages based on parent size
+
+**❓ Memory leaks**
+```javascript
+// Always clean up when removing elements
+animation.destroy();
+```
+
+### Browser DevTools
+
+Monitor performance in DevTools:
+- Check for smooth 60fps in Performance tab
+- Verify transform properties are being animated (not layout properties)
+
+## 🌐 Browser Compatibility
+
+PerlinDOM works in all modern browsers supporting:
+
+- ✅ **ES6 Modules** (2015+)
+- ✅ **requestAnimationFrame** (IE10+)
+- ✅ **CSS Transforms** (IE9+)
+- ✅ **getComputedStyle** (IE9+)
+
+### Tested Browsers
+
+- Chrome 60+
+- Firefox 55+
+- Safari 12+
+- Edge 79+
+
+## 📝 Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for detailed version history.
+
+### Recent Updates
+
+- **v0.0.3**: Fixed positioning conflicts, improved automatic position detection
+- **v0.0.2**: Added percentage support and responsive animations
+- **v0.0.1**: Initial release with core Perlin noise animations
+
+## 📄 License
+
+MIT License - see [LICENSE](./LICENSE) file for details.
+
+---
+
+**Made with ❤️ by [Andres Clua](https://github.com/andresclua)**
+
+*PerlinDOM - Bringing organic motion to the web*

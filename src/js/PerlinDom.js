@@ -60,17 +60,23 @@ class PerlinDOM {
   
       // Solo inicializar estas propiedades si el elemento no es null
       if (element) {
-        this.initialX = element.offsetLeft;
-        this.initialY = element.offsetTop;
+        // Ensure element has positioning for transform to work properly
+        const computedStyle = window.getComputedStyle(element);
+        if (computedStyle.position === 'static') {
+          element.style.position = 'relative';
+        }
+        
+        // Initialize transform if it doesn't exist
+        const currentTransform = computedStyle.transform;
+        if (!currentTransform || currentTransform === 'none') {
+          element.style.transform = 'translate3d(0px, 0px, 0px)';
+        }
         
         // If using percentages, add resize listener
         if (this.hasPercentages) {
           this.handleResize = this.handleResize.bind(this);
           window.addEventListener('resize', this.handleResize);
         }
-      } else {
-        this.initialX = 0;
-        this.initialY = 0;
       }
       
       this.animate = this.animate.bind(this);
@@ -263,9 +269,8 @@ class PerlinDOM {
           this.lastX = valX;
           this.lastY = valY;
       
-          // Update position using left/top
-          this.el.style.left = `${this.initialX + valX}px`;
-          this.el.style.top = `${this.initialY + valY}px`;
+          // Update position using transform for better performance
+          this.el.style.transform = `translate3d(${valX}px, ${valY}px, 0)`;
         } else {
           // If no element, just calculate and store the values
           const valX = this.xRange
