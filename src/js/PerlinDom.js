@@ -77,6 +77,7 @@ class PerlinDOM {
           this.handleResize = this.handleResize.bind(this);
           window.addEventListener('resize', this.handleResize);
         }
+  
       }
       
       this.animate = this.animate.bind(this);
@@ -90,7 +91,6 @@ class PerlinDOM {
       this.lerpFactor = 1;
       this.targetLerpFactor = 1;
       this.raf = requestAnimationFrame(this.animate);
-      console.log('PerlinDOM initialized');
     }
     
   // Handle window resize for percentage-based values
@@ -106,7 +106,6 @@ class PerlinDOM {
       if (this.isPlaying) {
         this.targetLerpFactor = 0; // Target paused state
         this.isPlaying = false;
-        console.log('PerlinDOM pausing...');
       }
     }
     
@@ -120,7 +119,6 @@ class PerlinDOM {
           this.raf = requestAnimationFrame(this.animate);
         }
         
-        console.log('PerlinDOM playing...');
       }
     }
   

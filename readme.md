@@ -336,6 +336,7 @@ See [CHANGELOG.md](./CHANGELOG.md) for detailed version history.
 
 ### Recent Updates
 
+- **v0.0.4**: Package now public on npm, enhanced module exports configuration
 - **v0.0.3**: Fixed positioning conflicts, improved automatic position detection
 - **v0.0.2**: Added percentage support and responsive animations
 - **v0.0.1**: Initial release with core Perlin noise animations

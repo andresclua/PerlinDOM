@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.4] - 2025-01-07
+
+- **Remove logs** : remove logs
+
+## [0.0.4] - 2025-01-07
+
+### Changed
+- **Package Configuration**: Updated package to be public (removed `"private": true`)
+- **NPM Publishing**: Package is now available for public installation via npm
+- **Module Exports**: Enhanced module exports configuration for better compatibility
+- **Package Metadata**: Updated package name to `@andresclua/perlindom` with proper scoping
+
+### Improved
+- **Distribution**: Better UMD and ES module support through improved exports configuration
+- **Accessibility**: Package now publicly available on npm registry
+
 ## [0.0.3] - 2025-01-07
 
 ### Fixed

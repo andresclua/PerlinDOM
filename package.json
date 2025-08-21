@@ -1,15 +1,15 @@
 {
     "name": "@andresclua/perlindom",
     "private": false,
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "A lightweight JavaScript library for creating smooth, organic animations for DOM elements using Perlin noise",
     "type": "module",
-    "main": "./dist/perlindom.umd.js",
-    "module": "./dist/perlindom.es.js",
+    "main": "./dist/PerlinDOM.umd.js",
+    "module": "./dist/PerlinDOM.es.js",
     "exports": {
         ".": {
-            "import": "./dist/perlindom.es.js",
-            "require": "./dist/perlindom.umd.js"
+            "import": "./dist/PerlinDOM.es.js",
+            "require": "./dist/PerlinDOM.umd.js"
         }
     },
     "keywords": [
