@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.6] - 2025-02-09
+
+## Changed
+- **Transform Handling**: Movement now composes `translate3d` with existing CSS transforms (`scale`, `rotate`, etc.) instead of overriding them
+- **Base Transform Extraction**: Introduced `#extractBaseTransform()` to strip prior translations while keeping scale/rotate/skew intact
+- **Destroy Behavior**: `destroy()` now restores the original inline `transform` value of the element
+
+### Improved
+- **Configuration**: Added `preserveBaseTranslation` option to control whether original translations are kept
+- **Flexibility**: New `refreshBaseTransform()` method allows recalculating the base transform when classes or styles change dynamically
+
 ## [0.0.5] - 2025-01-07
 
 - **Remove logs** : remove logs
