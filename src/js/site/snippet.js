@@ -60,6 +60,7 @@ export function enhanceSnippet(pre, label) {
   const lang = pre.dataset.lang || 'js';
   if (lang !== 'bash') code.innerHTML = highlight(code.textContent);
   pre.tabIndex = 0; // long lines scroll: keyboard users need to reach them
+  pre.setAttribute('role', 'group'); // gives the label a role it is valid on
   pre.setAttribute('aria-label', `Code: ${label}`);
 
   const box = document.createElement('div');
@@ -75,16 +76,22 @@ export function enhanceSnippet(pre, label) {
   return mountCopyButton(button, sharedStatus(), () => code.textContent);
 }
 
-/** Formats an options object as a JS literal, two-space indented, trailing commas. */
-export function literal(value, depth = 0) {
+/**
+ * Formats an options object as a JS literal, two-space indented, trailing commas.
+ * Strings starting with '@' are raw code ('@el' prints el). `comments` maps a top-level key
+ * to a line comment printed after it (`speed: 0.002, // very slow`); an object with comments
+ * is always printed one key per line. Pure: no DOM, so tests can import it.
+ */
+export function literal(value, { depth = 0, comments = {} } = {}) {
   if (value === null) return 'null';
   if (typeof value === 'string') return value.startsWith('@') ? value.slice(1) : `'${value}'`;
   if (typeof value !== 'object') return String(value);
   const entries = Object.entries(value);
   const flat = entries.every(([, v]) => v === null || typeof v !== 'object');
-  if (flat && entries.length <= 3) {
+  if (flat && entries.length <= 3 && Object.keys(comments).length === 0) {
     return `{ ${entries.map(([k, v]) => `${k}: ${literal(v)}`).join(', ')} }`;
   }
   const pad = '  '.repeat(depth + 1);
-  return `{\n${entries.map(([k, v]) => `${pad}${k}: ${literal(v, depth + 1)},`).join('\n')}\n${'  '.repeat(depth)}}`;
+  const line = ([k, v]) => `${pad}${k}: ${literal(v, { depth: depth + 1 })},${k in comments ? ` // ${comments[k]}` : ''}`;
+  return `{\n${entries.map(line).join('\n')}\n${'  '.repeat(depth)}}`;
 }

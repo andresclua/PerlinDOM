@@ -78,21 +78,21 @@ drift.destroy(); // stops and restores the original inline transform</code></pre
                         <h2 id="options">Options</h2>
                         <p>Everything is optional. <code>new PerlinDOM({ ... })</code> takes one object:</p>
                         <div class="table-wrap" role="region" aria-labelledby="options-caption" tabindex="0">
-                            <table class="api-table">
+                            <table class="api-table" role="table">
                                 <caption id="options-caption" class="visually-hidden">Constructor options</caption>
-                                <thead>
-                                    <tr><th scope="col">Option</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr>
+                                <thead role="rowgroup">
+                                    <tr role="row"><th scope="col" role="columnheader">Option</th><th scope="col" role="columnheader">Type</th><th scope="col" role="columnheader">Default</th><th scope="col" role="columnheader">Description</th></tr>
                                 </thead>
-                                <tbody>
-                                    <tr><th scope="row"><code>element</code></th><td><code>HTMLElement | null</code></td><td><code>null</code></td><td>The element to move. With <code>null</code> nothing is moved: the instance only computes <code>lastX</code> / <code>lastY</code> for you to use.</td></tr>
-                                    <tr><th scope="row"><code>x</code></th><td><code>{ min, max } | null</code></td><td><code>null</code></td><td>Horizontal range, in px (numbers) or % of the parent (strings like <code>'10%'</code>). <code>null</code> keeps the axis still.</td></tr>
-                                    <tr><th scope="row"><code>y</code></th><td><code>{ min, max } | null</code></td><td><code>null</code></td><td>Vertical range, same rules as <code>x</code>.</td></tr>
-                                    <tr><th scope="row"><code>speed</code></th><td><code>number</code></td><td><code>0.01</code></td><td>How far through the noise each frame travels. Lower is slower; 0.002 to 0.03 covers most uses.</td></tr>
-                                    <tr><th scope="row"><code>seed</code></th><td><code>number</code></td><td><code>0</code></td><td>Picks the path: it seeds the noise and is also the starting point in time. Same seed, same path.</td></tr>
-                                    <tr><th scope="row"><code>lerpSpeed</code></th><td><code>number</code></td><td><code>0.1</code></td><td>How quickly <code>pause()</code> and <code>play()</code> ease out and in, per frame. Keep it between 0 and 1; 0 never finishes easing.</td></tr>
-                                    <tr><th scope="row"><code>preserveBaseTranslation</code></th><td><code>boolean</code></td><td><code>false</code></td><td>By default the translate part of the element's CSS transform is dropped (PerlinDOM's translate replaces it) and scale, rotate and skew are kept. <code>true</code> keeps the CSS translate too.</td></tr>
-                                    <tr><th scope="row"><code>amplitude</code></th><td><code>number</code></td><td><code>1</code></td><td>Strength of the drift: 1 is free, 0 pins the element to <code>target</code>. Clamped to 0 to 1; anything that is not a number (including <code>NaN</code>, numeric strings and <code>null</code>) becomes 1.</td></tr>
-                                    <tr><th scope="row"><code>target</code></th><td><code>{ x, y } | null</code></td><td><code>null</code></td><td>The point amplitude pulls toward, in px, as an offset from the element's base position. A missing or non-finite coordinate becomes 0; <code>null</code> means the base position itself.</td></tr>
+                                <tbody role="rowgroup">
+                                    <tr role="row"><th scope="row" role="rowheader"><code>element</code></th><td role="cell"><code>HTMLElement | null</code></td><td role="cell"><code>null</code></td><td role="cell">The element to move. With <code>null</code> nothing is moved: the instance only computes <code>lastX</code> / <code>lastY</code> for you to use.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>x</code></th><td role="cell"><code>{ min, max } | null</code></td><td role="cell"><code>null</code></td><td role="cell">Horizontal range, in px (numbers) or % of the parent (strings like <code>'10%'</code>). <code>null</code> keeps the axis still.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>y</code></th><td role="cell"><code>{ min, max } | null</code></td><td role="cell"><code>null</code></td><td role="cell">Vertical range, same rules as <code>x</code>.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>speed</code></th><td role="cell"><code>number</code></td><td role="cell"><code>0.01</code></td><td role="cell">How far through the noise each frame travels. Lower is slower; 0.002 to 0.03 covers most uses.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>seed</code></th><td role="cell"><code>number</code></td><td role="cell"><code>0</code></td><td role="cell">Picks the path: it seeds the noise and is also the starting point in time. Same seed, same path.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>lerpSpeed</code></th><td role="cell"><code>number</code></td><td role="cell"><code>0.1</code></td><td role="cell">How quickly <code>pause()</code> and <code>play()</code> ease out and in, per frame. Keep it between 0 and 1; 0 never finishes easing.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>preserveBaseTranslation</code></th><td role="cell"><code>boolean</code></td><td role="cell"><code>false</code></td><td role="cell">By default the translate part of the element's CSS transform is dropped (PerlinDOM's translate replaces it) and scale, rotate and skew are kept. <code>true</code> keeps the CSS translate too.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>amplitude</code></th><td role="cell"><code>number</code></td><td role="cell"><code>1</code></td><td role="cell">Strength of the drift: 1 is free, 0 pins the element to <code>target</code>. Clamped to 0 to 1; anything that is not a number (including <code>NaN</code>, numeric strings and <code>null</code>) becomes 1.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>target</code></th><td role="cell"><code>{ x, y } | null</code></td><td role="cell"><code>null</code></td><td role="cell">The point amplitude pulls toward, in px, as an offset from the element's base position. A missing or non-finite coordinate becomes 0; <code>null</code> means the base position itself.</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -152,19 +152,19 @@ y: { min: -20, max: 20 },</code></pre>
                         <span class="docs-section__index" aria-hidden="true">06</span>
                         <h2 id="properties">Properties</h2>
                         <div class="table-wrap" role="region" aria-labelledby="props-caption" tabindex="0">
-                            <table class="api-table">
+                            <table class="api-table" role="table">
                                 <caption id="props-caption" class="visually-hidden">Instance properties</caption>
-                                <thead>
-                                    <tr><th scope="col">Property</th><th scope="col">Type</th><th scope="col">Description</th></tr>
+                                <thead role="rowgroup">
+                                    <tr role="row"><th scope="col" role="columnheader">Property</th><th scope="col" role="columnheader">Type</th><th scope="col" role="columnheader">Description</th></tr>
                                 </thead>
-                                <tbody>
-                                    <tr><th scope="row"><code>amplitude</code></th><td><code>number</code></td><td>Read and write. Same clamping as the option: 0 to 1, non-numbers become 1. Safe to tween every frame.</td></tr>
-                                    <tr><th scope="row"><code>target</code></th><td><code>{ x, y } | null</code></td><td>The current target. Read it; change it with <code>setTarget()</code>, which sanitizes the values.</td></tr>
-                                    <tr><th scope="row"><code>speed</code></th><td><code>number</code></td><td>Read and write, takes effect on the next frame.</td></tr>
-                                    <tr><th scope="row"><code>lerpSpeed</code></th><td><code>number</code></td><td>Read and write, used by the next <code>pause()</code> / <code>play()</code> ease.</td></tr>
-                                    <tr><th scope="row"><code>xRange</code>, <code>yRange</code></th><td><code>{ min, max } | null</code></td><td>The <code>x</code> / <code>y</code> options, writable. Whether percentages are resolved is decided at construction, so switch between px values only, or build a new instance.</td></tr>
-                                    <tr><th scope="row"><code>lastX</code>, <code>lastY</code></th><td><code>number</code></td><td>The offset in px applied on the last frame, after amplitude. They hold still while paused or offscreen.</td></tr>
-                                    <tr><th scope="row"><code>isPlaying</code></th><td><code>boolean</code></td><td><code>false</code> from <code>pause()</code> on, even while it is still easing out; <code>true</code> after <code>play()</code>.</td></tr>
+                                <tbody role="rowgroup">
+                                    <tr role="row"><th scope="row" role="rowheader"><code>amplitude</code></th><td role="cell"><code>number</code></td><td role="cell">Read and write. Same clamping as the option: 0 to 1, non-numbers become 1. Safe to tween every frame.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>target</code></th><td role="cell"><code>{ x, y } | null</code></td><td role="cell">The current target. Read it; change it with <code>setTarget()</code>, which sanitizes the values.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>speed</code></th><td role="cell"><code>number</code></td><td role="cell">Read and write, takes effect on the next frame.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>lerpSpeed</code></th><td role="cell"><code>number</code></td><td role="cell">Read and write, used by the next <code>pause()</code> / <code>play()</code> ease.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>xRange</code>, <code>yRange</code></th><td role="cell"><code>{ min, max } | null</code></td><td role="cell">The <code>x</code> / <code>y</code> options, writable. Whether percentages are resolved is decided at construction, so switch between px values only, or build a new instance.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>lastX</code>, <code>lastY</code></th><td role="cell"><code>number</code></td><td role="cell">The offset in px applied on the last frame, after amplitude. They hold still while paused or offscreen.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>isPlaying</code></th><td role="cell"><code>boolean</code></td><td role="cell"><code>false</code> from <code>pause()</code> on, even while it is still easing out; <code>true</code> after <code>play()</code>.</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -293,7 +293,7 @@ if (!reduce) new PerlinDOM({ element, x: { min: -20, max: 20 } });</code></pre>
                     <section class="docs-section" aria-labelledby="browser-support">
                         <span class="docs-section__index" aria-hidden="true">11</span>
                         <h2 id="browser-support">Browser support</h2>
-                        <p>The npm build (<code>dist/</code>) targets the browsers that support native ES modules and ES2020: <strong>Chrome 87+, Edge 88+, Firefox 78+, Safari 14+</strong>. Importing the source file directly needs private class methods instead: Chrome 84+, Firefox 90+, Safari 15+.</p>
+                        <p>The npm build (<code>dist/</code>) targets the browsers that support native ES modules and ES2020: <strong>Chrome 87+, Edge 88+, Firefox 78+, Safari 14+</strong>. Importing the source file directly needs private class methods and logical assignment (<code>??=</code>): Chrome 85+, Edge 85+, Firefox 90+, Safari 15+.</p>
                         <ul>
                             <li><code>requestAnimationFrame</code>, <code>getComputedStyle</code> and CSS transforms are required.</li>
                             <li><code>DOMMatrixReadOnly</code> separates the CSS translate from scale, rotate and skew; without it the computed transform is used as it is.</li>

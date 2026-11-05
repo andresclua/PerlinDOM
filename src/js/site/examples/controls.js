@@ -4,10 +4,10 @@ import { on, span } from './shared.js';
 
 // 6. Interactive controls. Ranges and speed are plain writable properties, changed live;
 // a new seed means a new path, so that one builds a fresh instance.
-const DEFAULTS = { x: 50, y: 50, speed: 0.01, seed: 0 };
+export const DEFAULTS = { x: 50, y: 50, speed: 0.01, seed: 0 };
 
 const options = v => ({ x: span(v.x), y: span(v.y), speed: v.speed, seed: v.seed });
-const code = v => `const inst = new PerlinDOM(${literal({ element: "@document.querySelector('.dot')", ...options(v) })});
+export const code = v => `const inst = new PerlinDOM(${literal({ element: "@document.querySelector('.dot')", ...options(v) })});
 
 // Ranges and speed can change while it runs
 inst.xRange = ${literal(span(v.x))};

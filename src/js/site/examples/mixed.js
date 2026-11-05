@@ -2,7 +2,7 @@ import { span } from './shared.js';
 import { panes } from './units.js';
 
 // 11. Mixed units: each axis picks px or % on its own.
-export const { snippet, mount } = panes([
+export const { snippet, mount, configs } = panes([
   {
     comment: 'Horizontal %, vertical px',
     selector: '.dot-a',

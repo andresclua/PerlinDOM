@@ -4,14 +4,15 @@ import { span } from './shared.js';
 
 // 8. No element at all: the instance only computes lastX / lastY, and the page uses them
 // to move one vertex of an SVG clip-path triangle.
-const OPTIONS = { x: span(30), y: span(20), speed: 0.005, seed: 7 };
-const TOP = { x: 150, y: 50 };
-const REST = '250,250 50,250';
+export const OPTIONS = { x: span(30), y: span(20), speed: 0.005, seed: 7 };
+export const TOP = { x: 150, y: 50 };
+export const REST = '250,250 50,250';
+export const COMMENTS = { element: 'nothing to move, values only' };
 
 export const snippet = `const polygon = document.querySelector('#triangle-clip polygon');
 const apex = ${literal(TOP)};
 
-const vertex = new PerlinDOM(${literal({ element: null, ...OPTIONS })});
+const vertex = new PerlinDOM(${literal({ element: null, ...OPTIONS }, { comments: COMMENTS })});
 
 function frame() {
   const x = apex.x + vertex.lastX;
@@ -19,7 +20,7 @@ function frame() {
   polygon.setAttribute('points', \`\${x},\${y} ${REST}\`);
   requestAnimationFrame(frame);
 }
-frame();`.replace('element: null,', 'element: null, // nothing to move, values only');
+frame();`;
 
 export function mount(card) {
   const polygon = card.querySelector('.ex-triangle polygon');

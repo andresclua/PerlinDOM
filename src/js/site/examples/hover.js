@@ -3,15 +3,17 @@ import { literal, setSnippet } from '../snippet.js';
 import { on, span } from './shared.js';
 
 // 5. Smooth pause / play from mouse events; lerpSpeed sets how soft the ease is.
-const OPTIONS = { x: span(80), y: span(80), speed: 0.01, seed: 7, lerpSpeed: 0.05 };
+export const OPTIONS = { x: span(80), y: span(80), speed: 0.01, seed: 7, lerpSpeed: 0.05 };
+// Event names shared by the snippet and the code below.
+export const EVENTS = { play: 'mouseenter', pause: 'mouseleave' };
 
-const code = lerpSpeed => `const orb = new PerlinDOM(${literal({
+export const code = lerpSpeed => `const orb = new PerlinDOM(${literal({
   element: "@document.querySelector('.orb')", ...OPTIONS, lerpSpeed,
 })});
 
 const stage = document.querySelector('.stage');
-stage.addEventListener('mouseenter', () => orb.play());
-stage.addEventListener('mouseleave', () => orb.pause());
+stage.addEventListener('${EVENTS.play}', () => orb.play());
+stage.addEventListener('${EVENTS.pause}', () => orb.pause());
 
 // The slider: lower = softer, slower transitions
 slider.addEventListener('input', () => {
@@ -48,8 +50,8 @@ export function mount(card) {
   });
 
   const offs = [
-    on(stage, 'mouseenter', play),
-    on(stage, 'mouseleave', pause),
+    on(stage, EVENTS.play, play),
+    on(stage, EVENTS.pause, pause),
     on(button, 'click', () => (orb.isPlaying ? pause() : play())),
     on(slider, 'input', () => {
       orb.lerpSpeed = Number(slider.value);

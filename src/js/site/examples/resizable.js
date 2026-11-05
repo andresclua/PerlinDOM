@@ -3,7 +3,7 @@ import { literal } from '../snippet.js';
 import { group, on, span } from './shared.js';
 
 // 10. A resizable container: percentage ranges follow its size on the next frame.
-const OPTIONS = { x: span('25%'), y: span('25%'), speed: 0.008, seed: 456 };
+export const OPTIONS = { x: span('25%'), y: span('25%'), speed: 0.008, seed: 456 };
 
 export const snippet = `new PerlinDOM(${literal({ element: "@document.querySelector('.dot')", ...OPTIONS })});
 // No resize handling needed: % is read from the parent's size every frame`;
@@ -23,7 +23,8 @@ export function mount(card) {
   const ro = new ResizeObserver(() => {
     const w = box.clientWidth;
     const h = box.clientHeight;
-    caption.textContent = `${w} × ${h}px · range ±${Math.round(w * 0.25)} × ±${Math.round(h * 0.25)}px`;
+    const share = (v, size) => Math.round((parseFloat(v) / 100) * size);
+    caption.textContent = `${w} × ${h}px · range ±${share(OPTIONS.x.max, w)} × ±${share(OPTIONS.y.max, h)}px`;
   });
   ro.observe(box);
 

@@ -31,10 +31,10 @@ export function panes(configs) {
     };
   }
 
-  return { snippet, mount };
+  return { snippet, mount, configs };
 }
 
-export const { snippet, mount } = panes([
+export const { snippet, mount, configs } = panes([
   {
     comment: 'Pixels: the same distance at any size',
     selector: '.dot-px',
