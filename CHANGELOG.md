@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **`amplitude` option**: scales movement strength (non-number values are treated as 1, no string/null coercion)
+- **`target` option and `setTarget`**: movement can be driven toward a target; `setTarget` sanitizes input (non-finite coordinates become 0)
+
+### Changed
+- **Shared loop**: all instances now share a single `requestAnimationFrame` loop
+- **Offscreen pause**: instances pause while outside the viewport
+- **Build output**: `dist` files are now `perlindom.es.js` and `perlindom.umd.js` (lowercase), matching `package.json` and `vite.config.js`; the entry path casing was fixed for case-sensitive filesystems
+
+### Removed
+- Internal instance fields `animate` and `raf` (undocumented; replaced by the shared loop)
+
 ## [0.0.6] - 2025-02-09
 
 ## Changed

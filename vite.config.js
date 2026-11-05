@@ -3,7 +3,7 @@ import { resolve } from 'path';
 
 const root = resolve(__dirname, 'src');
 const outDir = resolve(__dirname, 'dist');
-const entryPath = resolve(__dirname, 'src/js/PerlinDOM.js');
+const entryPath = resolve(__dirname, 'src/js/PerlinDom.js');
 
 export default defineConfig({
     root,
@@ -14,7 +14,7 @@ export default defineConfig({
         entry: entryPath,
         name: 'PerlinDOM', // Library name as : Counter | etc
         formats: ['es', 'umd'], // Output formats as : es | umd, es is for modern browsers, umd is for older browsers
-        fileName: (format,name) => `PerlinDOM.${format}.js`, // File naming as : reveal-it | collapsify | etc
+        fileName: (format,name) => `perlindom.${format}.js`, // File naming as : reveal-it | collapsify | etc
       },
       outDir, 
       emptyOutDir: true, 
