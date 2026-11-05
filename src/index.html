@@ -8,10 +8,18 @@
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="./scss/style.scss" />
         <title>PerlinDOM</title>
+        <noscript><style>.hero__title, .hero__sub { opacity: 1; }</style></noscript>
     </head>
     <body>
         <main id="story">
-            <h1 class="visually-hidden">PerlinDOM</h1>
+            <section class="hero">
+                <div class="hero__field" aria-hidden="true"></div>
+                <div class="hero__copy">
+                    <h1 class="hero__title">PerlinDOM</h1>
+                    <p class="hero__sub">Organic motion for the DOM. Powered by Perlin noise.</p>
+                </div>
+                <div class="hero__hint" aria-hidden="true">Scroll</div>
+            </section>
         </main>
         <script type="module" src="./js/index.js"></script>
     </body>
