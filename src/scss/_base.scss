@@ -57,7 +57,7 @@ a { color: inherit; }
     align-items: center;
     min-height: 44px; // touch target
     text-decoration: none;
-    color: rgb(255 255 255 / 0.8);
+    color: color-mix(in srgb, var(--ink) 80%, transparent);
     transition: color 0.2s;
   }
   a:hover, a[aria-current='page'] { color: var(--ink); }

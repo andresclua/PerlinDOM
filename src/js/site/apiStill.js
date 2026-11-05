@@ -147,8 +147,15 @@ function lerp(stage) {
   const PAUSE = 50;
   const FRAMES = 300;
   return still(stage, () => ls.map((lane, i) => {
+    // The plot is laid out below the lane label, measured, so the "pause()" note (which
+    // sits just above the plot's top line) can never reach the label at any width.
+    const label = lane.querySelector('.demo-label');
+    const NOTE = 28; // room above the plot for the note (11px text + gaps)
+    const top = label.offsetTop + label.offsetHeight + NOTE;
+    const bottom = lane.clientHeight - 16;
+    const h = Math.max(24, bottom - top);
+    const cy = top + h / 2 - lane.clientHeight / 2; // plot centre, from the lane centre
     const w = lane.clientWidth * 0.76;
-    const h = lane.clientHeight * 0.4;
     const svg = draw(lane, [{
       el: dots[i],
       color: i ? 'b' : 'a',
@@ -159,14 +166,14 @@ function lerp(stage) {
         seed: 21,
         lerpSpeed: speeds[i],
         at: (f, inst) => { if (f === PAUSE) inst.pause(); },
-        read: (inst, f) => [(f / (FRAMES - 1) - 0.5) * w, (0.5 - inst.lerpFactor) * h],
+        read: (inst, f) => [(f / (FRAMES - 1) - 0.5) * w, cy + (0.5 - inst.lerpFactor) * h],
       }),
     }]);
     const note = document.createElementNS(SVG, 'text');
     note.setAttribute('class', 'demo-still__note');
-    // Beside the ring, right of the drop (clear of the lane label on narrow screens).
+    // Beside the ring, in the band between the label and the plot.
     note.setAttribute('x', ((PAUSE / (FRAMES - 1) - 0.5) * w + 12).toFixed(1));
-    note.setAttribute('y', (-0.5 * h - 6).toFixed(1));
+    note.setAttribute('y', (cy - 0.5 * h - 8).toFixed(1));
     note.textContent = 'pause()';
     svg.appendChild(note);
     return svg;

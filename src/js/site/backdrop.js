@@ -17,7 +17,7 @@ export function mountBackdrop(getStops) {
   const root = document.createElement('div');
   root.className = 'backdrop';
   root.setAttribute('aria-hidden', 'true');
-  document.body.prepend(root);
+  document.body.append(root); // fixed at z-index -1, so DOM position is free; keeps the toggle first
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
   const st = ScrollTrigger.create({ start: 0, end: 'max', animation: tl, scrub: 0.6 });
 

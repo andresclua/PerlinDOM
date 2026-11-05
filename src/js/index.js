@@ -97,8 +97,13 @@ toggle.className = 'motion-toggle';
 const renderToggle = () => {
   // With the OS preference on there is nothing to switch back to.
   toggle.hidden = reduceMotion.matches;
-  toggle.textContent = story.still ? 'Play the animated story' : 'View as a static page';
+  toggle.textContent = story.still ? 'Play the animated story' : 'View all content as a static page';
 };
+// Announces a switch (the focused button's new label alone is not reliably read out).
+const status = document.createElement('span');
+status.className = 'visually-hidden';
+status.setAttribute('role', 'status');
+status.setAttribute('aria-live', 'polite');
 
 let story = mountStory(wantStill());
 
@@ -115,6 +120,7 @@ function sync() {
     } else {
       window.scrollTo(0, 0);
     }
+    status.textContent = still ? 'Static page: all content is shown.' : 'Animated story on.';
   }
   renderToggle();
 }
@@ -128,7 +134,7 @@ reduceMotion.addEventListener('change', sync);
 // Dev only (stripped from builds): lets a test count live triggers across mode switches.
 if (import.meta.env.DEV) window.__story = { ScrollTrigger, get still() { return story.still; } };
 renderToggle();
-document.body.prepend(toggle); // before the nav: first in tab order
+document.body.prepend(toggle, status); // before the nav: first in tab order
 
 // All pins exist now, so the page has its real height. Listen first, so the restore's own
 // refresh is the one that marks the resize handler ready; then put the reader back.

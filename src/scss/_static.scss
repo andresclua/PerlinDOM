@@ -1,3 +1,5 @@
+@use 'chapters'; // for $mono (a module loads once, so no CSS is emitted twice)
+
 // Static page (html.is-static, set by js/index.js): reduced motion, or "View as a static page".
 // The chapters' end states as plain content: no pins, nothing drifting.
 
@@ -72,7 +74,7 @@
 
 .demo-still__note {
   fill: var(--ink-stage);
-  font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-family: chapters.$mono;
   font-size: 11px;
   letter-spacing: 0;
   text-anchor: start;
