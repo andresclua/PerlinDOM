@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { demos } from './apiDemos.js';
+import { stillDemos } from './apiStill.js';
 import { onRefreshJump } from './scroll.js';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -11,9 +12,13 @@ const HOLD = 0.62; // share of each slot a panel stays fully on screen before ha
  * Chapter 4: one pinned stage, one panel per option. Scroll hands over from panel to panel;
  * a step list and a progress bar show where you are. Each panel's demo (its PerlinDOM
  * instances, DOM and rAF) exists only while the panel is on screen, or about to be.
+ *
+ * `still` (reduced motion / static page): no pin; the six panels stack as a plain list
+ * (CSS under html.is-static), each with a static drawing of its demo.
  */
-export function mountApiChapters(root) {
+export function mountApiChapters(root, { still = false } = {}) {
   const panels = [...root.querySelectorAll('.api-panel')];
+  if (still) return mountStill(panels);
   const n = panels.length;
   const copies = panels.map(p => p.querySelector('.api-panel__copy'));
   const stages = panels.map(p => p.querySelector('.api-panel__stage'));
@@ -118,6 +123,38 @@ export function mountApiChapters(root) {
       steps.forEach(s => s.remove());
       gsap.set([...panels, ...copies, ...stages], { clearProps: 'all' });
       fill.style.transform = '';
+    },
+  };
+}
+
+/**
+ * Static list: every panel draws its demo once. The pause/play panel keeps its button as
+ * "Play": nothing moves until the reader asks (user-initiated motion), then that one panel
+ * swaps its drawing for the live demo, whose own handler takes the button over (Pause / Play).
+ */
+function mountStill(panels) {
+  const drawn = panels.map(p => stillDemos[p.dataset.demo](p.querySelector('.api-panel__stage'), p));
+  const k = panels.findIndex(p => p.dataset.demo === 'lerp');
+  const button = panels[k]?.querySelector('[data-toggle]');
+  const start = () => {
+    drawn[k].destroy();
+    drawn[k] = demos.lerp(panels[k].querySelector('.api-panel__stage'), panels[k]);
+  };
+  if (button) {
+    button.disabled = false;
+    button.textContent = 'Play';
+    button.dataset.state = 'paused';
+    button.addEventListener('click', start, { once: true });
+  }
+  return {
+    destroy() {
+      drawn.forEach(d => d.destroy());
+      if (button) {
+        button.removeEventListener('click', start);
+        button.disabled = true;
+        button.textContent = 'Pause';
+        delete button.dataset.state;
+      }
     },
   };
 }

@@ -4,7 +4,10 @@
   --ink: #ffffff;
   --glass: rgba(255, 255, 255, 0.08);
   --glass-line: rgba(255, 255, 255, 0.14);
-  --ink-soft: rgba(255, 255, 255, 0.62);
+  // Secondary text. 0.74 keeps WCAG AA (>= 4.5:1) on the lightest chapter stop (#0a5d68).
+  --ink-soft: rgba(255, 255, 255, 0.74);
+  // Text on the lighter glass of the demo stages (same check, glass included).
+  --ink-stage: rgba(255, 255, 255, 0.92);
   --accent: #b9a4ff;
   --accent-2: #7fe0ff;
   --glow-a: rgba(150, 110, 255, 0.34);

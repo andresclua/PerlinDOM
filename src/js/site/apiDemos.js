@@ -4,7 +4,7 @@ import PerlinDOM from '../PerlinDom.js';
 // Live demos for the API chapter. Each factory builds its DOM inside `stage`, starts its
 // PerlinDOM instances and returns { update?(local), destroy() }; destroy removes everything.
 
-function make(tag, className, parent, text) {
+export function make(tag, className, parent, text) {
   const el = document.createElement(tag);
   if (className) el.className = className;
   if (text != null) el.textContent = text;
@@ -12,7 +12,7 @@ function make(tag, className, parent, text) {
   return el;
 }
 
-function dot(parent, variant = '') {
+export function dot(parent, variant = '') {
   return make('span', `demo-dot${variant ? ` demo-dot--${variant}` : ''}`, parent);
 }
 
@@ -80,7 +80,7 @@ function motion(stage, items, { onFrame, onResize } = {}) {
   };
 }
 
-function lanes(stage, labels) {
+export function lanes(stage, labels) {
   const wrap = make('div', 'demo-lanes', stage);
   return labels.map(label => {
     const lane = make('div', 'demo-lane', wrap);

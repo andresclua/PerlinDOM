@@ -13,8 +13,10 @@ const COMMAND = 'npm install @andresclua/perlindom';
 /**
  * Chapter 5: a field of circles arrives gathered in a quiet ring around the install line,
  * then the pinned scroll raises amplitude back to 1 and everything floats again.
+ *
+ * `still` (reduced motion / static page): the ring at rest (amplitude 0), copy visible, no pin.
  */
-export function mountFinale(root) {
+export function mountFinale(root, { still = false } = {}) {
   const field = root.querySelector('.finale__field');
   const copy = root.querySelector('.finale__copy');
   const count = window.innerWidth < 768 ? COUNT_MOBILE : COUNT_DESKTOP;
@@ -30,7 +32,7 @@ export function mountFinale(root) {
   }
   field.appendChild(frag);
 
-  const instances = dots.map((d, i) => new PerlinDOM({
+  const instances = still ? [] : dots.map((d, i) => new PerlinDOM({
     element: d.el,
     speed: 0.002 + d.depth * 0.004 + rand() * 0.0015,
     seed: 9000 + i * 7919,
@@ -51,17 +53,38 @@ export function mountFinale(root) {
       d.el.style.setProperty('--s', `${s.toFixed(1)}px`);
       d.el.style.left = `${bx.toFixed(1)}px`;
       d.el.style.top = `${by.toFixed(1)}px`;
+      const k = 1 + d.jitter * 0.16;
+      const x = w / 2 + Math.cos(d.angle) * rx * k - bx;
+      const y = h / 2 + Math.sin(d.angle) * ry * k - by;
       const inst = instances[i];
+      if (!inst) {
+        d.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+        return;
+      }
       inst.xRange = { min: -r, max: r };
       inst.yRange = { min: -r, max: r };
-      const k = 1 + d.jitter * 0.16;
-      inst.setTarget({
-        x: w / 2 + Math.cos(d.angle) * rx * k - bx,
-        y: h / 2 + Math.sin(d.angle) * ry * k - by,
-      });
+      inst.setTarget({ x, y });
     });
   }
   layout();
+
+  const copyButton = mountCopyButton(root);
+  if (still) {
+    let resizeTimer = 0;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(layout, 150);
+    };
+    window.addEventListener('resize', onResize);
+    return {
+      destroy() {
+        clearTimeout(resizeTimer);
+        window.removeEventListener('resize', onResize);
+        copyButton.destroy();
+        dots.forEach(d => d.el.remove());
+      },
+    };
+  }
 
   const state = { amp: 0 };
   const applyAmplitude = () => instances.forEach(inst => { inst.amplitude = state.amp; });
@@ -87,6 +110,34 @@ export function mountFinale(root) {
     .to({}, { duration: 0.15 });
   tl.progress(tl.scrollTrigger.progress);
 
+  // Keyboard users can tab into the copy before the scroll has revealed it (opacity 0):
+  // bring the pin to the point where the copy is fully in, and skip the scrub's catch-up.
+  const st = tl.scrollTrigger;
+  const REVEALED = 0.5; // timeline progress at which every copy child is at opacity 1
+  const onFocusIn = () => {
+    if (st.progress >= REVEALED) return;
+    window.scrollTo(0, Math.ceil(st.start + (st.end - st.start) * REVEALED));
+    ScrollTrigger.update();
+    st.getTween()?.progress(1);
+    tl.progress(st.progress);
+  };
+  copy.addEventListener('focusin', onFocusIn);
+
+  return {
+    destroy() {
+      copy.removeEventListener('focusin', onFocusIn);
+      copyButton.destroy();
+      tl.scrollTrigger?.kill(true);
+      tl.kill();
+      gsap.set(copy.children, { clearProps: 'opacity,transform' });
+      instances.forEach(inst => inst.destroy());
+      dots.forEach(d => d.el.remove());
+    },
+  };
+}
+
+// The Copy button: clipboard write, a visible 'Copied' state and a polite status for AT.
+function mountCopyButton(root) {
   const copyBtn = root.querySelector('[data-copy]');
   const status = root.querySelector('[data-copy-status]');
   let resetTimer = 0;
@@ -114,11 +165,6 @@ export function mountFinale(root) {
     destroy() {
       clearTimeout(resetTimer);
       copyBtn.removeEventListener('click', onCopy);
-      tl.scrollTrigger?.kill(true);
-      tl.kill();
-      gsap.set(copy.children, { clearProps: 'opacity,transform' });
-      instances.forEach(inst => inst.destroy());
-      dots.forEach(d => d.el.remove());
     },
   };
 }

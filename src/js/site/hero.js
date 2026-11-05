@@ -12,8 +12,11 @@ const COUNT_MOBILE = 60;
 /**
  * Hero: translucent circles drift with Perlin noise, then converge on the title as the
  * pinned section is scrolled. GSAP only tweens `amplitude`; PerlinDOM owns `transform`.
+ *
+ * `still` (reduced motion / static page): the end state only. Circles sit on their text
+ * points (what amplitude 0 renders), title and subtitle visible; no PerlinDOM, no pin.
  */
-export function mountHero(root) {
+export function mountHero(root, { still = false } = {}) {
   const field = root.querySelector('.hero__field');
   const title = root.querySelector('.hero__title');
   const sub = root.querySelector('.hero__sub');
@@ -34,7 +37,7 @@ export function mountHero(root) {
   field.appendChild(frag);
 
   let scale = 1;
-  const instances = dots.map((d, i) => {
+  const instances = still ? [] : dots.map((d, i) => {
     d.inst = new PerlinDOM({
       element: d.el,
       x: { min: -1, max: 1 }, // real range set in layout()
@@ -56,8 +59,10 @@ export function mountHero(root) {
       d.el.style.setProperty('--s', `${s.toFixed(1)}px`);
       d.el.style.left = `${(d.u * w).toFixed(1)}px`;
       d.el.style.top = `${(d.v * h).toFixed(1)}px`;
-      d.inst.xRange = { min: -r, max: r };
-      d.inst.yRange = { min: -r, max: r };
+      if (d.inst) {
+        d.inst.xRange = { min: -r, max: r };
+        d.inst.yRange = { min: -r, max: r };
+      }
     }
 
     const cs = getComputedStyle(title);
@@ -70,13 +75,18 @@ export function mountHero(root) {
     const oy = rect.top - rootRect.top;
     points.forEach((p, i) => {
       const d = dots[i];
-      d.inst.setTarget({ x: ox + p.x - d.u * w, y: oy + p.y - d.v * h });
+      const x = ox + p.x - d.u * w;
+      const y = oy + p.y - d.v * h;
+      if (d.inst) d.inst.setTarget({ x, y });
+      else d.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
     });
   }
 
   // First layout right away (fallback font metrics if the webfont is not ready yet),
   // so dots never sit stacked at 0,0; it is redone once fonts resolve.
   layout();
+
+  if (still) return mountStill({ layout, title, word, dots });
 
   const state = { amp: 1 };
   const applyAmplitude = () => {
@@ -152,6 +162,31 @@ export function mountHero(root) {
       // Leave the real title readable once the effect is gone.
       title.style.opacity = '1';
       sub.style.opacity = '1';
+    },
+  };
+}
+
+// Static hero: same layout, re-run when the webfont lands or the viewport changes.
+function mountStill({ layout, title, word, dots }) {
+  let destroyed = false;
+  const relayout = () => { if (!destroyed) layout(); };
+  const cs = getComputedStyle(title);
+  document.fonts.load(`${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`, word)
+    .catch(() => {})
+    .then(() => document.fonts.ready)
+    .then(relayout);
+  let resizeTimer = 0;
+  const onResize = () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(relayout, 150);
+  };
+  window.addEventListener('resize', onResize);
+  return {
+    destroy() {
+      destroyed = true;
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', onResize);
+      dots.forEach(d => d.el.remove());
     },
   };
 }

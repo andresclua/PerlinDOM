@@ -40,7 +40,7 @@ html { overflow-anchor: none; }
     white-space: nowrap;
     text-shadow: none;
     color: var(--ink-soft);
-    opacity: calc(var(--seed-o, 0) * 0.8);
+    opacity: var(--seed-o, 0);
 
     @media (max-width: 767px) {
       content: attr(data-seed); // narrow glyphs: number only
@@ -95,12 +95,31 @@ html { overflow-anchor: none; }
   font-weight: 300;
   letter-spacing: 0.3em;
   text-transform: uppercase;
+  min-height: 44px; // touch target
   cursor: pointer;
   transition: background-color 0.25s, border-color 0.25s;
 
   &:hover { background: color-mix(in srgb, var(--ink) 16%, transparent); border-color: color-mix(in srgb, var(--ink) 30%, transparent); }
   &:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
   &:disabled { opacity: 0.5; cursor: default; }
+  &[hidden] { display: none; }
+}
+
+// "View as a static page": first in tab order, shown when focused (skip-link pattern).
+.motion-toggle {
+  @extend %pill-button;
+  position: fixed;
+  z-index: 101;
+  top: 0.5rem;
+  left: 50%;
+  translate: -50% calc(-100% - 1rem);
+  background: color-mix(in srgb, var(--vignette) 90%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  &:focus { translate: -50% 0; }
+
+  @media (prefers-reduced-motion: no-preference) { transition: translate 0.25s ease, background-color 0.25s; }
 }
 
 $mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
@@ -139,10 +158,10 @@ $mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
   font-size: 0.85rem;
   font-weight: 300;
   letter-spacing: 0.08em;
-  opacity: 0.38;
-  transition: opacity 0.4s, transform 0.4s;
+  color: var(--ink-soft);
+  transition: color 0.4s, transform 0.4s;
 
-  &.is-active { opacity: 1; transform: translateX(0.4rem); }
+  &.is-active { color: var(--ink); transform: translateX(0.4rem); }
 }
 
 .api__step-n {
@@ -304,7 +323,7 @@ $mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
   font-weight: 300;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--ink-stage);
   white-space: nowrap;
 }
 
@@ -532,7 +551,7 @@ $mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     text-decoration: none;
-    opacity: 0.75;
+    opacity: 0.8;
     border-bottom: 1px solid transparent;
     padding-bottom: 0.3rem;
     transition: opacity 0.25s, border-color 0.25s;
