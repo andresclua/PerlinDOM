@@ -24,10 +24,13 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
+        "build:lib": "vite build",
+        "build:site": "vite build --mode site",
         "preview": "vite preview",
         "test": "node --test 'tests/*.test.mjs'"
     },
     "devDependencies": {
+        "gsap": "^3.15.1",
         "sass": "^1.80.6",
         "vite": "^5.4.10"
     }
