@@ -1,3 +1,52 @@
+/* ---------- loop compartido ---------- */
+const active = new Set();
+let rafId = null;
+
+function tick() {
+  rafId = null;
+  // Iteramos una copia: un step() puede hacer destroy() de sí mismo u otros
+  for (const inst of [...active]) {
+    if (!active.has(inst)) continue;
+    if (inst.onScreen && inst.step() === false) active.delete(inst);
+  }
+  if (active.size > 0) rafId = requestAnimationFrame(tick);
+}
+
+function activate(inst) {
+  active.add(inst);
+  if (rafId === null) rafId = requestAnimationFrame(tick);
+}
+
+function deactivate(inst) {
+  active.delete(inst);
+  if (active.size === 0 && rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+}
+
+/* ---------- visibilidad (un solo IntersectionObserver) ---------- */
+const observed = new Map();
+let observer = null;
+
+function observe(inst) {
+  if (typeof IntersectionObserver === 'undefined' || !inst.el) return;
+  observer ??= new IntersectionObserver(entries => {
+    for (const e of entries) {
+      const target = observed.get(e.target);
+      if (target) target.onScreen = e.isIntersecting;
+    }
+  });
+  observed.set(inst.el, inst);
+  observer.observe(inst.el);
+}
+
+function unobserve(inst) {
+  if (!observer || !inst.el || observed.get(inst.el) !== inst) return;
+  observed.delete(inst.el);
+  observer.unobserve(inst.el);
+}
+
 class PerlinDOM {
   /* ---------- helpers privados y estáticos ---------- */
   static #mulberry32(a) {
@@ -86,7 +135,7 @@ class PerlinDOM {
       this.baseTransform = '';
     }
 
-    this.animate = this.animate.bind(this);
+    this.onScreen = true;
     this.init(seed);
   }
 
@@ -95,7 +144,8 @@ class PerlinDOM {
     this.isPlaying = true;
     this.lerpFactor = 1;
     this.targetLerpFactor = 1;
-    this.raf = requestAnimationFrame(this.animate);
+    observe(this);
+    activate(this);
   }
 
   // Permite refrescar el transform base si cambian clases/estilos en runtime
@@ -125,7 +175,7 @@ class PerlinDOM {
 
       // Solo arrancar un nuevo frame si estaba completamente pausado
       if (this.lerpFactor === 0) {
-        this.raf = requestAnimationFrame(this.animate);
+        activate(this);
       }
     }
   }
@@ -190,7 +240,8 @@ class PerlinDOM {
     return a + t * (b - a);
   }
 
-  animate = () => {
+  // Un frame de este instance; devuelve false cuando queda totalmente pausado
+  step() {
     // Update lerp factor towards target
     if (this.lerpFactor !== this.targetLerpFactor) {
       this.lerpFactor = this.#lerp(this.lerpFactor, this.targetLerpFactor, this.lerpSpeed);
@@ -270,10 +321,8 @@ class PerlinDOM {
     }
 
     // Continue animation if not completely paused or still transitioning
-    if (this.lerpFactor > 0 || this.targetLerpFactor > 0) {
-      this.raf = requestAnimationFrame(this.animate);
-    }
-  };
+    return this.lerpFactor > 0 || this.targetLerpFactor > 0;
+  }
 
   #map(n, inMin, inMax, outMin, outMax) {
     return ((n - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
@@ -301,7 +350,8 @@ class PerlinDOM {
   }
 
   destroy() {
-    cancelAnimationFrame(this.raf);
+    deactivate(this);
+    unobserve(this);
 
     // Restaurar transform inline original
     if (this.el) {
