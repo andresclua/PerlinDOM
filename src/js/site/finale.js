@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PerlinDOM from '../PerlinDom.js';
 import { createDot, mulberry32 } from './dots.js';
 import { onRefreshJump } from './scroll.js';
+import { mountCopyButton } from './copy.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -68,7 +69,11 @@ export function mountFinale(root, { still = false } = {}) {
   }
   layout();
 
-  const copyButton = mountCopyButton(root);
+  const copyButton = mountCopyButton(
+    root.querySelector('[data-copy]'),
+    root.querySelector('[data-copy-status]'),
+    () => COMMAND,
+  );
   if (still) {
     let resizeTimer = 0;
     const onResize = () => {
@@ -134,58 +139,4 @@ export function mountFinale(root, { still = false } = {}) {
       dots.forEach(d => d.el.remove());
     },
   };
-}
-
-// The Copy button: clipboard write, a visible 'Copied' state and a polite status for AT.
-function mountCopyButton(root) {
-  const copyBtn = root.querySelector('[data-copy]');
-  const status = root.querySelector('[data-copy-status]');
-  let resetTimer = 0;
-  const onCopy = async () => {
-    let ok = false;
-    try {
-      await navigator.clipboard.writeText(COMMAND);
-      ok = true;
-    } catch {
-      ok = legacyCopy(COMMAND);
-    }
-    status.textContent = ok ? 'Copied' : 'Copy failed, select the command manually';
-    copyBtn.classList.toggle('is-done', ok);
-    copyBtn.querySelector('span').textContent = ok ? 'Copied' : 'Copy';
-    clearTimeout(resetTimer);
-    resetTimer = setTimeout(() => {
-      status.textContent = '';
-      copyBtn.classList.remove('is-done');
-      copyBtn.querySelector('span').textContent = 'Copy';
-    }, 2000);
-  };
-  copyBtn.addEventListener('click', onCopy);
-
-  return {
-    destroy() {
-      clearTimeout(resetTimer);
-      copyBtn.removeEventListener('click', onCopy);
-    },
-  };
-}
-
-// Fallback when the async clipboard is missing or refused (insecure context, old browser).
-function legacyCopy(text) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.setAttribute('readonly', '');
-  ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
-  document.body.appendChild(ta);
-  // iOS needs focus plus an explicit range; select() alone copies nothing there.
-  ta.focus();
-  ta.select();
-  ta.setSelectionRange(0, ta.value.length);
-  let ok = false;
-  try {
-    ok = document.execCommand('copy');
-  } catch {
-    ok = false;
-  }
-  ta.remove();
-  return ok;
 }

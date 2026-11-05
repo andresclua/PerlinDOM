@@ -2,813 +2,334 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PerlinDom - by Andres Clua</title>
-
+        <meta name="description" content="Twelve live PerlinDOM examples, each with the exact code it runs: ranges, seeds, pause and play, percentages, SVG, amplitude and target." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="./scss/style.scss" />
-        <style>
-            body {
-              max-width: 1200px;
-              margin: 0 auto;
-              padding: 80px 20px 20px;
-              overflow-x: hidden;
-              overflow: visible!important;
-            }
-            
-            h1, h2 {
-              color: #2c3e50;
-            }
-            
-            .example-container {
-              margin-bottom: 40px;
-              border: 1px solid #ddd;
-              border-radius: 8px;
-              padding: 20px;
-              position: relative;
-              overflow: hidden;
-              height: 300px;
-              background-color: #f9f9f9;
-            }
-            
-            .code-block {
-              background-color: #f5f5f5;
-              padding: 15px;
-              border-radius: 5px;
-              overflow-x: auto;
-              margin-bottom: 20px;
-              font-family: monospace;
-              font-size: 14px;
-            }
-            
-            /* Example 1: Basic Animation */
-            .basic-element {
-              width: 80px;
-              height: 80px;
-              background-color: #3498db;
-              border-radius: 50%;
-              position: absolute;
-              left: calc(50% - 40px);
-              top: calc(50% - 40px);
-              filter: blur(5px);
-              transform: scale(3.5) skewX(120deg);
-
-            }
-            
-            /* Example 2: Horizontal Only */
-            .horizontal-element {
-              width: 60px;
-              height: 60px;
-              background-color: #e74c3c;
-              border-radius: 10px;
-              position: absolute;
-              left: calc(50% - 30px); /* 50% - half width */
-              top: calc(50% - 30px); /* 50% - half height */
-            }
-            
-            /* Example 3: Multiple Elements */
-            .particle {
-              width: 230px;
-              height: 230px;
-              background:linear-gradient(to bottom right, #8e44ad, #3498db);
-              border-radius: 50%;
-              position: absolute;
-              /* opacity: 0.2; */
-              filter: blur(10px);
-            }
-            
-            /* Positioning for particles - these are initial positions, PerlinDOM will animate from here */
-            .particle:nth-child(1) {
-              left: 30%;
-              top: 30%;
-            }
-            
-            .particle:nth-child(2) {
-              left: 50%;
-              top: 50%;
-            }
-            
-            .particle:nth-child(3) {
-              left: 70%;
-              top: 70%;
-            }
-            
-            .particle:nth-child(4) {
-              left: 30%;
-              top: 70%;
-            }
-            
-            .particle:nth-child(5) {
-              left: 70%;
-              top: 30%;
-            }
-            
-            /* Example 4: Background Effect */
-            .bg-container {
-              background-color: #34495e;
-              position: relative;
-            }
-            
-            .bg-element {
-              position: absolute;
-              border-radius: 50%;
-              background-color: rgba(255, 255, 255, 0.1);
-              filter: blur(5px);
-              transform: scale(3.2);
-            }
-            
-            .bg-element-1 {
-              width: 100px;
-              height: 100px;
-              left: 20%;
-              top: 30%;
-            }
-            
-            .bg-element-2 {
-              width: 150px;
-              height: 150px;
-              left: 60%;
-              top: 50%;
-            }
-            
-            .bg-element-3 {
-              width: 80px;
-              height: 80px;
-              left: 40%;
-              top: 70%;
-            }
-            
-            .content {
-              position: relative;
-              z-index: 10;
-              color: white;
-              text-align: center;
-              padding-top: 120px;
-            }
-            
-            /* Example 5: Pause Play Element */
-            .pause-play-container {
-              position: relative;
-              cursor: pointer;
-              height: 200px;
-              border: 1px dashed #ccc;
-              border-radius: 8px;
-              margin-top: 20px;
-            }
-            
-            .pause-play-element {
-              width: 70px;
-              height: 70px;
-              background-color: #f39c12;
-              border-radius: 50%;
-              position: absolute;
-              left: calc(50% - 35px);
-              top: calc(50% - 35px);
-              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            }
-            
-            .status-display {
-              position: absolute;
-              bottom: 20px;
-              left: 0;
-              width: 100%;
-              text-align: center;
-              font-weight: bold;
-            }
-            
-            .status-indicator {
-              color: #2980b9;
-            }
-            
-            .instruction {
-              font-size: 14px;
-              color: #7f8c8d;
-              margin-top: 5px;
-            }
-            
-            .pause-play-settings {
-              margin-bottom: 20px;
-            }
-            
-            .setting-description {
-              font-size: 12px;
-              color: #7f8c8d;
-              margin-top: 5px;
-            }
-            
-            .lerp-value {
-              font-weight: bold;
-              color: #e67e22;
-            }
-            
-            /* Example 6: Interactive Element */
-            .interactive-container {
-              display: flex;
-              justify-content: space-between;
-            }
-            
-            .controls {
-              width: 40%;
-            }
-            
-            .preview {
-              width: 55%;
-              height: 200px;
-              border: 1px solid #ddd;
-              border-radius: 5px;
-              position: relative;
-              overflow: hidden;
-            }
-            
-            .interactive-element {
-              width: 50px;
-              height: 50px;
-              background-color: #9b59b6;
-              border-radius: 50%;
-              position: absolute;
-              left: calc(50% - 25px); /* 50% - half width */
-              top: calc(50% - 25px); /* 50% - half height */
-            }
-            
-            .control-group {
-              margin-bottom: 15px;
-            }
-            
-            label {
-              display: block;
-              margin-bottom: 5px;
-              font-weight: bold;
-            }
-            
-            input[type="range"] {
-              width: 100%;
-            }
-            
-            .value-display {
-              font-size: 12px;
-              color: #666;
-            }
-            
-            .container {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              text-align: center;
-              margin-bottom: 40px;
-            }
-            
-            .instructions {
-              position: fixed;
-              bottom: 20px;
-              left: 0;
-              right: 0;
-              text-align: center;
-              color: white;
-              font-size: 1.2rem;
-              z-index: 10;
-              text-shadow: 0 0 5px rgba(0,0,0,0.5);
-            }
-            
-            /* Example 7: Animated Button with Circles */
-            .animated-button-container {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100%;
-            }
-            
-            .animated-button {
-              position: relative;
-              display: inline-block;
-              padding: 15px 30px;
-              background-color: #3498db;
-              color: white;
-              text-decoration: none;
-              font-weight: bold;
-              border-radius: 5px;
-              overflow: visible;
-              transition: background-color 0.3s;
-            }
-            
-            .animated-button:hover {
-              background-color: #2980b9;
-            }
-            
-            .animated-button .circle {
-              position: absolute;
-              width: 60px;
-              height: 60px;
-              background-color:#3498db;
-              border-radius: 50%;
-              opacity: 0;
-              transition: opacity 0.3s;
-              pointer-events: none;
-              filter: blur(19px);
-              z-index: 1;
-            }
-            
-            .animated-button:hover .circle {
-              opacity: 1;
-            }
-            
-            .animated-button .circle:nth-child(1) {
-              left: -15px;
-              top: 50%;
-            }
-            
-            .animated-button .circle:nth-child(2) {
-              left: 50%;
-              top: -15px;
-            }
-            
-            .animated-button .circle:nth-child(3) {
-              right: -15px;
-              top: 50%;
-            }
-            
-            .animated-button .circle:nth-child(4) {
-              left: 50%;
-              bottom: -15px;
-            }
-            
-            .animated-button .button-text {
-              position: relative;
-              z-index: 10;
-            }
-            
-            /* Example 8: ClipPath Triangle with Animated Vertex */
-            .triangle-container {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100%;
-            }
-            
-            .triangle-svg {
-              width: 300px;
-              height: 300px;
-              overflow: visible;
-            }
-            
-            .triangle-content {
-              width: 100%;
-              height: 100%;
-              background: linear-gradient(135deg, #3498db, #e74c3c, #9b59b6);
-              animation: gradientShift 10s ease infinite;
-            }
-            
-            @keyframes gradientShift {
-              0% { background-position: 0% 50%; }
-              50% { background-position: 100% 50%; }
-              100% { background-position: 0% 50%; }
-            }
-        </style>
+        <title>Examples · PerlinDOM</title>
     </head>
+    <body class="docs">
+        <a class="skip-link" href="#content">Skip to content</a>
+        <div class="backdrop docs-backdrop" aria-hidden="true"></div>
 
-    <body>
+        <main id="content" class="docs-main docs-main--examples">
+            <header class="docs-hero">
+                <p class="eyebrow">Examples</p>
+                <h1 class="docs-hero__title">Twelve ways to drift</h1>
+                <p class="docs-hero__lead">Every demo on this page is live and runs the code beside it. Copy a snippet and you get the same motion.</p>
+                <nav class="ex-index" aria-label="Examples on this page">
+                    <ol>
+                        <li><a href="#basic"><span>01</span>Basic</a></li>
+                        <li><a href="#horizontal"><span>02</span>One axis</a></li>
+                        <li><a href="#seeds"><span>03</span>Seeds</a></li>
+                        <li><a href="#background"><span>04</span>Background</a></li>
+                        <li><a href="#hover"><span>05</span>Pause on hover</a></li>
+                        <li><a href="#controls"><span>06</span>Controls</a></li>
+                        <li><a href="#button"><span>07</span>Button</a></li>
+                        <li><a href="#triangle"><span>08</span>SVG vertex</a></li>
+                        <li><a href="#units"><span>09</span>px vs %</a></li>
+                        <li><a href="#resizable"><span>10</span>Resizable</a></li>
+                        <li><a href="#mixed"><span>11</span>Mixed units</a></li>
+                        <li><a href="#amplitude"><span>12</span>Amplitude</a></li>
+                    </ol>
+                </nav>
+            </header>
 
+            <div class="ex-list">
+                <article class="card" id="basic" aria-labelledby="t-basic">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">01</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-basic">Basic animation</h2>
+                            <p class="card__text">One element, two ranges and a seed. Its own CSS transform, a scale and a skew, is kept: PerlinDOM only adds a translate.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-basic"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage">
+                        <span class="ex-basic"></span>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
 
-        <div class="container">
-            <h1>PerlinSVG Example</h1>
-        </div>
-        
+                <article class="card" id="horizontal" aria-labelledby="t-horizontal">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">02</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-horizontal">Horizontal-only movement</h2>
+                            <p class="card__text">Set an axis to <code>null</code> and it stays put: this one only slides sideways along its track.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-horizontal"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-track">
+                        <span class="ex-horizontal"></span>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
 
-        <h1>PerlinDOM Examples</h1>
-        <p>This page demonstrates various ways to use the PerlinDOM library for creating smooth, organic animations.</p>
-        
-        <!-- Example 1: Basic Animation -->
-        <h2>1. Basic Animation</h2>
-        <div class="code-block">
-          const basicAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.basic-element'),<br>
-          &nbsp;&nbsp;x: { min: -50, max: 50 },<br>
-          &nbsp;&nbsp;y: { min: -50, max: 50 },<br>
-          &nbsp;&nbsp;speed: 0.01,<br>
-          &nbsp;&nbsp;seed: 123<br>
-          });
-        </div>
-        <div class="example-container">
-          <div class="basic-element"></div>
-        </div>
-        
-        <!-- Example 2: Horizontal Only -->
-        <h2>2. Horizontal-Only Movement</h2>
-        <div class="code-block">
-          const horizontalAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.horizontal-element'),<br>
-          &nbsp;&nbsp;x: { min: -100, max: 100 },<br>
-          &nbsp;&nbsp;y: null, // No vertical movement<br>
-          &nbsp;&nbsp;speed: 0.02<br>
-          });
-        </div>
-        <div class="example-container">
-          <div class="horizontal-element"></div>
-        </div>
-        
-        <!-- Example 3: Multiple Elements -->
-        <h2>3. Multiple Elements with Different Seeds</h2>
-        <div class="code-block">
-          document.querySelectorAll('.particle').forEach((el, index) => {<br>
-          &nbsp;&nbsp;new PerlinDOM({<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;element: el,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;x: { min: -100, max: 100 },<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;y: { min: -100, max: 100 },<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;speed: 0.01,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;seed: index * 100 // Different seed for each element<br>
-          &nbsp;&nbsp;});<br>
-          });
-        </div>
-        <div class="example-container">
-          <div class="particle"></div>
-          <div class="particle"></div>
-          <div class="particle"></div>
-          <div class="particle"></div>
-          <div class="particle"></div>
-        </div>
-        
-        <!-- Example 4: Background Effect -->
-        <h2>4. Creating a Background Effect</h2>
-        <div class="code-block">
-          document.querySelectorAll('.bg-element').forEach(el => {<br>
-          &nbsp;&nbsp;new PerlinDOM({<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;element: el,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;x: { min: -10, max: 10 },<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;y: { min: -10, max: 10 },<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;speed: 0.002, // Very slow movement<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;seed: Math.random() * 2000<br>
-          &nbsp;&nbsp;});<br>
-          });
-        </div>
-        <div class="example-container bg-container">
-          <div class="bg-element bg-element-1"></div>
-          <div class="bg-element bg-element-2"></div>
-          <div class="bg-element bg-element-3"></div>
-          <div class="content">
-            <h3>Subtle Background Animation</h3>
-            <p>Perfect for creating depth in UI elements</p>
-          </div>
-        </div>
-        
-        <!-- Example 5: Pause and Play with Mouse Events -->
-        <h2>5. Smooth Pause and Play with Mouse Events</h2>
-        <div class="code-block">
-          const pausePlayAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.pause-play-element'),<br>
-          &nbsp;&nbsp;x: { min: -80, max: 80 },<br>
-          &nbsp;&nbsp;y: { min: -80, max: 80 },<br>
-          &nbsp;&nbsp;speed: 0.01,<br>
-          &nbsp;&nbsp;seed: 42,<br>
-          &nbsp;&nbsp;lerpSpeed: 0.05 // Controls how smooth the transition is<br>
-          });<br><br>
-          
-          // Pause on mouse leave<br>
-          document.querySelector('.pause-play-container').addEventListener('mouseleave', () => {<br>
-          &nbsp;&nbsp;pausePlayAnimation.pause();<br>
-          &nbsp;&nbsp;document.querySelector('.status-indicator').textContent = 'Pausing...';<br>
-          });<br><br>
-          
-          // Play on mouse enter<br>
-          document.querySelector('.pause-play-container').addEventListener('mouseenter', () => {<br>
-          &nbsp;&nbsp;pausePlayAnimation.play();<br>
-          &nbsp;&nbsp;document.querySelector('.status-indicator').textContent = 'Playing...';<br>
-          });<br><br>
-          
-          // Update lerpSpeed when slider changes<br>
-          document.getElementById('lerp-speed').addEventListener('input', (e) => {<br>
-          &nbsp;&nbsp;const newSpeed = parseFloat(e.target.value);<br>
-          &nbsp;&nbsp;pausePlayAnimation.lerpSpeed = newSpeed;<br>
-          &nbsp;&nbsp;document.querySelector('.lerp-value').textContent = newSpeed.toFixed(2);<br>
-          });
-        </div>
-        <div class="example-container">
-          <div class="pause-play-settings">
-            <label for="lerp-speed">Transition Speed: <span class="lerp-value">0.05</span></label>
-            <input type="range" id="lerp-speed" min="0.01" max="0.2" step="0.01" value="0.05">
-            <p class="setting-description">Lower values = smoother, slower transitions</p>
-          </div>
-          <div class="pause-play-container">
-            <div class="pause-play-element"></div>
-            <div class="status-display">
-              Status: <span class="status-indicator">Playing</span>
-              <p class="instruction">Hover over this orange circle to play, move mouse out to pause</p>
+                <article class="card" id="seeds" aria-labelledby="t-seeds">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">03</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-seeds">Multiple elements, different seeds</h2>
+                            <p class="card__text">The same options in a loop, with a seed per element, give five paths that never move in step.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-seeds"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-blobs">
+                        <span class="ex-blob"></span>
+                        <span class="ex-blob"></span>
+                        <span class="ex-blob"></span>
+                        <span class="ex-blob"></span>
+                        <span class="ex-blob"></span>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="background" aria-labelledby="t-background">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">04</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-background">A background effect</h2>
+                            <p class="card__text">Large blurred shapes at a very low speed add depth behind real content without pulling the eye.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-background"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-bg">
+                        <span class="ex-glow ex-glow--1"></span>
+                        <span class="ex-glow ex-glow--2"></span>
+                        <span class="ex-glow ex-glow--3"></span>
+                        <div class="ex-bg__content">
+                            <p class="ex-bg__title">Subtle background motion</p>
+                            <p class="ex-bg__sub">Depth for any surface, at almost no cost.</p>
+                        </div>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="hover" aria-labelledby="t-hover">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">05</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-hover">Smooth pause and play with mouse events</h2>
+                            <p class="card__text">Hover the stage to play, leave it to pause. The motion eases out and back in; <code>lerpSpeed</code> sets how softly.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-hover"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-hover">
+                        <span class="demo-dot ex-orb"></span>
+                        <span class="ex-meter" aria-hidden="true"><span class="ex-meter__label">speed factor</span></span>
+                    </div>
+                    <div class="card__controls">
+                        <button class="pill" type="button" data-hover-toggle data-needs-demo disabled><span>Pause</span></button>
+                        <p class="card__status" aria-live="polite" data-hover-status></p>
+                        <div class="field">
+                            <label for="lerp-speed">lerpSpeed</label>
+                            <output for="lerp-speed" data-lerp-out>0.05</output>
+                            <input id="lerp-speed" type="range" min="0.01" max="0.2" step="0.01" value="0.05" data-lerp data-needs-demo disabled />
+                        </div>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="controls" aria-labelledby="t-controls">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">06</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-controls">Interactive controls</h2>
+                            <p class="card__text">Ranges and speed are writable properties, so they change while it runs. The snippet follows the sliders.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-controls"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-controls">
+                        <span class="demo-dot"></span>
+                    </div>
+                    <div class="card__controls card__controls--grid">
+                        <div class="field">
+                            <label for="c-x">x range</label>
+                            <output for="c-x">±50px</output>
+                            <input id="c-x" type="range" min="0" max="100" value="50" data-key="x" data-needs-demo disabled />
+                        </div>
+                        <div class="field">
+                            <label for="c-y">y range</label>
+                            <output for="c-y">±50px</output>
+                            <input id="c-y" type="range" min="0" max="100" value="50" data-key="y" data-needs-demo disabled />
+                        </div>
+                        <div class="field">
+                            <label for="c-speed">speed</label>
+                            <output for="c-speed">0.010</output>
+                            <input id="c-speed" type="range" min="0.001" max="0.05" step="0.001" value="0.01" data-key="speed" data-needs-demo disabled />
+                        </div>
+                        <div class="field">
+                            <label for="c-seed">seed</label>
+                            <output for="c-seed">0</output>
+                            <input id="c-seed" type="range" min="0" max="1000" step="1" value="0" data-key="seed" data-needs-demo disabled />
+                        </div>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="button" aria-labelledby="t-button">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">07</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-button">Animated button with circles on hover</h2>
+                            <p class="card__text">Four glow circles start drifting on hover or keyboard focus and ease to a stop when you leave.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-button"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-button-stage">
+                        <button class="ex-button" type="button">
+                            <span class="ex-button__circle" aria-hidden="true"></span>
+                            <span class="ex-button__circle" aria-hidden="true"></span>
+                            <span class="ex-button__circle" aria-hidden="true"></span>
+                            <span class="ex-button__circle" aria-hidden="true"></span>
+                            <span class="ex-button__text">Hover or focus me</span>
+                        </button>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="triangle" aria-labelledby="t-triangle">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">08</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-triangle">Clip-path triangle with an animated vertex</h2>
+                            <p class="card__text">With <code>element: null</code> an instance only computes <code>lastX</code> and <code>lastY</code>. Here they move one vertex of an SVG clip path.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-triangle"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-triangle">
+                        <svg viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+                            <defs>
+                                <linearGradient id="triangle-fill" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0" stop-color="#b9a4ff" />
+                                    <stop offset="0.55" stop-color="#6d8bff" />
+                                    <stop offset="1" stop-color="#7fe0ff" />
+                                </linearGradient>
+                                <clipPath id="triangle-clip">
+                                    <polygon points="150,50 250,250 50,250" />
+                                </clipPath>
+                            </defs>
+                            <polygon class="ex-triangle__base" points="150,50 250,250 50,250" />
+                            <rect width="300" height="300" fill="url(#triangle-fill)" clip-path="url(#triangle-clip)" />
+                            <circle class="ex-triangle__vertex" cx="150" cy="50" r="4" />
+                        </svg>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="units" aria-labelledby="t-units">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">09</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-units">Pixel vs percentage values</h2>
+                            <p class="card__text">Pixels keep the same distance at any size. Percentages are a share of the parent, so resize the window and only the right one adapts.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-units"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-panes">
+                        <div class="ex-pane">
+                            <span class="demo-label">px · fixed</span>
+                            <span class="demo-dot dot-px"></span>
+                            <span class="ex-pane__caption" data-resolved></span>
+                        </div>
+                        <div class="ex-pane">
+                            <span class="demo-label">% · responsive</span>
+                            <span class="demo-dot demo-dot--b dot-percent"></span>
+                            <span class="ex-pane__caption" data-resolved></span>
+                        </div>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="resizable" aria-labelledby="t-resizable">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">10</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-resizable">Resizable container with percentages</h2>
+                            <p class="card__text">Drag the corner, or use the slider: the range is ±25% of the box and follows it on the very next frame.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-resizable"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-resizable-stage">
+                        <div class="ex-resizable">
+                            <span class="demo-dot"></span>
+                            <span class="ex-pane__caption" data-resolved></span>
+                        </div>
+                    </div>
+                    <div class="card__controls">
+                        <div class="field">
+                            <label for="r-width">Container width</label>
+                            <output for="r-width" data-width-out>100%</output>
+                            <input id="r-width" type="range" min="40" max="100" step="1" value="100" data-width data-needs-demo disabled />
+                        </div>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="mixed" aria-labelledby="t-mixed">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">11</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-mixed">Mixed pixel and percentage values</h2>
+                            <p class="card__text">Each axis picks its own unit: one adapts to the parent, the other keeps a fixed distance.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-mixed"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-panes">
+                        <div class="ex-pane">
+                            <span class="demo-label">x % · y px</span>
+                            <span class="demo-dot dot-a"></span>
+                            <span class="ex-pane__caption" data-resolved></span>
+                        </div>
+                        <div class="ex-pane">
+                            <span class="demo-label">x px · y %</span>
+                            <span class="demo-dot demo-dot--b dot-b"></span>
+                            <span class="ex-pane__caption" data-resolved></span>
+                        </div>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
+
+                <article class="card" id="amplitude" aria-labelledby="t-amplitude">
+                    <header class="card__head">
+                        <span class="card__num" aria-hidden="true">12</span>
+                        <div class="card__intro">
+                            <h2 class="card__title" id="t-amplitude">Amplitude and target</h2>
+                            <p class="card__text">Every dot has a target on a ring. Slide <code>amplitude</code> to 0 and the drift settles into the shape.</p>
+                        </div>
+                        <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-amplitude"><span>Play</span></button>
+                    </header>
+                    <div class="card__stage ex-ring">
+                        <span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span><span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span>
+                        <span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span><span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span>
+                        <span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span><span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span>
+                    </div>
+                    <div class="card__controls">
+                        <div class="field">
+                            <label for="amp">amplitude</label>
+                            <output for="amp" data-amplitude-out>1.00</output>
+                            <input id="amp" type="range" min="0" max="1" step="0.01" value="1" data-amplitude data-needs-demo disabled />
+                        </div>
+                    </div>
+                    <pre class="card__code" data-lang="js"><code></code></pre>
+                </article>
             </div>
-          </div>
-        </div>
-        
-        <!-- Example 6: Interactive Controls -->
-        <h2>6. Interactive Controls</h2>
-        <div class="code-block">
-          // Create the animation with initial settings<br>
-          const interactiveAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.interactive-element'),<br>
-          &nbsp;&nbsp;x: { min: -50, max: 50 },<br>
-          &nbsp;&nbsp;y: { min: -50, max: 50 },<br>
-          &nbsp;&nbsp;speed: 0.01,<br>
-          &nbsp;&nbsp;seed: 0<br>
-          });<br><br>
-          
-          // Update settings based on user input<br>
-          speedControl.addEventListener('input', () => {<br>
-          &nbsp;&nbsp;// Stop current animation<br>
-          &nbsp;&nbsp;interactiveAnimation.destroy();<br>
-          &nbsp;&nbsp;<br>
-          &nbsp;&nbsp;// Reinitialize with new settings<br>
-          &nbsp;&nbsp;interactiveAnimation.speed = parseFloat(speedControl.value);<br>
-          &nbsp;&nbsp;interactiveAnimation.init(seedControl.value);<br>
-          });
-        </div>
-        <div class="example-container">
-          <div class="interactive-container">
-            <div class="controls">
-              <div class="control-group">
-                <label for="x-range">X Range:</label>
-                <input type="range" id="x-range" min="0" max="100" value="50">
-                <div class="value-display">-50 to 50</div>
-              </div>
-              
-              <div class="control-group">
-                <label for="y-range">Y Range:</label>
-                <input type="range" id="y-range" min="0" max="100" value="50">
-                <div class="value-display">-50 to 50</div>
-              </div>
-              
-              <div class="control-group">
-                <label for="speed">Speed:</label>
-                <input type="range" id="speed" min="0.001" max="0.05" step="0.001" value="0.01">
-                <div class="value-display">0.01</div>
-              </div>
-              
-              <div class="control-group">
-                <label for="seed">Seed:</label>
-                <input type="range" id="seed" min="0" max="1000" step="1" value="0">
-                <div class="value-display">0</div>
-              </div>
-            </div>
-            
-            <div class="preview">
-              <div class="interactive-element"></div>
-            </div>
-          </div>
-        </div>
+        </main>
 
-        <!-- Example 7: Animated Button with Circles -->
-        <h2>7. Animated Button with Circles on Hover</h2>
-        <div class="code-block">
-          // Get all the circle elements inside the button<br>
-          const circleElements = document.querySelectorAll('.animated-button .circle');<br><br>
-          
-          // Create an array to store the animation instances<br>
-          let circleAnimations = [];<br><br>
-          
-          // Function to initialize animations<br>
-          function initCircleAnimations() {<br>
-          &nbsp;&nbsp;// Clear any existing animations<br>
-          &nbsp;&nbsp;circleAnimations.forEach(anim => anim.destroy());<br>
-          &nbsp;&nbsp;circleAnimations = [];<br><br>
-          
-          &nbsp;&nbsp;// Create new animations for each circle<br>
-          &nbsp;&nbsp;circleElements.forEach((el, index) => {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;const animation = new PerlinDOM({<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;element: el,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: { min: -15, max: 15 },<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: { min: -15, max: 15 },<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;speed: 0.03,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seed: index * 1000,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lerpSpeed: 0.1<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;});<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;circleAnimations.push(animation);<br>
-          &nbsp;&nbsp;});<br>
-          }<br><br>
-          
-          // Add event listeners to the button<br>
-          document.querySelector('.animated-button').addEventListener('mouseenter', () => {<br>
-          &nbsp;&nbsp;initCircleAnimations();<br>
-          &nbsp;&nbsp;circleAnimations.forEach(anim => anim.play());<br>
-          });<br><br>
-          
-          document.querySelector('.animated-button').addEventListener('mouseleave', () => {<br>
-          &nbsp;&nbsp;circleAnimations.forEach(anim => anim.pause());<br>
-          });
-        </div>
-        <div class="example-container">
-          <div class="animated-button-container">
-            <a href="#" class="animated-button">
-              <span class="circle"></span>
-              <span class="circle"></span>
-              <span class="circle"></span>
-              <span class="circle"></span>
-              <span class="button-text">Button Text</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Example 8: ClipPath Triangle with Animated Vertex -->
-        <h2>8. ClipPath Triangle with Animated Vertex</h2>
-        <div class="code-block">
-          // Get the polygon element<br>
-          const trianglePath = document.getElementById('trianglePath');<br><br>
-          
-          // Store the original points<br>
-          const originalPoints = {<br>
-          &nbsp;&nbsp;x1: 150, y1: 50,  // Top vertex<br>
-          &nbsp;&nbsp;x2: 250, y2: 250, // Bottom right<br>
-          &nbsp;&nbsp;x3: 50,  y3: 250  // Bottom left<br>
-          };<br><br>
-          
-          // Create a custom animation function<br>
-          function animateTriangle() {<br>
-          &nbsp;&nbsp;// Create a PerlinDOM instance for the top vertex<br>
-          &nbsp;&nbsp;const topVertexAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;element: null, // We're not moving a DOM element directly<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;x: { min: -30, max: 30 },<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;y: { min: -20, max: 20 },<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;speed: 0.005,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;seed: 42<br>
-          &nbsp;&nbsp;});<br><br>
-          
-          &nbsp;&nbsp;// Animation function<br>
-          &nbsp;&nbsp;function updateTriangle() {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;// Get the current noise values<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;const offsetX = topVertexAnimation.lastX;<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;const offsetY = topVertexAnimation.lastY;<br><br>
-          
-          &nbsp;&nbsp;&nbsp;&nbsp;// Update the polygon points<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;const newPoints = `${originalPoints.x1 + offsetX},${originalPoints.y1 + offsetY} ${originalPoints.x2},${originalPoints.y2} ${originalPoints.x3},${originalPoints.y3}`;<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;trianglePath.setAttribute('points', newPoints);<br><br>
-          
-          &nbsp;&nbsp;&nbsp;&nbsp;// Continue animation<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;requestAnimationFrame(updateTriangle);<br>
-          &nbsp;&nbsp;}<br><br>
-          
-          &nbsp;&nbsp;// Start the animation<br>
-          &nbsp;&nbsp;updateTriangle();<br>
-          }<br><br>
-          
-          // Initialize the animation<br>
-          animateTriangle();
-        </div>
-        <div class="example-container">
-          <div class="triangle-container">
-            <svg class="triangle-svg" viewBox="0 0 300 300">
-              <defs>
-                <clipPath id="triangleClip">
-                  <polygon id="trianglePath" points="150,50 250,250 50,250"></polygon>
-                </clipPath>
-              </defs>
-              <rect class="triangle-content" width="300" height="300" clip-path="url(#triangleClip)"></rect>
-            </svg>
-          </div>
-        </div>
-
-        <!-- Example 9: Pixel vs. Percentage Values -->
-        <h2>9. Pixel vs. Percentage Values</h2>
-        <div class="code-block">
-          // Pixel-based animation (fixed size)<br>
-          const pixelAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.pixel-element'),<br>
-          &nbsp;&nbsp;x: { min: -50, max: 50 },<br>
-          &nbsp;&nbsp;y: { min: -50, max: 50 },<br>
-          &nbsp;&nbsp;speed: 0.01,<br>
-          &nbsp;&nbsp;seed: 123<br>
-          });<br><br>
-          
-          // Percentage-based animation (responsive)<br>
-          const percentageAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.percentage-element'),<br>
-          &nbsp;&nbsp;x: { min: '-20%', max: '20%' },<br>
-          &nbsp;&nbsp;y: { min: '-20%', max: '20%' },<br>
-          &nbsp;&nbsp;speed: 0.01,<br>
-          &nbsp;&nbsp;seed: 123<br>
-          });
-        </div>
-        <div class="example-container">
-          <div style="display: flex; justify-content: space-between; height: 100%;">
-            <div style="width: 48%; height: 100%; position: relative; border: 1px dashed #ccc; border-radius: 5px; overflow: hidden;">
-              <div style="position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-weight: bold; color: #7f8c8d; z-index: 10;">Pixel Values (Fixed)</div>
-              <div class="pixel-element" style="width: 80px; height: 80px; background-color: #3498db; border-radius: 50%; position: absolute; left: calc(50% - 40px); top: calc(50% - 40px); filter: blur(5px);"></div>
-              <div style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #7f8c8d;">Resize your browser window - animation range stays the same</div>
-            </div>
-            <div style="width: 48%; height: 100%; position: relative; border: 1px dashed #ccc; border-radius: 5px; overflow: hidden;">
-              <div style="position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-weight: bold; color: #7f8c8d; z-index: 10;">Percentage Values (Responsive)</div>
-              <div class="percentage-element" style="width: 80px; height: 80px; background-color: #e74c3c; border-radius: 50%; position: absolute; left: calc(50% - 40px); top: calc(50% - 40px); filter: blur(5px);"></div>
-              <div style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #7f8c8d;">Resize your browser window - animation range adapts</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Example 10: Resizable Container with Percentage Values -->
-        <h2>10. Resizable Container with Percentage Values</h2>
-        <div class="code-block">
-          const responsiveAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.responsive-element'),<br>
-          &nbsp;&nbsp;x: { min: '-25%', max: '25%' },<br>
-          &nbsp;&nbsp;y: { min: '-25%', max: '25%' },<br>
-          &nbsp;&nbsp;speed: 0.008,<br>
-          &nbsp;&nbsp;seed: 456<br>
-          });
-        </div>
-        <div class="example-container">
-          <div style="height: 100%; position: relative; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; resize: both; min-width: 200px; min-height: 200px; background-color: #f0f0f0;">
-            <div class="responsive-element" style="width: 60px; height: 60px; background-color: #9b59b6; border-radius: 50%; position: absolute; left: calc(50% - 30px); top: calc(50% - 30px);"></div>
-            <div style="position: absolute; bottom: 10px; right: 10px; font-size: 12px; color: #7f8c8d;">↘️ Drag this corner to resize the container</div>
-          </div>
-        </div>
-        
-        <!-- Example 11: Mixed Pixel and Percentage Values -->
-        <h2>11. Mixed Pixel and Percentage Values</h2>
-        <div class="code-block">
-          // Horizontal percentage, vertical pixel<br>
-          const horizontalPercentAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.horizontal-percent-element'),<br>
-          &nbsp;&nbsp;x: { min: '-30%', max: '30%' },<br>
-          &nbsp;&nbsp;y: { min: -40, max: 40 },<br>
-          &nbsp;&nbsp;speed: 0.01,<br>
-          &nbsp;&nbsp;seed: 789<br>
-          });<br><br>
-          
-          // Horizontal pixel, vertical percentage<br>
-          const verticalPercentAnimation = new PerlinDOM({<br>
-          &nbsp;&nbsp;element: document.querySelector('.vertical-percent-element'),<br>
-          &nbsp;&nbsp;x: { min: -80, max: 80 },<br>
-          &nbsp;&nbsp;y: { min: '-20%', max: '20%' },<br>
-          &nbsp;&nbsp;speed: 0.01,<br>
-          &nbsp;&nbsp;seed: 789<br>
-          });
-        </div>
-        <div class="example-container">
-          <div style="display: flex; justify-content: space-between; height: 100%;">
-            <div style="width: 48%; height: 100%; position: relative; border: 1px dashed #ccc; border-radius: 5px; overflow: hidden;">
-              <div style="position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-weight: bold; color: #7f8c8d; z-index: 10;">Horizontal % / Vertical px</div>
-              <div class="horizontal-percent-element" style="width: 60px; height: 60px; background-color: #f39c12; border-radius: 10px; position: absolute; left: calc(50% - 30px); top: calc(50% - 30px);"></div>
-              <div style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #7f8c8d;">Horizontal movement adapts to width, vertical is fixed</div>
-            </div>
-            <div style="width: 48%; height: 100%; position: relative; border: 1px dashed #ccc; border-radius: 5px; overflow: hidden;">
-              <div style="position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-weight: bold; color: #7f8c8d; z-index: 10;">Horizontal px / Vertical %</div>
-              <div class="vertical-percent-element" style="width: 60px; height: 60px; background-color: #f39c12; border-radius: 10px; position: absolute; left: calc(50% - 30px); top: calc(50% - 30px);"></div>
-              <div style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #7f8c8d;">Horizontal movement is fixed, vertical adapts to height</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Load all scripts -->
-        <script type="module">import { mountNav } from "./js/site/nav.js"; mountNav();</script>
-        <script type="module" src="./js/legacy-boxes.js"></script>
-        <script type="module" src="./js/basic-examples.js"></script>
-        <script type="module" src="./js/pause-play.js"></script>
-        <script type="module" src="./js/interactive-controls.js"></script>
-        <script type="module" src="./js/animated-button.js"></script>
-        <script type="module" src="./js/triangle-animation.js"></script>
-        <script type="module">
-          import PerlinDOM from './js/PerlinDom.js';
-          
-          // Example 9: Pixel vs. Percentage Values
-          const pixelAnimation = new PerlinDOM({
-            element: document.querySelector('.pixel-element'),
-            x: { min: -50, max: 50 },
-            y: { min: -50, max: 50 },
-            speed: 0.01,
-            seed: 123
-          });
-          
-          const percentageAnimation = new PerlinDOM({
-            element: document.querySelector('.percentage-element'),
-            x: { min: '-20%', max: '20%' },
-            y: { min: '-20%', max: '20%' },
-            speed: 0.01,
-            seed: 123
-          });
-          
-          // Example 10: Resizable Container
-          const responsiveAnimation = new PerlinDOM({
-            element: document.querySelector('.responsive-element'),
-            x: { min: '-25%', max: '25%' },
-            y: { min: '-25%', max: '25%' },
-            speed: 0.008,
-            seed: 456
-          });
-          
-          // Example 11: Mixed Values
-          const horizontalPercentAnimation = new PerlinDOM({
-            element: document.querySelector('.horizontal-percent-element'),
-            x: { min: '-30%', max: '30%' },
-            y: { min: -40, max: 40 },
-            speed: 0.01,
-            seed: 789
-          });
-          
-          const verticalPercentAnimation = new PerlinDOM({
-            element: document.querySelector('.vertical-percent-element'),
-            x: { min: -80, max: 80 },
-            y: { min: '-20%', max: '20%' },
-            speed: 0.01,
-            seed: 789
-          });
-        </script>
+        <footer class="site-foot">
+            <p class="site-foot__brand">PerlinDOM</p>
+            <nav class="site-foot__links" aria-label="Footer">
+                <a href="./index.html">Home</a>
+                <a href="./api.html">API</a>
+                <a href="./examples.html" aria-current="page">Examples</a>
+                <a href="https://www.npmjs.com/package/@andresclua/perlindom" target="_blank" rel="noopener">npm</a>
+                <a href="https://github.com/andresclua/PerlinDOM" target="_blank" rel="noopener">GitHub</a>
+            </nav>
+            <p class="site-foot__note">MIT licensed. Zero dependencies.</p>
+        </footer>
+        <script type="module" src="./js/site/examples/index.js"></script>
     </body>
 </html>

@@ -1,0 +1,458 @@
+@use 'docs';
+
+// Example cards (examples.html; the API page reuses one card for its live demo).
+
+/* ---------- index of examples ---------- */
+
+.ex-index {
+  margin-top: 1.2rem;
+  max-width: 100%;
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    min-height: 44px;
+    padding: 0 1.1rem;
+    border: 1px solid var(--glass-line);
+    border-radius: 999px;
+    background: var(--glass);
+    font-size: 0.78rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    color: var(--ink);
+    transition: background-color 0.2s, border-color 0.2s;
+
+    span { font-size: 0.66rem; letter-spacing: 0.16em; color: var(--accent-2); font-variant-numeric: tabular-nums; }
+    &:hover { background: rgb(255 255 255 / 0.14); border-color: rgb(255 255 255 / 0.3); }
+    &:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+  }
+}
+
+/* ---------- card ---------- */
+
+.ex-list {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+.card {
+  @extend %glass-card;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  grid-template-areas:
+    'head head'
+    'stage code'
+    'controls code';
+  grid-template-rows: auto auto 1fr;
+  gap: 1.5rem clamp(1.5rem, 3vw, 2.5rem);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+
+  > .snippet { grid-area: code; margin: 0; align-self: start; }
+  .snippet pre { max-height: 470px; }
+
+  // No controls row: the stage sits right under the header.
+  &:not(:has(.card__controls)) { grid-template-rows: auto auto; grid-template-areas: 'head head' 'stage code'; }
+}
+
+.card__head {
+  grid-area: head;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.5rem clamp(1rem, 2.5vw, 2rem);
+}
+
+.card__num {
+  font-size: clamp(2rem, 3.2vw, 2.8rem);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+.card__intro { display: grid; gap: 0.55rem; }
+
+.card__title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  font-weight: 200;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+}
+
+.card__text {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 0.98rem;
+  font-weight: 300;
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+}
+
+.card__stage {
+  grid-area: stage;
+  position: relative;
+  height: 360px;
+  border: 1px solid var(--glass-line);
+  border-radius: 22px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1.2px) 0 0 / 26px 26px,
+    radial-gradient(120% 90% at 30% 20%, rgb(255 255 255 / 0.08), transparent 60%),
+    color-mix(in srgb, var(--vignette) 30%, transparent);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1);
+}
+
+.card__controls {
+  grid-area: controls;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  align-self: start;
+
+  .field { flex: 1 1 220px; }
+
+  &--grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem 1.5rem;
+  }
+}
+
+.card__status {
+  margin: 0;
+  min-width: 5.5em;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 1023px) {
+  .card,
+  .card:not(:has(.card__controls)) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'head' 'stage' 'controls' 'code';
+    grid-template-rows: auto;
+  }
+  .card .snippet pre { max-height: 380px; }
+}
+
+@media (max-width: 767px) {
+  .card { border-radius: 22px; gap: 1.1rem; }
+  .card__head { grid-template-columns: auto minmax(0, 1fr); }
+  .card__head .demo-toggle { grid-column: 1 / -1; justify-self: start; }
+  .card__num { font-size: 1.6rem; }
+  .card__stage { height: 300px; border-radius: 18px; }
+  .card__controls--grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+// The API page's live demo: one card inside the prose column, stacked.
+.card--inline {
+  margin: 2rem 0 1rem;
+  &,
+  &:not(:has(.card__controls)) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'head' 'stage' 'controls' 'code';
+    grid-template-rows: auto;
+  }
+  .card__num { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; padding-top: 0.55rem; }
+  .card__title { margin: 0; font-size: clamp(1.3rem, 2vw, 1.6rem); font-weight: 200; }
+  .card__stage { height: 340px; }
+  .card__controls .field { flex-basis: 100%; }
+}
+
+/* ---------- 1. basic ---------- */
+
+.ex-basic {
+  position: absolute;
+  left: calc(50% - 40px);
+  top: calc(50% - 40px);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0, var(--accent) 35%, rgb(127 224 255 / 0.5) 100%);
+  filter: blur(5px);
+  opacity: 0.85;
+  transform: scale(3.5) skewX(120deg); // kept by PerlinDOM, which only adds a translate
+  will-change: transform;
+}
+
+.ex-controls .demo-dot { --s: 26px; }
+
+/* ---------- 2. horizontal ---------- */
+
+.ex-track::before {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 50%;
+  border-top: 1px dashed color-mix(in srgb, var(--accent-2) 55%, transparent);
+}
+
+.ex-horizontal {
+  position: absolute;
+  left: calc(50% - 30px);
+  top: calc(50% - 30px);
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgb(185 164 255 / 0.85), rgb(127 224 255 / 0.65));
+  box-shadow: 0 0 30px rgb(127 224 255 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.4);
+  will-change: transform;
+}
+
+/* ---------- 3. seeds ---------- */
+
+.ex-blob {
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  margin: -115px 0 0 -115px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom right, #8e6bff, #3c9bff);
+  filter: blur(10px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  will-change: transform;
+
+  &:nth-child(1) { left: 30%; top: 30%; }
+  &:nth-child(2) { left: 50%; top: 50%; background: linear-gradient(to bottom right, #b9a4ff, #6d5bff); }
+  &:nth-child(3) { left: 70%; top: 70%; background: linear-gradient(to bottom right, #7fe0ff, #4a6bff); }
+  &:nth-child(4) { left: 30%; top: 70%; }
+  &:nth-child(5) { left: 70%; top: 30%; background: linear-gradient(to bottom right, #e2c8ff, #7f8bff); }
+
+  @media (max-width: 767px) { width: 140px; height: 140px; margin: -70px 0 0 -70px; }
+}
+
+/* ---------- 4. background ---------- */
+
+.ex-glow {
+  position: absolute;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.1);
+  filter: blur(5px);
+  transform: scale(3.2);
+  will-change: transform;
+
+  &--1 { width: 100px; height: 100px; left: 20%; top: 30%; background: rgb(185 164 255 / 0.16); }
+  &--2 { width: 150px; height: 150px; left: 60%; top: 50%; background: rgb(127 224 255 / 0.12); }
+  &--3 { width: 80px; height: 80px; left: 40%; top: 70%; background: rgb(226 200 255 / 0.14); }
+}
+
+.ex-bg__content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-content: center;
+  gap: 0.6rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.ex-bg__title {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 200;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 30px rgb(190 160 255 / 0.5);
+}
+
+.ex-bg__sub {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-stage);
+}
+
+/* ---------- 5. hover ---------- */
+
+.ex-orb { --s: 70px; }
+
+.ex-meter {
+  position: absolute;
+  left: 1.2rem;
+  right: 1.2rem;
+  bottom: 1.1rem;
+  height: 2px;
+  background: var(--glass-line);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transform: scaleX(var(--f, 1));
+    transform-origin: left;
+  }
+}
+
+.ex-meter__label {
+  position: absolute;
+  bottom: 0.7rem;
+  left: 0;
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-stage);
+}
+
+/* ---------- 7. button ---------- */
+
+.ex-button-stage {
+  display: grid;
+  place-items: center;
+}
+
+.ex-button {
+  position: relative;
+  min-height: 56px;
+  padding: 0 2.2rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgb(185 164 255 / 0.35), rgb(127 224 255 / 0.25));
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: pointer;
+  isolation: isolate;
+  transition: background-color 0.3s, border-color 0.3s;
+
+  &:hover, &:focus-visible { border-color: rgb(255 255 255 / 0.55); }
+  &:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 4px; }
+}
+
+.ex-button__circle {
+  position: absolute;
+  z-index: -1;
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  border-radius: 50%;
+  background: var(--accent);
+  filter: blur(19px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+
+  &:nth-child(1) { left: 0; top: 50%; }
+  &:nth-child(2) { left: 50%; top: 0; background: var(--accent-2); }
+  &:nth-child(3) { left: 100%; top: 50%; }
+  &:nth-child(4) { left: 50%; top: 100%; background: var(--accent-2); }
+
+  .ex-button:is(:hover, :focus-visible) & { opacity: 0.8; }
+}
+
+.ex-button__text { position: relative; text-shadow: 0 0 10px rgb(10 6 40 / 0.9), 0 0 2px rgb(10 6 40 / 0.6); }
+
+/* ---------- 8. triangle ---------- */
+
+.ex-triangle {
+  display: grid;
+  place-items: center;
+
+  svg { width: min(300px, 82%); height: auto; overflow: visible; }
+}
+
+.ex-triangle__base {
+  fill: none;
+  stroke: var(--glass-line);
+  stroke-dasharray: 3 4;
+}
+
+.ex-triangle__vertex {
+  fill: #fff;
+  filter: drop-shadow(0 0 6px var(--accent-2));
+}
+
+/* ---------- 9, 11. panes ---------- */
+
+.ex-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ex-pane {
+  position: relative;
+  overflow: hidden;
+
+  & + & { border-left: 1px dashed var(--glass-line); }
+
+  .demo-dot { --s: 26px; }
+}
+
+.ex-pane__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  text-align: center;
+  color: var(--ink-stage);
+}
+
+/* ---------- 10. resizable ---------- */
+
+.ex-resizable-stage { padding: 1rem; }
+
+.ex-resizable {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 140px;
+  min-height: 160px;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  resize: both;
+  border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+
+  .demo-dot { --s: 22px; }
+}
+
+/* ---------- 12. amplitude ring ---------- */
+
+// Static state (before Play / reduced motion): the dots drawn on the ring, as at amplitude 0.
+.ex-ring {
+  container-type: size;
+
+  .demo-dot {
+    --s: 16px;
+    transform: translate(calc(cos(var(--a)) * 32cqmin), calc(sin(var(--a)) * 32cqmin));
+
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) { --a: #{($i - 1) * 30}deg; }
+    }
+  }
+}
