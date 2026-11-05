@@ -3,16 +3,318 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="PerlinDOM API reference: options, value types, methods, properties, amplitude and target, a GSAP ScrollTrigger recipe, best practices and troubleshooting." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="./scss/style.scss" />
-        <title>PerlinDOM API</title>
+        <title>API reference · PerlinDOM</title>
     </head>
-    <body>
-        <main style="padding: 6rem 1.5rem">
-            <h1>API</h1>
+    <body class="docs">
+        <a class="skip-link" href="#content">Skip to content</a>
+        <div class="backdrop docs-backdrop" aria-hidden="true"></div>
+
+        <main id="content" class="docs-main">
+            <header class="docs-hero">
+                <p class="eyebrow">Documentation</p>
+                <h1 class="docs-hero__title">API reference</h1>
+                <p class="docs-hero__lead">One class, a handful of options, organic motion on any element. Everything PerlinDOM does, and how to drive it.</p>
+            </header>
+
+            <div class="docs-layout">
+                <nav class="toc" aria-label="On this page">
+                    <details class="toc__details" open>
+                        <summary class="toc__summary">On this page</summary>
+                        <ol class="toc__list">
+                            <li><a href="#installation">Installation</a></li>
+                            <li><a href="#quick-start">Quick start</a></li>
+                            <li><a href="#options">Options</a></li>
+                            <li><a href="#value-types">Value types</a></li>
+                            <li><a href="#methods">Methods</a></li>
+                            <li><a href="#properties">Properties</a></li>
+                            <li><a href="#amplitude-and-target">Amplitude and target</a></li>
+                            <li><a href="#gsap">GSAP + ScrollTrigger</a></li>
+                            <li><a href="#best-practices">Best practices</a></li>
+                            <li><a href="#troubleshooting">Troubleshooting</a></li>
+                            <li><a href="#browser-support">Browser support</a></li>
+                        </ol>
+                    </details>
+                </nav>
+
+                <div class="docs-content prose">
+                    <section class="docs-section" aria-labelledby="installation">
+                        <span class="docs-section__index" aria-hidden="true">01</span>
+                        <h2 id="installation">Installation</h2>
+                        <p>Install from npm. PerlinDOM has no dependencies.</p>
+<pre data-lang="bash"><code>npm install @andresclua/perlindom</code></pre>
+                        <p>Or import the ES module straight from a CDN:</p>
+<pre data-lang="html"><code>&lt;script type="module"&gt;
+  import PerlinDOM from 'https://unpkg.com/@andresclua/perlindom/dist/perlindom.es.js';
+&lt;/script&gt;</code></pre>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="quick-start">
+                        <span class="docs-section__index" aria-hidden="true">02</span>
+                        <h2 id="quick-start">Quick start</h2>
+                        <p>Pick an element and give it a range per axis. It starts moving right away, from wherever your CSS puts it.</p>
+<pre data-lang="js"><code>import PerlinDOM from '@andresclua/perlindom';
+
+const drift = new PerlinDOM({
+  element: document.querySelector('.card'),
+  x: { min: -50, max: 50 }, // ±50px horizontally
+  y: { min: -30, max: 30 }, // ±30px vertically
+  speed: 0.01,
+  seed: 123, // same seed, same path, every time
+});
+
+drift.pause();   // eases to a stop
+drift.play();    // eases back in
+drift.destroy(); // stops and restores the original inline transform</code></pre>
+                        <p>PerlinDOM writes <code>transform: translate3d(…)</code> and keeps any scale, rotate or skew your CSS already sets. If the element is <code>position: static</code> it sets <code>position: relative</code> on it for you.</p>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="options">
+                        <span class="docs-section__index" aria-hidden="true">03</span>
+                        <h2 id="options">Options</h2>
+                        <p>Everything is optional. <code>new PerlinDOM({ ... })</code> takes one object:</p>
+                        <div class="table-wrap" role="region" aria-labelledby="options-caption" tabindex="0">
+                            <table class="api-table">
+                                <caption id="options-caption" class="visually-hidden">Constructor options</caption>
+                                <thead>
+                                    <tr><th scope="col">Option</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><th scope="row"><code>element</code></th><td><code>HTMLElement | null</code></td><td><code>null</code></td><td>The element to move. With <code>null</code> nothing is moved: the instance only computes <code>lastX</code> / <code>lastY</code> for you to use.</td></tr>
+                                    <tr><th scope="row"><code>x</code></th><td><code>{ min, max } | null</code></td><td><code>null</code></td><td>Horizontal range, in px (numbers) or % of the parent (strings like <code>'10%'</code>). <code>null</code> keeps the axis still.</td></tr>
+                                    <tr><th scope="row"><code>y</code></th><td><code>{ min, max } | null</code></td><td><code>null</code></td><td>Vertical range, same rules as <code>x</code>.</td></tr>
+                                    <tr><th scope="row"><code>speed</code></th><td><code>number</code></td><td><code>0.01</code></td><td>How far through the noise each frame travels. Lower is slower; 0.002 to 0.03 covers most uses.</td></tr>
+                                    <tr><th scope="row"><code>seed</code></th><td><code>number</code></td><td><code>0</code></td><td>Picks the path: it seeds the noise and is also the starting point in time. Same seed, same path.</td></tr>
+                                    <tr><th scope="row"><code>lerpSpeed</code></th><td><code>number</code></td><td><code>0.1</code></td><td>How quickly <code>pause()</code> and <code>play()</code> ease out and in, per frame. Keep it between 0 and 1; 0 never finishes easing.</td></tr>
+                                    <tr><th scope="row"><code>preserveBaseTranslation</code></th><td><code>boolean</code></td><td><code>false</code></td><td>By default the translate part of the element's CSS transform is dropped (PerlinDOM's translate replaces it) and scale, rotate and skew are kept. <code>true</code> keeps the CSS translate too.</td></tr>
+                                    <tr><th scope="row"><code>amplitude</code></th><td><code>number</code></td><td><code>1</code></td><td>Strength of the drift: 1 is free, 0 pins the element to <code>target</code>. Clamped to 0 to 1; anything that is not a number (including <code>NaN</code>, numeric strings and <code>null</code>) becomes 1.</td></tr>
+                                    <tr><th scope="row"><code>target</code></th><td><code>{ x, y } | null</code></td><td><code>null</code></td><td>The point amplitude pulls toward, in px, as an offset from the element's base position. A missing or non-finite coordinate becomes 0; <code>null</code> means the base position itself.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="value-types">
+                        <span class="docs-section__index" aria-hidden="true">04</span>
+                        <h2 id="value-types">Value types</h2>
+                        <h3 id="value-px">Pixels</h3>
+                        <p>Numbers are px. The element moves the same distance at any screen size.</p>
+<pre data-lang="js"><code>x: { min: -50, max: 50 }</code></pre>
+                        <h3 id="value-percent">Percentages</h3>
+                        <p>Strings ending in <code>%</code> are a share of the <strong>parent's</strong> <code>clientWidth</code> (for <code>x</code>) or <code>clientHeight</code> (for <code>y</code>), padding included. They are re-read every frame, so a resized container applies on the next frame with no resize code. They need an element: with <code>element: null</code> there is no parent to measure.</p>
+<pre data-lang="js"><code>x: { min: '-10%', max: '10%' }</code></pre>
+                        <h3 id="value-mixed">Mixed</h3>
+                        <p>Each axis, and each end of a range, can use its own unit.</p>
+<pre data-lang="js"><code>x: { min: '-5%', max: '5%' },
+y: { min: -20, max: 20 },</code></pre>
+                        <h3 id="value-single">Single axis</h3>
+                        <p>Leave an axis out, or set it to <code>null</code>, and it does not drift.</p>
+<pre data-lang="js"><code>new PerlinDOM({ element, x: { min: -100, max: 100 }, y: null });</code></pre>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="methods">
+                        <span class="docs-section__index" aria-hidden="true">05</span>
+                        <h2 id="methods">Methods</h2>
+                        <p>All methods return <code>undefined</code>.</p>
+                        <dl class="api-list">
+                            <div>
+                                <dt><code>pause()</code></dt>
+                                <dd>Eases the motion to a stop at <code>lerpSpeed</code>. Once fully stopped the instance leaves the animation loop and the element stays where it is.</dd>
+                            </div>
+                            <div>
+                                <dt><code>play()</code></dt>
+                                <dd>Resumes after <code>pause()</code>, easing back in. A new instance is already playing, so you do not need to call it to start.</dd>
+                            </div>
+                            <div>
+                                <dt><code>destroy()</code></dt>
+                                <dd>Stops for good: leaves the loop, stops watching visibility, removes the resize listener and restores the element's original inline <code>transform</code>.</dd>
+                            </div>
+                            <div>
+                                <dt><code>setTarget(target | null)</code></dt>
+                                <dd>Moves the point that <code>amplitude</code> pulls toward. Takes <code>{ x, y }</code> in px from the base position; non-finite coordinates become 0. <code>null</code> (or anything that is not an object) clears it.</dd>
+                            </div>
+                            <div>
+                                <dt><code>refreshBaseTransform(preserveTranslation?)</code></dt>
+                                <dd>Re-reads the element's CSS transform. The base transform is captured once, at construction, so call this after a class change alters scale, rotate or skew. The argument defaults to the <code>preserveBaseTranslation</code> option.</dd>
+                            </div>
+                            <div>
+                                <dt><code>init(seed?)</code></dt>
+                                <dd>Rebuilds the noise from <code>seed</code> and restarts playback (also after <code>destroy()</code>). It does not reset the current time. Without an argument the noise uses seed 0, not the seed you constructed with.</dd>
+                            </div>
+                        </dl>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="properties">
+                        <span class="docs-section__index" aria-hidden="true">06</span>
+                        <h2 id="properties">Properties</h2>
+                        <div class="table-wrap" role="region" aria-labelledby="props-caption" tabindex="0">
+                            <table class="api-table">
+                                <caption id="props-caption" class="visually-hidden">Instance properties</caption>
+                                <thead>
+                                    <tr><th scope="col">Property</th><th scope="col">Type</th><th scope="col">Description</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><th scope="row"><code>amplitude</code></th><td><code>number</code></td><td>Read and write. Same clamping as the option: 0 to 1, non-numbers become 1. Safe to tween every frame.</td></tr>
+                                    <tr><th scope="row"><code>target</code></th><td><code>{ x, y } | null</code></td><td>The current target. Read it; change it with <code>setTarget()</code>, which sanitizes the values.</td></tr>
+                                    <tr><th scope="row"><code>speed</code></th><td><code>number</code></td><td>Read and write, takes effect on the next frame.</td></tr>
+                                    <tr><th scope="row"><code>lerpSpeed</code></th><td><code>number</code></td><td>Read and write, used by the next <code>pause()</code> / <code>play()</code> ease.</td></tr>
+                                    <tr><th scope="row"><code>xRange</code>, <code>yRange</code></th><td><code>{ min, max } | null</code></td><td>The <code>x</code> / <code>y</code> options, writable. Whether percentages are resolved is decided at construction, so switch between px values only, or build a new instance.</td></tr>
+                                    <tr><th scope="row"><code>lastX</code>, <code>lastY</code></th><td><code>number</code></td><td>The offset in px applied on the last frame, after amplitude. They hold still while paused or offscreen.</td></tr>
+                                    <tr><th scope="row"><code>isPlaying</code></th><td><code>boolean</code></td><td><code>false</code> from <code>pause()</code> on, even while it is still easing out; <code>true</code> after <code>play()</code>.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="amplitude-and-target">
+                        <span class="docs-section__index" aria-hidden="true">07</span>
+                        <h2 id="amplitude-and-target">Amplitude and target</h2>
+                        <p>Each frame the noise gives an offset inside your ranges. <code>amplitude</code> blends that offset toward <code>target</code>:</p>
+<pre data-lang="js"><code>offset = target + (noise - target) * amplitude</code></pre>
+                        <ul>
+                            <li><strong>1</strong> is the plain noise, exactly as without these options.</li>
+                            <li><strong>0</strong> pins the element to its target, or to its base position when there is no target.</li>
+                            <li>In between, it breathes around the target. The target applies on an axis with no range too, where the noise is 0.</li>
+                        </ul>
+                        <p>Give many elements targets that draw a shape, then lower amplitude: the drift settles into the shape. Try it:</p>
+
+                        <article class="card card--inline" id="amplitude-demo" aria-labelledby="t-amplitude">
+                            <header class="card__head">
+                                <span class="card__num" aria-hidden="true">Live</span>
+                                <div class="card__intro">
+                                    <h3 class="card__title" id="t-amplitude">Twelve dots, one ring</h3>
+                                    <p class="card__text">Each dot's target sits on a ring. Slide amplitude to 0.</p>
+                                </div>
+                                <button class="demo-toggle" type="button" data-demo-toggle aria-describedby="t-amplitude"><span>Play</span></button>
+                            </header>
+                            <div class="card__stage ex-ring">
+                                <span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span><span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span>
+                                <span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span><span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span>
+                                <span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span><span class="demo-dot"></span><span class="demo-dot demo-dot--b"></span>
+                            </div>
+                            <div class="card__controls">
+                                <div class="field">
+                                    <label for="amp">amplitude</label>
+                                    <output for="amp" data-amplitude-out>1.00</output>
+                                    <input id="amp" type="range" min="0" max="1" step="0.01" value="1" data-amplitude data-needs-demo disabled />
+                                </div>
+                            </div>
+                            <pre data-lang="js"><code></code></pre>
+                        </article>
+
+                        <h3 id="shared-loop">Shared loop and offscreen pause</h3>
+                        <p>All instances run on one shared <code>requestAnimationFrame</code> loop, which stops when nothing is playing, so hundreds of elements cost one callback per frame. One shared <code>IntersectionObserver</code> watches every element: offscreen ones skip their frames entirely (time does not advance, the transform is not written) and pick up where they left off when they scroll back in. Without <code>IntersectionObserver</code>, instances simply never pause. An instance with <code>element: null</code> has nothing to observe and always runs.</p>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="gsap">
+                        <span class="docs-section__index" aria-hidden="true">08</span>
+                        <h2 id="gsap">GSAP + ScrollTrigger</h2>
+                        <p>PerlinDOM owns the element's <code>transform</code>, so do not tween <code>x</code>, <code>y</code> or <code>transform</code> on the same element. Tween <code>amplitude</code> instead. This is how the <a href="./index.html">home page</a> gathers its circles into the title: one proxy value, scrubbed by the scroll, copied to every instance.</p>
+<pre data-lang="js"><code>import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import PerlinDOM from '@andresclua/perlindom';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const instances = [...document.querySelectorAll('.dot')].map((el, i) =>
+  new PerlinDOM({
+    element: el,
+    x: { min: -120, max: 120 },
+    y: { min: -120, max: 120 },
+    seed: i * 7919,
+    target: shape[i], // { x, y } offsets that draw your shape
+  })
+);
+
+const state = { amplitude: 1 };
+gsap.to(state, {
+  amplitude: 0,
+  ease: 'none',
+  scrollTrigger: { trigger: '.scene', start: 'top top', end: '+=1000', pin: true, scrub: 0.8 },
+  onUpdate: () => instances.forEach(inst => { inst.amplitude = state.amplitude; }),
+});</code></pre>
+                        <p><code>amplitude</code> is a real getter and setter, so <code>gsap.to(instances, {&nbsp;amplitude:&nbsp;0&nbsp;})</code> works as well; the proxy keeps it to one tween for any number of elements. To move an element with GSAP and drift it too, put PerlinDOM on a wrapper or a child.</p>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="best-practices">
+                        <span class="docs-section__index" aria-hidden="true">09</span>
+                        <h2 id="best-practices">Best practices</h2>
+                        <ul>
+                            <li><strong>One instance per element.</strong> Two instances on the same element overwrite each other's transform and visibility tracking.</li>
+                            <li><strong>Position with CSS, not with translate.</strong> Use <code>left</code>/<code>top</code>, margins, grid or flex. A CSS <code>translate</code> is dropped unless you pass <code>preserveBaseTranslation: true</code>.</li>
+                            <li><strong>Use percentages for responsive motion</strong> and give the parent a real size.</li>
+                            <li><strong>Pick calm speeds.</strong> Start at 0.01; above about 0.05 motion turns jittery.</li>
+                            <li><strong>Destroy what you remove.</strong> Call <code>destroy()</code> before taking an element out of the page, or the instance keeps a reference to it.</li>
+                            <li><strong>Respect reduced motion.</strong> PerlinDOM does not check the preference for you:</li>
+                        </ul>
+<pre data-lang="js"><code>const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!reduce) new PerlinDOM({ element, x: { min: -20, max: 20 } });</code></pre>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="troubleshooting">
+                        <span class="docs-section__index" aria-hidden="true">10</span>
+                        <h2 id="troubleshooting">Troubleshooting</h2>
+                        <dl class="api-list api-list--faq">
+                            <div>
+                                <dt>Nothing moves</dt>
+                                <dd>Check that at least one of <code>x</code> / <code>y</code> is set, and that the element is not <code>display: inline</code>: transforms do not apply to inline boxes such as a plain <code>&lt;span&gt;</code>. Use <code>inline-block</code> or <code>block</code>. Static positioning is not the problem; PerlinDOM handles it.</dd>
+                            </div>
+                            <div>
+                                <dt>The element jumps when it starts</dt>
+                                <dd>Usually a CSS translate, such as <code>translate(-50%, -50%)</code> for centring, which PerlinDOM drops by default. Centre with <code>left: calc(50% - half)</code> or margins, or pass <code>preserveBaseTranslation: true</code>.</dd>
+                            </div>
+                            <div>
+                                <dt>Too fast or too slow</dt>
+                                <dd>Change <code>speed</code>: 0.001 is very slow, 0.01 is the default, 0.1 is fast. It can change live: <code>inst.speed = 0.005</code>.</dd>
+                            </div>
+                            <div>
+                                <dt>Percentages do nothing</dt>
+                                <dd>They are a share of the parent's size, so a parent with no width or height gives a range of 0. They also need an element; with <code>element: null</code> they cannot resolve.</dd>
+                            </div>
+                            <div>
+                                <dt>It stopped while offscreen</dt>
+                                <dd>That is the offscreen pause. It resumes when the element scrolls back into view.</dd>
+                            </div>
+                            <div>
+                                <dt>pause() never finishes</dt>
+                                <dd><code>lerpSpeed</code> is 0 (or close to it). Use a value between 0.01 and 1.</dd>
+                            </div>
+                            <div>
+                                <dt>My scale or rotate changed and the element ignores it</dt>
+                                <dd>The CSS transform is read once at construction. Call <code>refreshBaseTransform()</code> after changing it.</dd>
+                            </div>
+                        </dl>
+                    </section>
+
+                    <section class="docs-section" aria-labelledby="browser-support">
+                        <span class="docs-section__index" aria-hidden="true">11</span>
+                        <h2 id="browser-support">Browser support</h2>
+                        <p>The npm build (<code>dist/</code>) targets the browsers that support native ES modules and ES2020: <strong>Chrome 87+, Edge 88+, Firefox 78+, Safari 14+</strong>. Importing the source file directly needs private class methods instead: Chrome 84+, Firefox 90+, Safari 15+.</p>
+                        <ul>
+                            <li><code>requestAnimationFrame</code>, <code>getComputedStyle</code> and CSS transforms are required.</li>
+                            <li><code>DOMMatrixReadOnly</code> separates the CSS translate from scale, rotate and skew; without it the computed transform is used as it is.</li>
+                            <li><code>IntersectionObserver</code> powers the offscreen pause; without it everything keeps running.</li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
         </main>
-        <script type="module" src="./js/index.js"></script>
+
+        <footer class="site-foot">
+            <p class="site-foot__brand">PerlinDOM</p>
+            <nav class="site-foot__links" aria-label="Footer">
+                <a href="./index.html">Home</a>
+                <a href="./api.html" aria-current="page">API</a>
+                <a href="./examples.html">Examples</a>
+                <a href="https://www.npmjs.com/package/@andresclua/perlindom" target="_blank" rel="noopener">npm</a>
+                <a href="https://github.com/andresclua/PerlinDOM" target="_blank" rel="noopener">GitHub</a>
+            </nav>
+            <p class="site-foot__note">MIT licensed. Zero dependencies.</p>
+        </footer>
+        <script type="module" src="./js/site/apiPage.js"></script>
     </body>
 </html>
