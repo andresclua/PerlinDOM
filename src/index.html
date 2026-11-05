@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="./scss/style.scss" />
         <title>PerlinDOM</title>
         <noscript><style>.hero__title, .hero__sub { opacity: 1; }</style></noscript>
@@ -19,6 +19,94 @@
                     <p class="hero__sub">Organic motion for the DOM. Powered by Perlin noise.</p>
                 </div>
                 <div class="hero__hint" aria-hidden="true">Scroll</div>
+            </section>
+            <section class="api" aria-labelledby="api-title">
+                <div class="api__rail">
+                    <p class="eyebrow" id="api-title">The API, live</p>
+                    <ol class="api__steps" aria-hidden="true"></ol>
+                    <div class="api__progress" aria-hidden="true"><span class="api__progress-fill"></span></div>
+                </div>
+                <div class="api__panels">
+                    <article class="api-panel" data-demo="speed">
+                        <div class="api-panel__copy">
+                            <p class="api-panel__index">01 / 06</p>
+                            <h2 class="api-panel__title">speed</h2>
+                            <p class="api-panel__text">How fast time flows through the noise. Same kind of path, a different tempo.</p>
+                            <pre class="api-panel__code"><code>new PerlinDOM({ element, speed: <b>0.016</b> })</code></pre>
+                        </div>
+                        <div class="api-panel__stage" aria-hidden="true"></div>
+                    </article>
+                    <article class="api-panel" data-demo="seed">
+                        <div class="api-panel__copy">
+                            <p class="api-panel__index">02 / 06</p>
+                            <h2 class="api-panel__title">seed</h2>
+                            <p class="api-panel__text">The seed picks the path. Same seed, same path, every time. A new seed, a new path.</p>
+                            <pre class="api-panel__code"><code>new PerlinDOM({ element, seed: <b>7</b> })</code></pre>
+                        </div>
+                        <div class="api-panel__stage" aria-hidden="true"></div>
+                    </article>
+                    <article class="api-panel" data-demo="ranges">
+                        <div class="api-panel__copy">
+                            <p class="api-panel__index">03 / 06</p>
+                            <h2 class="api-panel__title">x / y</h2>
+                            <p class="api-panel__text">Ranges set how far an element may wander, in px or %. It never leaves the box.</p>
+                            <pre class="api-panel__code"><code>new PerlinDOM({
+  element,
+  x: { min: <b data-live="x-min">-140</b>, max: <b data-live="x-max">140</b> },
+  y: { min: <b data-live="y-min">-70</b>, max: <b data-live="y-max">70</b> },
+})</code></pre>
+                        </div>
+                        <div class="api-panel__stage" aria-hidden="true"></div>
+                    </article>
+                    <article class="api-panel" data-demo="lerp" data-step="pause / play">
+                        <div class="api-panel__copy">
+                            <p class="api-panel__index">04 / 06</p>
+                            <h2 class="api-panel__title">pause, play, lerpSpeed</h2>
+                            <p class="api-panel__text">Motion never snaps. lerpSpeed sets how softly it eases out on pause and back in on play.</p>
+                            <pre class="api-panel__code"><code>new PerlinDOM({ element, lerpSpeed: <b>0.03</b> })
+inst.<b data-live="call">pause</b>()</code></pre>
+                            <button class="api-panel__btn" type="button" data-toggle disabled>Pause</button>
+                        </div>
+                        <div class="api-panel__stage" aria-hidden="true"></div>
+                    </article>
+                    <article class="api-panel" data-demo="amplitude">
+                        <div class="api-panel__copy">
+                            <p class="api-panel__index">05 / 06</p>
+                            <h2 class="api-panel__title">amplitude</h2>
+                            <p class="api-panel__text">One number from chaos to order: 1 drifts freely, 0 rests on its spot. Tween it, or scrub it like this.</p>
+                            <pre class="api-panel__code"><code>inst.amplitude = <b data-live="amplitude">1.00</b></code></pre>
+                        </div>
+                        <div class="api-panel__stage" aria-hidden="true"></div>
+                    </article>
+                    <article class="api-panel" data-demo="target">
+                        <div class="api-panel__copy">
+                            <p class="api-panel__index">06 / 06</p>
+                            <h2 class="api-panel__title">target</h2>
+                            <p class="api-panel__text">The point amplitude pulls toward. Move it and the elements follow, still breathing.</p>
+                            <pre class="api-panel__code"><code>inst.amplitude = <b>0.28</b>
+inst.setTarget(<b data-live="target">{ x: 0, y: 0 }</b>)</code></pre>
+                        </div>
+                        <div class="api-panel__stage" aria-hidden="true"></div>
+                    </article>
+                </div>
+            </section>
+            <section class="finale" aria-labelledby="finale-title">
+                <div class="finale__field" aria-hidden="true"></div>
+                <div class="finale__copy">
+                    <p class="eyebrow">Ready when you are</p>
+                    <h2 class="finale__title" id="finale-title">Let it drift.</h2>
+                    <div class="install">
+                        <code class="install__cmd">npm install @andresclua/perlindom</code>
+                        <button class="install__btn" type="button" data-copy aria-label="Copy install command"><span>Copy</span></button>
+                        <span class="visually-hidden" role="status" aria-live="polite" data-copy-status></span>
+                    </div>
+                    <nav class="finale__links" aria-label="Next steps">
+                        <a href="./api.html">API reference</a>
+                        <a href="./examples.html">Examples</a>
+                        <a href="https://github.com/andresclua/PerlinDOM" target="_blank" rel="noopener">GitHub</a>
+                    </nav>
+                </div>
+                <p class="finale__foot">MIT licensed. Zero dependencies.</p>
             </section>
         </main>
         <script type="module" src="./js/index.js"></script>
