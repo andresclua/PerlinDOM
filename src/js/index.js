@@ -5,8 +5,9 @@ import { mountLetters } from './site/letters.js';
 import { mountApiChapters } from './site/apiChapters.js';
 import { mountFinale } from './site/finale.js';
 import { mountBackdrop } from './site/backdrop.js';
-import { keepStoryPositionOnResize } from './site/scroll.js';
+import { keepStoryPositionOnResize, manageScrollRestoration } from './site/scroll.js';
 
+const restoreScroll = manageScrollRestoration();
 mountNav();
 
 // Chapters mount top to bottom: pins must be created in page order.
@@ -49,4 +50,6 @@ mountBackdrop(() => {
   return stops;
 });
 
+// All pins exist now, so the page has its real height: put the reader back, then watch resizes.
+restoreScroll();
 keepStoryPositionOnResize();

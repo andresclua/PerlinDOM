@@ -1,5 +1,9 @@
 // Chapters 3-5: letters, live API, finale.
 
+// The story positions itself (pins, restore, resize ratio); the browser's scroll anchoring
+// would otherwise shift scrollY by thousands of px when a resize reflows the pin spacers.
+html { overflow-anchor: none; }
+
 /* ---------- 3. letters ---------- */
 
 // Hero glow and vignette, faded out by letters.js before the section scrolls away.
@@ -500,7 +504,9 @@ $mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
   letter-spacing: 0;
   white-space: nowrap;
   overflow-x: auto;
+  border-radius: 6px;
 
+  &:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 4px; }
   &::before { content: '$ '; color: var(--accent-2); }
 }
 

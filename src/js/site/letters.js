@@ -84,13 +84,15 @@ export function mountLetters(h1) {
   }
   layout();
 
-  // Letters are released left to right: each starts a little later, all reach 1 together.
+  // Letters are released left to right: letter i starts when p reaches its delay
+  // (0 for the first, `lag` for the last) and ramps linearly so every letter reaches 1 at p = 1.
   const state = { p: 0 };
   const lag = 0.55;
   const applyAmplitude = () => {
     const n = instances.length - 1 || 1;
     instances.forEach((inst, i) => {
-      inst.amplitude = state.p * (1 + lag) - (lag * i) / n;
+      const delay = (lag * i) / n;
+      inst.amplitude = Math.min(1, Math.max(0, (state.p - delay) / (1 - delay)));
     });
   };
 

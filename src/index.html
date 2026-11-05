@@ -8,6 +8,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="./scss/style.scss" />
         <title>PerlinDOM</title>
+        <!-- Before anything renders: the story restores its own scroll once the pins exist (see site/scroll.js). -->
+        <script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
         <noscript><style>.hero__title, .hero__sub { opacity: 1; }</style></noscript>
     </head>
     <body>
@@ -96,7 +98,7 @@ inst.setTarget(<b data-live="target">{ x: 0, y: 0 }</b>)</code></pre>
                     <p class="eyebrow">Ready when you are</p>
                     <h2 class="finale__title" id="finale-title">Let it drift.</h2>
                     <div class="install">
-                        <code class="install__cmd">npm install @andresclua/perlindom</code>
+                        <code class="install__cmd" tabindex="0" role="group" aria-label="Install command">npm install @andresclua/perlindom</code>
                         <button class="install__btn" type="button" data-copy aria-label="Copy install command"><span>Copy</span></button>
                         <span class="visually-hidden" role="status" aria-live="polite" data-copy-status></span>
                     </div>

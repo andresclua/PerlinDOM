@@ -130,7 +130,10 @@ function legacyCopy(text) {
   ta.setAttribute('readonly', '');
   ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
   document.body.appendChild(ta);
+  // iOS needs focus plus an explicit range; select() alone copies nothing there.
+  ta.focus();
   ta.select();
+  ta.setSelectionRange(0, ta.value.length);
   let ok = false;
   try {
     ok = document.execCommand('copy');

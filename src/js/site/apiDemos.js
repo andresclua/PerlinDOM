@@ -227,6 +227,7 @@ function lerp(stage, panel) {
 
 // A grid of dots; scroll drives amplitude from 1 (chaos) to 0 (each on its grid spot).
 function amplitude(stage, panel) {
+  const ease = gsap.parseEase('power2.inOut');
   const mobile = window.innerWidth < 768;
   const cols = mobile ? 6 : 9;
   const rows = 5;
@@ -251,7 +252,7 @@ function amplitude(stage, panel) {
   ro.observe(stage);
   return {
     update(local) {
-      const a = 1 - gsap.parseEase('power2.inOut')(Math.min(1, Math.max(0, local)));
+      const a = 1 - ease(Math.min(1, Math.max(0, local)));
       insts.forEach(inst => { inst.amplitude = a; });
       if (live) live.textContent = a.toFixed(2);
     },
