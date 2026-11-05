@@ -33,6 +33,7 @@
 .hero__field {
   position: absolute;
   inset: 0;
+  z-index: 0; // own stacking context from the start, so the opacity tween never reorders layers
   pointer-events: none;
 }
 

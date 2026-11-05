@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { pickPoints } from '../src/js/site/sampleText.js';
+import { pickPoints, sampleText } from '../src/js/site/sampleText.js';
 
 // Build a mask with filled axis-aligned rectangles [x0, y0, x1, y1) (exclusive end).
 const makeMask = (width, height, rects) => {
@@ -58,4 +58,9 @@ test('still returns count points when count exceeds the set pixels', () => {
 test('returns [] for an empty mask or count 0', () => {
   assert.deepEqual(pickPoints(new Uint8Array(100), 10, 10, 30), []);
   assert.deepEqual(pickPoints(makeMask(10, 10, [[0, 0, 10, 10]]), 10, 10, 0), []);
+});
+
+test('sampleText returns [] for an empty string without touching the DOM', () => {
+  assert.equal(typeof globalThis.document, 'undefined');
+  assert.deepEqual(sampleText('', '200 100px Outfit', 800, 300), []);
 });
