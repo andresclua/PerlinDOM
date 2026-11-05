@@ -144,3 +144,66 @@ test('setTarget(null) returns to origin at amplitude 0', async () => {
   assert.equal(inst.lastX, 0);
   assert.equal(inst.lastY, 0);
 });
+
+test('bad target values degrade to 0 and stay finite', async () => {
+  const PerlinDOM = await load();
+  for (const amplitude of [0, 0.5]) {
+    const el = fakeEl();
+    const inst = new PerlinDOM({
+      ...opts(el),
+      seed: 3,
+      amplitude,
+      target: { x: NaN, y: Infinity },
+    });
+    inst.step();
+    assert.ok(Number.isFinite(inst.lastX) && Number.isFinite(inst.lastY));
+    assert.doesNotMatch(el.style.transform, /NaN|Infinity/);
+    inst.setTarget({ x: '40', y: undefined });
+    inst.step();
+    assert.ok(Number.isFinite(inst.lastX) && Number.isFinite(inst.lastY));
+    assert.deepEqual(inst.target, { x: 0, y: 0 });
+    inst.setTarget('junk');
+    assert.equal(inst.target, null);
+  }
+});
+
+test('amplitude 0.5 lands midway between target and noise', async () => {
+  const PerlinDOM = await load();
+  const free = new PerlinDOM({ ...opts(fakeEl()), seed: 3 });
+  const half = new PerlinDOM({ ...opts(fakeEl()), seed: 3, amplitude: 0.5, target: { x: 40, y: -20 } });
+  free.step();
+  half.step();
+  assert.ok(Math.abs(half.lastX - (40 + (free.lastX - 40) / 2)) < 1e-12);
+  assert.ok(Math.abs(half.lastY - (-20 + (free.lastY + 20) / 2)) < 1e-12);
+});
+
+test('amplitude written at runtime changes the next output', async () => {
+  const PerlinDOM = await load();
+  const inst = new PerlinDOM({ ...opts(fakeEl()), seed: 3, target: { x: 40, y: -25 } });
+  inst.step();
+  assert.notEqual(inst.lastX, 40);
+  inst.amplitude = 0;
+  inst.step();
+  assert.equal(inst.lastX, 40);
+  assert.equal(inst.lastY, -25);
+});
+
+test('NaN or non-number after 0.4 resets amplitude to 1', async () => {
+  const PerlinDOM = await load();
+  const inst = new PerlinDOM(opts(fakeEl()));
+  inst.amplitude = 0.4;
+  inst.amplitude = NaN;
+  assert.equal(inst.amplitude, 1);
+  inst.amplitude = 0.4;
+  inst.amplitude = null;
+  assert.equal(inst.amplitude, 1);
+});
+
+test('mutating the caller target object does not move the element', async () => {
+  const PerlinDOM = await load();
+  const mine = { x: 40, y: -25 };
+  const inst = new PerlinDOM({ ...opts(fakeEl()), amplitude: 0, target: mine });
+  mine.x = 999;
+  inst.step();
+  assert.equal(inst.lastX, 40);
+});

@@ -94,7 +94,7 @@ class PerlinDOM {
     target = null, // {x, y} en px, offset desde la posición base
   }) {
     this.amplitude = amplitude;
-    this.target = target;
+    this.setTarget(target);
     this.el = element;
     this.xRange = x;
     this.yRange = y;
@@ -160,12 +160,16 @@ class PerlinDOM {
   }
 
   set amplitude(v) {
-    const n = Number(v);
-    this.#amplitude = Number.isNaN(n) ? 1 : Math.min(1, Math.max(0, n));
+    this.#amplitude = typeof v === 'number' && !Number.isNaN(v) ? Math.min(1, Math.max(0, v)) : 1;
   }
 
   setTarget(target) {
-    this.target = target ?? null;
+    if (target === null || typeof target !== 'object') {
+      this.target = null;
+      return;
+    }
+    const axis = v => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+    this.target = { x: axis(target.x), y: axis(target.y) };
   }
 
   // Permite refrescar el transform base si cambian clases/estilos en runtime
