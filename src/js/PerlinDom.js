@@ -48,6 +48,8 @@ function unobserve(inst) {
 }
 
 class PerlinDOM {
+  #amplitude = 1;
+
   /* ---------- helpers privados y estáticos ---------- */
   static #mulberry32(a) {
     return function () {
@@ -88,7 +90,11 @@ class PerlinDOM {
     seed = 0,
     lerpSpeed = 0.1,
     preserveBaseTranslation = false, // <-- si querés mantener la traslación base
+    amplitude = 1,
+    target = null, // {x, y} en px, offset desde la posición base
   }) {
+    this.amplitude = amplitude;
+    this.target = target;
     this.el = element;
     this.xRange = x;
     this.yRange = y;
@@ -146,6 +152,20 @@ class PerlinDOM {
     this.targetLerpFactor = 1;
     observe(this);
     activate(this);
+  }
+
+  // 0 = clavado en target (o 0,0), 1 = deriva libre; siempre clampeado a [0, 1], NaN cuenta como 1
+  get amplitude() {
+    return this.#amplitude;
+  }
+
+  set amplitude(v) {
+    const n = Number(v);
+    this.#amplitude = Number.isNaN(n) ? 1 : Math.min(1, Math.max(0, n));
+  }
+
+  setTarget(target) {
+    this.target = target ?? null;
   }
 
   // Permite refrescar el transform base si cambian clases/estilos en runtime
@@ -300,8 +320,8 @@ class PerlinDOM {
         }
 
         // Calculate pixel values
-        const valX = this.xRange ? this.#map(noiseX, -1, 1, minX, maxX) : 0;
-        const valY = this.yRange ? this.#map(noiseY, -1, 1, minY, maxY) : 0;
+        const valX = this.#blend(this.xRange ? this.#map(noiseX, -1, 1, minX, maxX) : 0, 'x');
+        const valY = this.#blend(this.yRange ? this.#map(noiseY, -1, 1, minY, maxY) : 0, 'y');
 
         // Store current values for potential external use
         this.lastX = valX;
@@ -312,8 +332,8 @@ class PerlinDOM {
         this.el.style.transform = `translate3d(${valX}px, ${valY}px, 0) ${this.baseTransform}`.trim();
       } else {
         // If no element, just calculate and store the values
-        const valX = this.xRange ? this.#map(noiseX, -1, 1, this.xRange.min, this.xRange.max) : 0;
-        const valY = this.yRange ? this.#map(noiseY, -1, 1, this.yRange.min, this.yRange.max) : 0;
+        const valX = this.#blend(this.xRange ? this.#map(noiseX, -1, 1, this.xRange.min, this.xRange.max) : 0, 'x');
+        const valY = this.#blend(this.yRange ? this.#map(noiseY, -1, 1, this.yRange.min, this.yRange.max) : 0, 'y');
 
         this.lastX = valX;
         this.lastY = valY;
@@ -322,6 +342,13 @@ class PerlinDOM {
 
     // Continue animation if not completely paused or still transitioning
     return this.lerpFactor > 0 || this.targetLerpFactor > 0;
+  }
+
+  // target + (noise - target) * amplitude; amplitude 1 returns noise untouched (exact legacy values)
+  #blend(noise, axis) {
+    if (this.#amplitude === 1) return noise;
+    const t = this.target?.[axis] ?? 0;
+    return t + (noise - t) * this.#amplitude;
   }
 
   #map(n, inMin, inMax, outMin, outMax) {

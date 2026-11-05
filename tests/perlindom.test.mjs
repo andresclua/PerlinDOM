@@ -100,3 +100,47 @@ test('offscreen instances skip stepping when IntersectionObserver exists', async
   runFrame();
   assert.ok(el.style.transform);
 });
+
+test('amplitude 0 lands on target', async () => {
+  const PerlinDOM = await load();
+  const inst = new PerlinDOM({ ...opts(fakeEl()), amplitude: 0, target: { x: 40, y: -25 } });
+  runFrame();
+  assert.equal(inst.lastX, 40);
+  assert.equal(inst.lastY, -25);
+});
+
+test('amplitude 1 equals previous behavior', async () => {
+  const PerlinDOM = await load();
+  const el = fakeEl();
+  // Values captured from the implementation before amplitude existed.
+  const inst = new PerlinDOM({ ...opts(el), seed: 3, target: { x: 40, y: -25 } });
+  for (let i = 0; i < 7; i++) inst.step();
+  assert.equal(inst.lastX, -0.9914399999999883);
+  assert.equal(inst.lastY, -1.068479999999985);
+  assert.match(el.style.transform, /^translate3d\(-0\.99/);
+});
+
+test('amplitude clamps and ignores NaN', async () => {
+  const PerlinDOM = await load();
+  const inst = new PerlinDOM(opts(fakeEl()));
+  assert.equal(inst.amplitude, 1);
+  inst.amplitude = 5;
+  assert.equal(inst.amplitude, 1);
+  inst.amplitude = -2;
+  assert.equal(inst.amplitude, 0);
+  inst.amplitude = 0.4;
+  assert.equal(inst.amplitude, 0.4);
+  inst.amplitude = NaN;
+  assert.equal(inst.amplitude, 1);
+});
+
+test('setTarget(null) returns to origin at amplitude 0', async () => {
+  const PerlinDOM = await load();
+  const inst = new PerlinDOM({ ...opts(fakeEl()), amplitude: 0, target: { x: 40, y: -25 } });
+  runFrame();
+  assert.equal(inst.lastX, 40);
+  inst.setTarget(null);
+  runFrame();
+  assert.equal(inst.lastX, 0);
+  assert.equal(inst.lastY, 0);
+});
