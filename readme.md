@@ -386,8 +386,7 @@ The npm build (`dist/`) targets browsers with native ES modules and ES2020: **Ch
 
 ## 🔗 Live site
 
-Full reference and live demos: [`src/api.html`](./src/api.html) and [`src/examples.html`](./src/examples.html) (home: [`src/index.html`](./src/index.html)).
-<!-- TODO: site URL -->
+Live site: **https://perlindom.netlify.app** · [API reference](https://perlindom.netlify.app/api.html) · [Examples](https://perlindom.netlify.app/examples.html)
 
 ## 📝 Changelog
 
