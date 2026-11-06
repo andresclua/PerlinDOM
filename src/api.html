@@ -93,6 +93,7 @@ drift.destroy(); // stops and restores the original inline transform</code></pre
                                     <tr role="row"><th scope="row" role="rowheader"><code>preserveBaseTranslation</code></th><td role="cell"><code>boolean</code></td><td role="cell"><code>false</code></td><td role="cell">By default the translate part of the element's CSS transform is dropped (PerlinDOM's translate replaces it) and scale, rotate and skew are kept. <code>true</code> keeps the CSS translate too.</td></tr>
                                     <tr role="row"><th scope="row" role="rowheader"><code>amplitude</code></th><td role="cell"><code>number</code></td><td role="cell"><code>1</code></td><td role="cell">Strength of the drift: 1 is free, 0 pins the element to <code>target</code>. Clamped to 0 to 1; anything that is not a number (including <code>NaN</code>, numeric strings and <code>null</code>) becomes 1.</td></tr>
                                     <tr role="row"><th scope="row" role="rowheader"><code>target</code></th><td role="cell"><code>{ x, y } | null</code></td><td role="cell"><code>null</code></td><td role="cell">The point amplitude pulls toward, in px, as an offset from the element's base position. A missing or non-finite coordinate becomes 0; <code>null</code> means the base position itself.</td></tr>
+                                    <tr role="row"><th scope="row" role="rowheader"><code>pauseOffscreen</code></th><td role="cell"><code>boolean</code></td><td role="cell"><code>true</code></td><td role="cell">Skip frames while the element's parent is outside the viewport. <code>false</code> keeps the instance running wherever it is.</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -207,7 +208,7 @@ y: { min: -20, max: 20 },</code></pre>
                         </article>
 
                         <h3 id="shared-loop">Shared loop and offscreen pause</h3>
-                        <p>All instances run on one shared <code>requestAnimationFrame</code> loop, which stops when nothing is playing, so hundreds of elements cost one callback per frame. One shared <code>IntersectionObserver</code> watches every element: offscreen ones skip their frames entirely (time does not advance, the transform is not written) and pick up where they left off when they scroll back in. Without <code>IntersectionObserver</code>, instances simply never pause. An instance with <code>element: null</code> has nothing to observe and always runs.</p>
+                        <p>All instances run on one shared <code>requestAnimationFrame</code> loop, which stops when nothing is playing, so hundreds of elements cost one callback per frame. One shared <code>IntersectionObserver</code> watches each element's parent (not the element: its own drift could carry it out of view and freeze it there). While the parent is offscreen the instance skips its frames entirely (time does not advance, the transform is not written) and picks up where it left off when it scrolls back in. Changing <code>amplitude</code> or calling <code>setTarget()</code> still renders one frame while offscreen, so a scrubbed effect always lands. <code>pauseOffscreen: false</code> turns the pause off. Without <code>IntersectionObserver</code>, instances simply never pause. An instance with <code>element: null</code> has nothing to observe and always runs.</p>
                     </section>
 
                     <section class="docs-section" aria-labelledby="gsap">
@@ -219,6 +220,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PerlinDOM from '@andresclua/perlindom';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const shape = [{ x: 0, y: -80 }, { x: 70, y: 40 }, { x: -70, y: 40 }]; // one { x, y } per .dot
 
 const instances = [...document.querySelectorAll('.dot')].map((el, i) =>
   new PerlinDOM({
@@ -277,7 +280,7 @@ if (!reduce) new PerlinDOM({ element, x: { min: -20, max: 20 } });</code></pre>
                             </div>
                             <div>
                                 <dt>It stopped while offscreen</dt>
-                                <dd>That is the offscreen pause. It resumes when the element scrolls back into view.</dd>
+                                <dd>That is the offscreen pause: its parent left the viewport. It resumes when the parent scrolls back into view; pass <code>pauseOffscreen: false</code> to keep it running.</dd>
                             </div>
                             <div>
                                 <dt>pause() never finishes</dt>

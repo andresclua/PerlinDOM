@@ -1,84 +1,101 @@
-var C = (i) => {
+var q = (i) => {
   throw TypeError(i);
 };
-var $ = (i, t, e) => t.has(i) || C("Cannot " + e);
-var X = (i, t, e) => ($(i, t, "read from private field"), e ? e.call(i) : t.get(i)), z = (i, t, e) => t.has(i) ? C("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(i) : t.set(i, e), D = (i, t, e, s) => ($(i, t, "write to private field"), s ? s.call(i, e) : t.set(i, e), e), r = (i, t, e) => ($(i, t, "access private method"), e);
-const v = /* @__PURE__ */ new Set();
-let w = null;
-function k() {
-  w = null;
-  for (const i of [...v])
-    v.has(i) && i.onScreen && i.step() === !1 && v.delete(i);
-  v.size > 0 && (w = requestAnimationFrame(k));
+var $ = (i, t, e) => t.has(i) || q("Cannot " + e);
+var P = (i, t, e) => ($(i, t, "read from private field"), e ? e.call(i) : t.get(i)), X = (i, t, e) => t.has(i) ? q("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(i) : t.set(i, e), C = (i, t, e, s) => ($(i, t, "write to private field"), s ? s.call(i, e) : t.set(i, e), e), a = (i, t, e) => ($(i, t, "access private method"), e);
+const T = /* @__PURE__ */ new Set();
+let F = null;
+function G() {
+  F = null;
+  for (const i of [...T])
+    T.has(i) && (!i.onScreen && !i._dirty || (i._dirty = !1, i.step() === !1 && T.delete(i)));
+  T.size > 0 && F === null && (F = requestAnimationFrame(G));
 }
-function H(i) {
-  v.add(i), w === null && (w = requestAnimationFrame(k));
+function D(i) {
+  T.add(i), F === null && (F = requestAnimationFrame(G));
 }
-function U(i) {
-  v.delete(i), v.size === 0 && w !== null && (cancelAnimationFrame(w), w = null);
-}
-const A = /* @__PURE__ */ new Map();
-let S = null;
 function Z(i) {
-  typeof IntersectionObserver > "u" || !i.el || (S ?? (S = new IntersectionObserver((t) => {
-    for (const e of t) {
-      const s = A.get(e.target);
-      s && (s.onScreen = e.isIntersecting);
-    }
-  })), A.set(i.el, i), S.observe(i.el));
+  T.delete(i), T.size === 0 && F !== null && (cancelAnimationFrame(F), F = null);
 }
+const B = /* @__PURE__ */ new Map(), A = /* @__PURE__ */ new WeakMap();
+let I = null;
 function V(i) {
-  !S || !i.el || A.get(i.el) !== i || (A.delete(i.el), S.unobserve(i.el));
+  if (typeof IntersectionObserver > "u" || !i.el || !i.pauseOffscreen || A.has(i)) return;
+  I ?? (I = new IntersectionObserver((s) => {
+    for (const r of s) {
+      const o = B.get(r.target);
+      if (o) {
+        o.visible = r.isIntersecting;
+        for (const n of o.insts) n.onScreen = r.isIntersecting;
+      }
+    }
+  }));
+  const t = i.el.parentElement || i.el;
+  let e = B.get(t);
+  e || (e = { visible: !0, insts: /* @__PURE__ */ new Set() }, B.set(t, e), I.observe(t)), e.insts.add(i), A.set(i, t), i.onScreen = e.visible;
 }
-var T, o, G, J, d, L, c, K, Q, M, B, I;
+function _(i) {
+  const t = A.get(i);
+  if (!t) return;
+  A.delete(i);
+  const e = B.get(t);
+  e && (e.insts.delete(i), e.insts.size === 0 && (B.delete(t), I.unobserve(t)));
+}
+var x, l, J, K, y, L, c, Q, U, S, z, O;
 const f = class f {
   constructor({
     element: t,
     x: e = null,
     y: s = null,
-    speed: h = 0.01,
-    seed: l = 0,
+    speed: r = 0.01,
+    seed: o = 0,
     lerpSpeed: n = 0.1,
-    preserveBaseTranslation: a = !1,
+    preserveBaseTranslation: h = !1,
     // <-- si querés mantener la traslación base
-    amplitude: m = 1,
-    target: u = null
+    amplitude: u = 1,
+    target: m = null,
     // {x, y} en px, offset desde la posición base
+    pauseOffscreen: g = !0
+    // false = keep stepping even when the parent box is out of view
   }) {
-    z(this, c);
-    z(this, T, 1);
-    var g, p, R, y;
-    if (this.amplitude = m, this.setTarget(u), this.el = t, this.xRange = e, this.yRange = s, this.speed = h, this.time = l, this.isPlaying = !0, this.lerpFactor = 1, this.lerpSpeed = n, this.targetLerpFactor = 1, this.lastX = 0, this.lastY = 0, this.preserveBaseTranslation = a, this.hasPercentages = !!(e && (r(g = f, o, d).call(g, e.min) || r(p = f, o, d).call(p, e.max)) || s && (r(R = f, o, d).call(R, s.min) || r(y = f, o, d).call(y, s.max))), t) {
-      const x = window.getComputedStyle(t);
-      x.position === "static" && (t.style.position = "relative"), this.originalInlineTransform = t.style.transform || "", this.baseTransform = r(this, c, I).call(this, x.transform, this.preserveBaseTranslation), this.hasPercentages && (this.handleResize = this.handleResize.bind(this), window.addEventListener("resize", this.handleResize));
+    X(this, c);
+    X(this, x, 1);
+    var d, R, b, v;
+    if (this._dirty = !1, this.pauseOffscreen = g !== !1, this.amplitude = u, this.setTarget(m), this.el = t, this.xRange = e, this.yRange = s, this.speed = r, this.time = o, this.isPlaying = !0, this.lerpFactor = 1, this.lerpSpeed = n, this.targetLerpFactor = 1, this.lastX = 0, this.lastY = 0, this.preserveBaseTranslation = h, this.hasPercentages = !!(e && (a(d = f, l, y).call(d, e.min) || a(R = f, l, y).call(R, e.max)) || s && (a(b = f, l, y).call(b, s.min) || a(v = f, l, y).call(v, s.max))), t) {
+      const p = window.getComputedStyle(t);
+      p.position === "static" && (t.style.position = "relative"), this.originalInlineTransform = t.style.transform || "", this.baseTransform = a(this, c, O).call(this, p.transform, this.preserveBaseTranslation), this.hasPercentages && (this.handleResize = this.handleResize.bind(this), window.addEventListener("resize", this.handleResize));
     } else
       this.originalInlineTransform = "", this.baseTransform = "";
-    this.onScreen = !0, this.init(l);
+    this.onScreen = !0, this.init(o);
   }
   init(t) {
     var e;
-    this.noise = r(this, c, K).call(this, r(e = f, o, J).call(e, t)), this.isPlaying = !0, this.lerpFactor = 1, this.targetLerpFactor = 1, Z(this), H(this);
+    this.noise = a(this, c, Q).call(this, a(e = f, l, K).call(e, t)), this.isPlaying = !0, this.lerpFactor = 1, this.targetLerpFactor = 1, V(this), D(this);
   }
   // 0 = clavado en target (o 0,0), 1 = deriva libre; siempre clampeado a [0, 1], NaN cuenta como 1
   get amplitude() {
-    return X(this, T);
+    return P(this, x);
   }
   set amplitude(t) {
-    D(this, T, typeof t == "number" && !Number.isNaN(t) ? Math.min(1, Math.max(0, t)) : 1);
+    const e = typeof t == "number" && !Number.isNaN(t) ? Math.min(1, Math.max(0, t)) : 1;
+    e !== P(this, x) && (this._dirty = !0), C(this, x, e);
   }
   setTarget(t) {
-    if (t === null || typeof t != "object") {
+    const e = this.target;
+    if (t === null || typeof t != "object")
       this.target = null;
-      return;
+    else {
+      const r = (o) => typeof o == "number" && Number.isFinite(o) ? o : 0;
+      this.target = { x: r(t.x), y: r(t.y) };
     }
-    const e = (s) => typeof s == "number" && Number.isFinite(s) ? s : 0;
-    this.target = { x: e(t.x), y: e(t.y) };
+    const s = this.target;
+    ((e == null ? void 0 : e.x) !== (s == null ? void 0 : s.x) || (e == null ? void 0 : e.y) !== (s == null ? void 0 : s.y)) && (this._dirty = !0);
   }
   // Permite refrescar el transform base si cambian clases/estilos en runtime
   refreshBaseTransform(t = this.preserveBaseTranslation) {
     if (!this.el) return;
     const e = window.getComputedStyle(this.el);
-    this.baseTransform = r(this, c, I).call(this, e.transform, t);
+    this.baseTransform = a(this, c, O).call(this, e.transform, t);
   }
   // Handle window resize for percentage-based values
   handleResize() {
@@ -87,102 +104,102 @@ const f = class f {
     this.isPlaying && (this.targetLerpFactor = 0, this.isPlaying = !1);
   }
   play() {
-    this.isPlaying || (this.targetLerpFactor = 1, this.isPlaying = !0, this.lerpFactor === 0 && H(this));
+    this.isPlaying || (this.targetLerpFactor = 1, this.isPlaying = !0, this.lerpFactor === 0 && D(this));
   }
   // Un frame de este instance; devuelve false cuando queda totalmente pausado
   step() {
-    var t, e, s, h, l, n, a, m, u, g, p, R;
-    if (this.lerpFactor !== this.targetLerpFactor && (this.lerpFactor = r(this, c, Q).call(this, this.lerpFactor, this.targetLerpFactor, this.lerpSpeed), Math.abs(this.lerpFactor - this.targetLerpFactor) < 1e-3 && (this.lerpFactor = this.targetLerpFactor)), this.lerpFactor > 0) {
+    var t, e, s, r, o, n, h, u, m, g, d, R;
+    if (this.lerpFactor !== this.targetLerpFactor && (this.lerpFactor = a(this, c, U).call(this, this.lerpFactor, this.targetLerpFactor, this.lerpSpeed), Math.abs(this.lerpFactor - this.targetLerpFactor) < 1e-3 && (this.lerpFactor = this.targetLerpFactor)), this.lerpFactor > 0) {
       this.time += this.speed * this.lerpFactor;
-      const y = this.noise.perlin2(this.time, 0), x = this.noise.perlin2(this.time, 100);
+      const b = this.noise.perlin2(this.time, 0), v = this.noise.perlin2(this.time, 100);
       if (this.el) {
-        let F, b, P, Y;
+        let p, w, M, Y;
         if (this.hasPercentages) {
-          const W = this.el.parentElement || document.body, j = W.clientWidth, q = W.clientHeight;
-          this.xRange && (F = r(t = f, o, d).call(t, this.xRange.min) ? r(e = f, o, L).call(e, this.xRange.min, j) : this.xRange.min, b = r(s = f, o, d).call(s, this.xRange.max) ? r(h = f, o, L).call(h, this.xRange.max, j) : this.xRange.max), this.yRange && (P = r(l = f, o, d).call(l, this.yRange.min) ? r(n = f, o, L).call(n, this.yRange.min, q) : this.yRange.min, Y = r(a = f, o, d).call(a, this.yRange.max) ? r(m = f, o, L).call(m, this.yRange.max, q) : this.yRange.max);
+          const W = this.el.parentElement || document.body, j = W.clientWidth, k = W.clientHeight;
+          this.xRange && (p = a(t = f, l, y).call(t, this.xRange.min) ? a(e = f, l, L).call(e, this.xRange.min, j) : this.xRange.min, w = a(s = f, l, y).call(s, this.xRange.max) ? a(r = f, l, L).call(r, this.xRange.max, j) : this.xRange.max), this.yRange && (M = a(o = f, l, y).call(o, this.yRange.min) ? a(n = f, l, L).call(n, this.yRange.min, k) : this.yRange.min, Y = a(h = f, l, y).call(h, this.yRange.max) ? a(u = f, l, L).call(u, this.yRange.max, k) : this.yRange.max);
         } else
-          F = (u = this.xRange) == null ? void 0 : u.min, b = (g = this.xRange) == null ? void 0 : g.max, P = (p = this.yRange) == null ? void 0 : p.min, Y = (R = this.yRange) == null ? void 0 : R.max;
-        const N = r(this, c, M).call(this, this.xRange ? r(this, c, B).call(this, y, -1, 1, F, b) : 0, "x"), E = r(this, c, M).call(this, this.yRange ? r(this, c, B).call(this, x, -1, 1, P, Y) : 0, "y");
-        this.lastX = N, this.lastY = E, this.el.style.transform = `translate3d(${N}px, ${E}px, 0) ${this.baseTransform}`.trim();
+          p = (m = this.xRange) == null ? void 0 : m.min, w = (g = this.xRange) == null ? void 0 : g.max, M = (d = this.yRange) == null ? void 0 : d.min, Y = (R = this.yRange) == null ? void 0 : R.max;
+        const E = a(this, c, S).call(this, this.xRange ? a(this, c, z).call(this, b, -1, 1, p, w) : 0, "x"), N = a(this, c, S).call(this, this.yRange ? a(this, c, z).call(this, v, -1, 1, M, Y) : 0, "y");
+        this.lastX = E, this.lastY = N, this.el.style.transform = `translate3d(${E}px, ${N}px, 0) ${this.baseTransform}`.trim();
       } else {
-        const F = r(this, c, M).call(this, this.xRange ? r(this, c, B).call(this, y, -1, 1, this.xRange.min, this.xRange.max) : 0, "x"), b = r(this, c, M).call(this, this.yRange ? r(this, c, B).call(this, x, -1, 1, this.yRange.min, this.yRange.max) : 0, "y");
-        this.lastX = F, this.lastY = b;
+        const p = a(this, c, S).call(this, this.xRange ? a(this, c, z).call(this, b, -1, 1, this.xRange.min, this.xRange.max) : 0, "x"), w = a(this, c, S).call(this, this.yRange ? a(this, c, z).call(this, v, -1, 1, this.yRange.min, this.yRange.max) : 0, "y");
+        this.lastX = p, this.lastY = w;
       }
     }
     return this.lerpFactor > 0 || this.targetLerpFactor > 0;
   }
   destroy() {
-    U(this), V(this), this.el && (this.el.style.transform = this.originalInlineTransform || ""), this.hasPercentages && window.removeEventListener("resize", this.handleResize);
+    Z(this), _(this), this.el && (this.el.style.transform = this.originalInlineTransform || ""), this.hasPercentages && window.removeEventListener("resize", this.handleResize);
   }
 };
-T = new WeakMap(), o = new WeakSet(), G = function(t) {
+x = new WeakMap(), l = new WeakSet(), J = function(t) {
   return function() {
     let e = t += 1831565813;
     return e = Math.imul(e ^ e >>> 15, e | 1), e ^= e + Math.imul(e ^ e >>> 7, e | 61), ((e ^ e >>> 14) >>> 0) / 4294967296;
   };
-}, J = function(t = 0) {
-  var h;
-  const e = Array.from({ length: 256 }, (l, n) => n), s = r(h = f, o, G).call(h, t);
-  for (let l = 255; l > 0; l--) {
-    const n = Math.floor(s() * (l + 1));
-    [e[l], e[n]] = [e[n], e[l]];
+}, K = function(t = 0) {
+  var r;
+  const e = Array.from({ length: 256 }, (o, n) => n), s = a(r = f, l, J).call(r, t);
+  for (let o = 255; o > 0; o--) {
+    const n = Math.floor(s() * (o + 1));
+    [e[o], e[n]] = [e[n], e[o]];
   }
   return e.concat(e);
-}, d = function(t) {
+}, y = function(t) {
   return typeof t == "string" && t.endsWith("%");
 }, L = function(t, e) {
-  var h;
-  return r(h = f, o, d).call(h, t) ? parseFloat(t) / 100 * e : t;
-}, c = new WeakSet(), K = function(t) {
-  const e = (n) => n * n * n * (n * (n * 6 - 15) + 10), s = (n, a, m) => a + n * (m - a), h = (n, a, m) => {
-    const u = n & 15, g = u < 8 ? a : m, p = u < 4 ? m : u === 12 || u === 14 ? a : 0;
-    return (u & 1 ? -g : g) + (u & 2 ? -p : p);
-  }, l = (n, a) => n & 1 ? -a : a;
+  var r;
+  return a(r = f, l, y).call(r, t) ? parseFloat(t) / 100 * e : t;
+}, c = new WeakSet(), Q = function(t) {
+  const e = (n) => n * n * n * (n * (n * 6 - 15) + 10), s = (n, h, u) => h + n * (u - h), r = (n, h, u) => {
+    const m = n & 15, g = m < 8 ? h : u, d = m < 4 ? u : m === 12 || m === 14 ? h : 0;
+    return (m & 1 ? -g : g) + (m & 2 ? -d : d);
+  }, o = (n, h) => n & 1 ? -h : h;
   return {
     // Original 1D Perlin noise function
     perlin1(n) {
-      const a = Math.floor(n) & 255;
+      const h = Math.floor(n) & 255;
       n -= Math.floor(n);
-      const m = e(n);
-      return s(m, l(t[a], n), l(t[a + 1], n - 1));
+      const u = e(n);
+      return s(u, o(t[h], n), o(t[h + 1], n - 1));
     },
     // New 2D Perlin noise function
-    perlin2(n, a) {
-      const m = Math.floor(n) & 255, u = Math.floor(a) & 255;
-      n -= Math.floor(n), a -= Math.floor(a);
-      const g = e(n), p = e(a), R = t[m] + u, y = t[m + 1] + u, x = t[R], F = t[R + 1], b = t[y], P = t[y + 1];
+    perlin2(n, h) {
+      const u = Math.floor(n) & 255, m = Math.floor(h) & 255;
+      n -= Math.floor(n), h -= Math.floor(h);
+      const g = e(n), d = e(h), R = t[u] + m, b = t[u + 1] + m, v = t[R], p = t[R + 1], w = t[b], M = t[b + 1];
       return s(
-        p,
-        s(g, h(t[x], n, a), h(t[b], n - 1, a)),
-        s(g, h(t[F], n, a - 1), h(t[P], n - 1, a - 1))
+        d,
+        s(g, r(t[v], n, h), r(t[w], n - 1, h)),
+        s(g, r(t[p], n, h - 1), r(t[M], n - 1, h - 1))
       );
     }
   };
-}, Q = function(t, e, s) {
+}, U = function(t, e, s) {
   return t + s * (e - t);
 }, // target + (noise - target) * amplitude; amplitude 1 returns noise untouched (exact legacy values)
-M = function(t, e) {
-  var h;
-  if (X(this, T) === 1) return t;
-  const s = ((h = this.target) == null ? void 0 : h[e]) ?? 0;
-  return s + (t - s) * X(this, T);
-}, B = function(t, e, s, h, l) {
-  return (t - e) * (l - h) / (s - e) + h;
+S = function(t, e) {
+  var r;
+  if (P(this, x) === 1) return t;
+  const s = ((r = this.target) == null ? void 0 : r[e]) ?? 0;
+  return s + (t - s) * P(this, x);
+}, z = function(t, e, s, r, o) {
+  return (t - e) * (o - r) / (s - e) + r;
 }, // Quita o preserva la traslación del transform base en 2D según flag
-I = function(t, e = !1) {
+O = function(t, e = !1) {
   if (!t || t === "none") return "";
   try {
     const s = new DOMMatrixReadOnly(t);
     if (s.is2D) {
-      const h = e ? s.e : 0, l = e ? s.f : 0;
-      return `matrix(${s.a}, ${s.b}, ${s.c}, ${s.d}, ${h}, ${l})`;
+      const r = e ? s.e : 0, o = e ? s.f : 0;
+      return `matrix(${s.a}, ${s.b}, ${s.c}, ${s.d}, ${r}, ${o})`;
     } else
       return t;
   } catch {
     return t;
   }
-}, z(f, o);
-let O = f;
+}, X(f, l);
+let H = f;
 export {
-  O as default
+  H as default
 };

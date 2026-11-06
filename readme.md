@@ -84,6 +84,7 @@ Instances start playing as soon as they are created. PerlinDOM sets `position: r
 | `preserveBaseTranslation` | `boolean` | `false` | Keep the element's CSS `translate` (e.g. `translate(-50%, -50%)`); by default it is dropped and only scale/rotate/skew are kept |
 | `amplitude` | `number` | `1` | Strength of the drift, clamped to `[0, 1]`; non-numbers become `1`. `1` = free drift, `0` = pinned to `target` (or the base position) |
 | `target` | `{x, y} \| null` | `null` | Offset in px from the element's base position that `amplitude` pulls toward. Coordinates that are not finite numbers become `0` |
+| `pauseOffscreen` | `boolean` | `true` | Skip frames while the element's parent is outside the viewport. `false` keeps it running everywhere |
 
 ### Value Types
 
@@ -120,6 +121,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PerlinDOM from '@andresclua/perlindom';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const shape = [{ x: 0, y: -80 }, { x: 70, y: 40 }, { x: -70, y: 40 }]; // one { x, y } per .dot
 
 const instances = [...document.querySelectorAll('.dot')].map((el, i) =>
   new PerlinDOM({
@@ -359,7 +362,7 @@ speed: 0.1    // Fast
 - Percentages use the parent's `clientWidth` / `clientHeight`, and need an `element`
 
 **❓ Element stops moving while off screen**
-- Intended: instances pause while their element is outside the viewport and resume when it returns (needs `IntersectionObserver`; without it everything keeps running)
+- Intended: instances pause while their element's parent is outside the viewport and resume when it returns (needs `IntersectionObserver`; without it everything keeps running). The parent is watched, not the element, so an element's own drift never pauses it. Changing `amplitude` or calling `setTarget()` still renders while paused. Pass `pauseOffscreen: false` to never pause
 
 **❓ Memory leaks**
 ```javascript

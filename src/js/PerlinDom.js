@@ -7,9 +7,14 @@ function tick() {
   // Iteramos una copia: un step() puede hacer destroy() de sí mismo u otros
   for (const inst of [...active]) {
     if (!active.has(inst)) continue;
-    if (inst.onScreen && inst.step() === false) active.delete(inst);
+    // Offscreen instances skip the frame, except for one catch-up step when their amplitude or
+    // target changed, so a scrubbed convergence always lands even while not visible.
+    if (!inst.onScreen && !inst._dirty) continue;
+    inst._dirty = false;
+    if (inst.step() === false) active.delete(inst);
   }
-  if (active.size > 0) rafId = requestAnimationFrame(tick);
+  // An instance created inside a step() already armed the next frame: never start a second chain.
+  if (active.size > 0 && rafId === null) rafId = requestAnimationFrame(tick);
 }
 
 function activate(inst) {
@@ -25,26 +30,53 @@ function deactivate(inst) {
   }
 }
 
-/* ---------- visibilidad (un solo IntersectionObserver) ---------- */
-const observed = new Map();
+/* ---------- visibilidad (un solo IntersectionObserver) ----------
+ * Rule: an instance pauses while its element's PARENT box is outside the viewport, not the
+ * element itself. IntersectionObserver measures the transformed box, so observing the element
+ * would let its own drift carry it out of view, pause it there, and never bring it back.
+ * The parent is not moved by this instance, so its visibility is a stable signal (an element
+ * with no parent yet falls back to observing itself). Elements sharing a parent share one
+ * observation. Changing `amplitude` or calling `setTarget()` always renders one catch-up step,
+ * visible or not. `pauseOffscreen: false` opts out of pausing entirely.
+ */
+const observed = new Map(); // box -> { visible, insts: Set<PerlinDOM> }
+const boxOf = new WeakMap(); // inst -> box
 let observer = null;
 
 function observe(inst) {
-  if (typeof IntersectionObserver === 'undefined' || !inst.el) return;
+  if (typeof IntersectionObserver === 'undefined' || !inst.el || !inst.pauseOffscreen) return;
+  if (boxOf.has(inst)) return;
   observer ??= new IntersectionObserver(entries => {
     for (const e of entries) {
-      const target = observed.get(e.target);
-      if (target) target.onScreen = e.isIntersecting;
+      const entry = observed.get(e.target);
+      if (!entry) continue;
+      entry.visible = e.isIntersecting;
+      for (const i of entry.insts) i.onScreen = e.isIntersecting;
     }
   });
-  observed.set(inst.el, inst);
-  observer.observe(inst.el);
+  const box = inst.el.parentElement || inst.el;
+  let entry = observed.get(box);
+  if (!entry) {
+    entry = { visible: true, insts: new Set() };
+    observed.set(box, entry);
+    observer.observe(box);
+  }
+  entry.insts.add(inst);
+  boxOf.set(inst, box);
+  inst.onScreen = entry.visible; // a late joiner inherits what is already known about the box
 }
 
 function unobserve(inst) {
-  if (!observer || !inst.el || observed.get(inst.el) !== inst) return;
-  observed.delete(inst.el);
-  observer.unobserve(inst.el);
+  const box = boxOf.get(inst);
+  if (!box) return;
+  boxOf.delete(inst);
+  const entry = observed.get(box);
+  if (!entry) return;
+  entry.insts.delete(inst);
+  if (entry.insts.size === 0) {
+    observed.delete(box);
+    observer.unobserve(box);
+  }
 }
 
 class PerlinDOM {
@@ -92,7 +124,10 @@ class PerlinDOM {
     preserveBaseTranslation = false, // <-- si querés mantener la traslación base
     amplitude = 1,
     target = null, // {x, y} en px, offset desde la posición base
+    pauseOffscreen = true, // false = keep stepping even when the parent box is out of view
   }) {
+    this._dirty = false; // amplitude/target changed since the last rendered frame
+    this.pauseOffscreen = pauseOffscreen !== false;
     this.amplitude = amplitude;
     this.setTarget(target);
     this.el = element;
@@ -160,16 +195,21 @@ class PerlinDOM {
   }
 
   set amplitude(v) {
-    this.#amplitude = typeof v === 'number' && !Number.isNaN(v) ? Math.min(1, Math.max(0, v)) : 1;
+    const next = typeof v === 'number' && !Number.isNaN(v) ? Math.min(1, Math.max(0, v)) : 1;
+    if (next !== this.#amplitude) this._dirty = true;
+    this.#amplitude = next;
   }
 
   setTarget(target) {
+    const prev = this.target;
     if (target === null || typeof target !== 'object') {
       this.target = null;
-      return;
+    } else {
+      const axis = v => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+      this.target = { x: axis(target.x), y: axis(target.y) };
     }
-    const axis = v => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
-    this.target = { x: axis(target.x), y: axis(target.y) };
+    const next = this.target;
+    if (prev?.x !== next?.x || prev?.y !== next?.y) this._dirty = true;
   }
 
   // Permite refrescar el transform base si cambian clases/estilos en runtime

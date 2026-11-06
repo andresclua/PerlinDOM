@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **`amplitude` option and property**: scales movement strength, clamped to [0, 1] (1 = free drift, 0 = pinned to the target or the base position); non-number values are treated as 1, no string/null coercion
+- **`pauseOffscreen` option** (default `true`): `false` keeps an instance stepping while offscreen
 - **`target` option and `setTarget`**: `target` is a `{x, y}` offset in px from the element's base position that `amplitude` pulls toward (amplitude 0 pins the element at the target); `setTarget` copies the object and turns non-finite coordinates into 0
 
 ### Changed
 - **Shared loop**: all instances now share a single `requestAnimationFrame` loop
-- **Offscreen pause**: instances pause while outside the viewport
+- **Offscreen pause**: instances pause while their element's parent is outside the viewport (the parent, so an element's own drift cannot freeze it); changing `amplitude` or `target` still renders while paused
 - **Build output**: `dist` files are now `perlindom.es.js` and `perlindom.umd.js` (lowercase), matching `package.json` and `vite.config.js`; the entry path casing was fixed for case-sensitive filesystems
 
 ### Removed

@@ -207,3 +207,163 @@ test('mutating the caller target object does not move the element', async () => 
   inst.step();
   assert.equal(inst.lastX, 40);
 });
+
+/* ---------- offscreen pause, shared observation, loop robustness ---------- */
+
+// IntersectionObserver stub: records observe/unobserve calls, exposes the callback.
+const stubObserver = () => {
+  const io = { cb: null, observed: [], unobserved: [] };
+  globalThis.IntersectionObserver = class {
+    constructor(cb) { io.cb = cb; }
+    observe(t) { io.observed.push(t); }
+    unobserve(t) { io.unobserved.push(t); }
+  };
+  return io;
+};
+
+test('offscreen element renders a catch-up frame when amplitude changes', async () => {
+  const io = stubObserver();
+  const PerlinDOM = await load();
+  const el = fakeEl();
+  const inst = new PerlinDOM({ ...opts(el), seed: 3, target: { x: 40, y: -25 } });
+  runFrame();
+  // Its own drift carried it out: the observer now reports it not intersecting.
+  io.cb([{ target: el, isIntersecting: false }]);
+  const frozen = el.style.transform;
+  runFrame();
+  assert.equal(el.style.transform, frozen);
+  inst.amplitude = 0;
+  runFrame();
+  assert.equal(inst.lastX, 40);
+  assert.equal(inst.lastY, -25);
+  assert.match(el.style.transform, /^translate3d\(40px, -25px/);
+});
+
+test('offscreen element renders a catch-up frame when setTarget is called', async () => {
+  const io = stubObserver();
+  const PerlinDOM = await load();
+  const el = fakeEl();
+  const inst = new PerlinDOM({ ...opts(el), amplitude: 0, target: { x: 40, y: -25 } });
+  runFrame();
+  io.cb([{ target: el, isIntersecting: false }]);
+  inst.setTarget({ x: 5, y: 6 });
+  runFrame();
+  assert.equal(inst.lastX, 5);
+  assert.equal(inst.lastY, 6);
+});
+
+test('offscreen at rest with unchanged amplitude and target is not stepped', async () => {
+  const io = stubObserver();
+  const PerlinDOM = await load();
+  const el = fakeEl();
+  const inst = new PerlinDOM({ ...opts(el), amplitude: 0.5, target: { x: 40, y: -25 } });
+  runFrame();
+  io.cb([{ target: el, isIntersecting: false }]);
+  inst.amplitude = 0.5; // same value: not a change
+  inst.setTarget({ x: 40, y: -25 }); // same target: not a change
+  const t = inst.time;
+  runFrame();
+  runFrame();
+  assert.equal(inst.time, t);
+  assert.equal(pending.size, 1); // still in the loop, ready to resume
+});
+
+test('visibility is measured on the parent box, not the drifting element', async () => {
+  const io = stubObserver();
+  const PerlinDOM = await load();
+  const parent = {};
+  const el = { style: {}, parentElement: parent };
+  const inst = new PerlinDOM(opts(el));
+  assert.deepEqual(io.observed, [parent]);
+  io.cb([{ target: parent, isIntersecting: false }]);
+  const t = inst.time;
+  runFrame();
+  assert.equal(inst.time, t);
+  io.cb([{ target: parent, isIntersecting: true }]);
+  runFrame();
+  assert.ok(inst.time > t);
+});
+
+test('instances sharing an observed box all get visibility updates', async () => {
+  const io = stubObserver();
+  const PerlinDOM = await load();
+  const el = fakeEl();
+  const a = new PerlinDOM(opts(el));
+  const b = new PerlinDOM(opts(el));
+  io.cb([{ target: el, isIntersecting: false }]);
+  assert.equal(a.onScreen, false);
+  assert.equal(b.onScreen, false);
+  // A late joiner inherits the box's known state.
+  const c = new PerlinDOM(opts(el));
+  assert.equal(c.onScreen, false);
+  a.destroy();
+  c.destroy();
+  assert.deepEqual(io.unobserved, []);
+  io.cb([{ target: el, isIntersecting: true }]);
+  assert.equal(b.onScreen, true);
+  b.destroy();
+  assert.deepEqual(io.unobserved, [el]);
+});
+
+test('pauseOffscreen: false never observes and always steps', async () => {
+  const io = stubObserver();
+  const PerlinDOM = await load();
+  const el = fakeEl();
+  new PerlinDOM({ ...opts(el), pauseOffscreen: false });
+  assert.deepEqual(io.observed, []);
+  runFrame();
+  assert.ok(el.style.transform);
+});
+
+test('an instance created inside a step does not start a second rAF chain', async () => {
+  const PerlinDOM = await load();
+  const a = new PerlinDOM(opts(fakeEl()));
+  const origStep = a.step.bind(a);
+  let made = false;
+  a.step = () => {
+    if (!made) { made = true; new PerlinDOM(opts(fakeEl())); }
+    return origStep();
+  };
+  runFrame();
+  assert.equal(pending.size, 1);
+  runFrame();
+  assert.equal(pending.size, 1);
+});
+
+test('A destroying B within the same frame: B does not step', async () => {
+  const PerlinDOM = await load();
+  const a = new PerlinDOM(opts(fakeEl()));
+  const bEl = fakeEl();
+  const b = new PerlinDOM(opts(bEl));
+  const origStep = a.step.bind(a);
+  a.step = () => { b.destroy(); return origStep(); };
+  const t = b.time;
+  runFrame();
+  assert.equal(b.time, t);
+  assert.equal(bEl.style.transform, '');
+});
+
+test('destroy restores the original inline transform', async () => {
+  const PerlinDOM = await load();
+  const el = { style: { transform: 'rotate(5deg)' }, parentElement: null };
+  const inst = new PerlinDOM(opts(el));
+  runFrame();
+  assert.match(el.style.transform, /^translate3d/);
+  inst.destroy();
+  assert.equal(el.style.transform, 'rotate(5deg)');
+});
+
+test('init() again restarts playback after a full pause', async () => {
+  const PerlinDOM = await load();
+  const el = fakeEl();
+  const inst = new PerlinDOM({ ...opts(el), lerpSpeed: 1 });
+  inst.pause();
+  runFrame();
+  assert.equal(pending.size, 0);
+  inst.init(5);
+  assert.equal(inst.isPlaying, true);
+  assert.equal(pending.size, 1);
+  const t = inst.time;
+  runFrame();
+  assert.ok(inst.time > t);
+});
