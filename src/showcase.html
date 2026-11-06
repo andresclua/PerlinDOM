@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Projects built with PerlinDOM, sent in by the community." />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="./scss/style.scss" />
+        <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+        <title>Showcase · PerlinDOM</title>
+    </head>
+    <body class="docs">
+        <a class="skip-link" href="#content">Skip to content</a>
+        <div class="backdrop docs-backdrop" aria-hidden="true"></div>
+
+        <main id="content" class="docs-main">
+            <header class="docs-hero">
+                <p class="eyebrow">Showcase</p>
+                <h1 class="docs-hero__title">Made with PerlinDOM</h1>
+                <p class="docs-hero__lead">Sites and experiments from people using the library. Built something? Add it to the list.</p>
+                <p><a class="sc-submit" href="https://github.com/andresclua/PerlinDOM/edit/main/src/showcase.json" target="_blank" rel="noopener">Submit yours</a></p>
+            </header>
+            <ul class="sc-list"></ul>
+            <section class="sc-how" aria-labelledby="how">
+                <h2 id="how">How to submit</h2>
+                <p>"Submit yours" opens <code>src/showcase.json</code> in GitHub's editor. Add an entry at the end of the list and propose the change; GitHub opens a pull request for you.</p>
+                <pre><code>{
+  "title": "My project",
+  "url": "https://example.com",
+  "by": "Your name",
+  "description": "One sentence, up to 220 characters."
+}</code></pre>
+                <p>Links must be <code>https</code>. Entries are reviewed before they appear.</p>
+            </section>
+        </main>
+
+        <footer class="site-foot">
+            <p class="site-foot__brand">PerlinDOM</p>
+            <nav class="site-foot__links" aria-label="Footer">
+                <a href="./index.html">Home</a>
+                <a href="./api.html">API</a>
+                <a href="./examples.html">Examples</a>
+                <a href="./showcase.html" aria-current="page">Showcase</a>
+                <a href="https://www.npmjs.com/package/@andresclua/perlindom" target="_blank" rel="noopener">npm</a>
+                <a href="https://github.com/andresclua/PerlinDOM" target="_blank" rel="noopener">GitHub</a>
+            </nav>
+            <p class="site-foot__note">MIT licensed. Zero dependencies.</p>
+        </footer>
+        <script type="module" src="./js/site/showcase.js"></script>
+    </body>
+</html>

@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => {
             index: resolve(root, 'index.html'),
             api: resolve(root, 'api.html'),
             examples: resolve(root, 'examples.html'),
+            showcase: resolve(root, 'showcase.html'),
           },
         },
       },

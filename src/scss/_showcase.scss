@@ -1,0 +1,13 @@
+@use 'docs';
+
+.sc-list { list-style: none; margin: 2rem 0; padding: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
+.sc-card {
+  @extend %glass-card;
+  padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  p { margin: 0; color: var(--ink-soft); font-weight: 300; }
+}
+.sc-card__title { color: var(--ink); font-size: var(--fs-lg); font-weight: 200; text-decoration: none; &:hover, &:focus-visible { color: var(--accent-2); } }
+.sc-card__by { margin-top: auto; font-size: 0.85rem; letter-spacing: var(--tracking); color: var(--accent); }
+.sc-submit { display: inline-block; padding: 0.7rem 1.4rem; border: 1px solid var(--glass-line); border-radius: 999px; color: var(--ink); text-decoration: none; letter-spacing: var(--tracking); &:hover, &:focus-visible { background: var(--glass); } }
+.sc-how { max-width: 40rem; margin: 3rem 0; }

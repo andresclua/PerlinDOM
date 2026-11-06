@@ -2,6 +2,7 @@ const LINKS = [
   ['Home', 'index.html'],
   ['API', 'api.html'],
   ['Examples', 'examples.html'],
+  ['Showcase', 'showcase.html'],
 ];
 
 export function mountNav() {
