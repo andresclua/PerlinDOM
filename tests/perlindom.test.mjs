@@ -113,7 +113,7 @@ test('amplitude 1 equals previous behavior', async () => {
   const PerlinDOM = await load();
   const el = fakeEl();
   // Values captured from the implementation before amplitude existed.
-  const inst = new PerlinDOM({ ...opts(el), seed: 3, target: { x: 40, y: -25 } });
+  const inst = new PerlinDOM({ ...opts(el), seed: 3, legacyNoise: true, target: { x: 40, y: -25 } });
   for (let i = 0; i < 7; i++) inst.step();
   assert.equal(inst.lastX, -0.9914399999999883);
   assert.equal(inst.lastY, -1.068479999999985);
@@ -225,7 +225,7 @@ test('offscreen element renders a catch-up frame when amplitude changes', async 
   const io = stubObserver();
   const PerlinDOM = await load();
   const el = fakeEl();
-  const inst = new PerlinDOM({ ...opts(el), seed: 3, target: { x: 40, y: -25 } });
+  const inst = new PerlinDOM({ ...opts(el), seed: 3, legacyNoise: true, target: { x: 40, y: -25 } });
   runFrame();
   // Its own drift carried it out: the observer now reports it not intersecting.
   io.cb([{ target: el, isIntersecting: false }]);
@@ -366,4 +366,13 @@ test('init() again restarts playback after a full pause', async () => {
   const t = inst.time;
   runFrame();
   assert.ok(inst.time > t);
+});
+
+test('default noise is not flat at the start (seed 42)', async () => {
+  const PerlinDOM = await load();
+  const a = new PerlinDOM({ ...opts(fakeEl()), seed: 42 });
+  const b = new PerlinDOM({ ...opts(fakeEl()), seed: 42, legacyNoise: true });
+  for (let i = 0; i < 5; i++) { a.step(); b.step(); }
+  assert.notEqual(a.lastX, b.lastX);
+  assert.ok(Math.abs(a.lastX) > 0.01 || Math.abs(a.lastY) > 0.01);
 });

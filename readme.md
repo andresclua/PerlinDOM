@@ -84,6 +84,7 @@ Instances start playing as soon as they are created. PerlinDOM sets `position: r
 | `preserveBaseTranslation` | `boolean` | `false` | Keep the element's CSS `translate` (e.g. `translate(-50%, -50%)`); by default it is dropped and only scale/rotate/skew are kept |
 | `amplitude` | `number` | `1` | Strength of the drift, clamped to `[0, 1]`; non-numbers become `1`. `1` = free drift, `0` = pinned to `target` (or the base position) |
 | `target` | `{x, y} \| null` | `null` | Offset in px from the element's base position that `amplitude` pulls toward. Coordinates that are not finite numbers become `0` |
+| `legacyNoise` | `boolean` | `false` | `true` keeps the old noise rows (0 / 100) for movement identical to 0.0.6 and earlier |
 | `pauseOffscreen` | `boolean` | `true` | Skip frames while the element's parent is outside the viewport. `false` keeps it running everywhere |
 
 ### Value Types

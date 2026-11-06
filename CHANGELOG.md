@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **`amplitude` option and property**: scales movement strength, clamped to [0, 1] (1 = free drift, 0 = pinned to the target or the base position); non-number values are treated as 1, no string/null coercion
+- **`legacyNoise` option** (default `false`): `true` restores the pre-0.0.7 noise rows
 - **`pauseOffscreen` option** (default `true`): `false` keeps an instance stepping while offscreen
 - **`target` option and `setTarget`**: `target` is a `{x, y}` offset in px from the element's base position that `amplitude` pulls toward (amplitude 0 pins the element at the target); `setTarget` copies the object and turns non-finite coordinates into 0
 
 ### Changed
+- **Noise sampling (behavior change)**: the two axes are now sampled at rows 0.5 and 100.5 instead of 0 and 100, where Perlin noise is flat on the lattice. Movement now reaches roughly ±1 of the range instead of ±0.5, and no longer sits nearly still at the start for some seeds (seed 42 used to take ~3.7 s). Pass `legacyNoise: true` to keep the previous movement exactly
 - **Shared loop**: all instances now share a single `requestAnimationFrame` loop
 - **Offscreen pause**: instances pause while their element's parent is outside the viewport (the parent, so an element's own drift cannot freeze it); changing `amplitude` or `target` still renders while paused
 - **Build output**: `dist` files are now `perlindom.es.js` and `perlindom.umd.js` (lowercase), matching `package.json` and `vite.config.js`; the entry path casing was fixed for case-sensitive filesystems

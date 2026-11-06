@@ -124,10 +124,12 @@ class PerlinDOM {
     preserveBaseTranslation = false, // <-- si querés mantener la traslación base
     amplitude = 1,
     target = null, // {x, y} en px, offset desde la posición base
+    legacyNoise = false, // true = sample noise at y=0/100 like <=0.0.6 (flat spots on one axis)
     pauseOffscreen = true, // false = keep stepping even when the parent box is out of view
   }) {
     this._dirty = false; // amplitude/target changed since the last rendered frame
     this.pauseOffscreen = pauseOffscreen !== false;
+    this._ny = legacyNoise ? [0, 100] : [0.5, 100.5]; // integer y rows are flat at the lattice
     this.amplitude = amplitude;
     this.setTarget(target);
     this.el = element;
@@ -322,8 +324,8 @@ class PerlinDOM {
       this.time += this.speed * this.lerpFactor;
 
       // 2D Perlin noise for more natural movement
-      const noiseX = this.noise.perlin2(this.time, 0);
-      const noiseY = this.noise.perlin2(this.time, 100); // Different slice
+      const noiseX = this.noise.perlin2(this.time, this._ny[0]);
+      const noiseY = this.noise.perlin2(this.time, this._ny[1]); // Different slice
 
       // Only process if we have an element
       if (this.el) {
