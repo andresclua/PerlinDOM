@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **`amplitude` option**: scales movement strength (non-number values are treated as 1, no string/null coercion)
-- **`target` option and `setTarget`**: movement can be driven toward a target; `setTarget` sanitizes input (non-finite coordinates become 0)
+- **`amplitude` option and property**: scales movement strength, clamped to [0, 1] (1 = free drift, 0 = pinned to the target or the base position); non-number values are treated as 1, no string/null coercion
+- **`target` option and `setTarget`**: `target` is a `{x, y}` offset in px from the element's base position that `amplitude` pulls toward (amplitude 0 pins the element at the target); `setTarget` copies the object and turns non-finite coordinates into 0
 
 ### Changed
 - **Shared loop**: all instances now share a single `requestAnimationFrame` loop
