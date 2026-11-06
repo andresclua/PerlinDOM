@@ -16,8 +16,16 @@ test('drops non-https links, missing fields and non-arrays', () => {
     { ...ok, url: 'nope' },
     { ...ok, title: '' },
     { ...ok, by: undefined },
+    { ...ok, image: 'https://evil.dev/x.png' },
+    { ...ok, image: 'showcase/../x.png' },
+    { ...ok, image: 'showcase/a.svg' },
     null,
   ];
   assert.deepEqual(validEntries([...bad, ok]), [ok]);
   assert.deepEqual(validEntries({}), []);
+});
+
+test('accepts a local screenshot', () => {
+  const e = { ...ok, image: 'showcase/my-app.jpg' };
+  assert.deepEqual(validEntries([e]), [e]);
 });

@@ -3,6 +3,14 @@
     "title": "PerlinDOM",
     "url": "https://perlindom.netlify.app",
     "by": "Andrés Clúa",
-    "description": "The library's own site: hundreds of circles drifting with noise, converging into the title as you scroll."
+    "description": "The library's own site: hundreds of circles drifting with noise, converging into the title as you scroll.",
+    "image": "showcase/perlindom.jpg"
+  },
+  {
+    "title": "Netwrix",
+    "url": "https://netwrix.com/",
+    "by": "Andrés Clúa",
+    "description": "Cybersecurity company site. PerlinDOM drives the drifting background items behind the \"See Netwrix in action\" call to action.",
+    "image": "showcase/netwrix.jpg"
   }
 ]
