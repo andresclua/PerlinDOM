@@ -1,4 +1,5 @@
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { currentViewport, isLayoutResize } from './viewport.js';
 
 // Same pattern as hero.js: on every refresh (load, scroll restore, fonts, resize) jump the
 // scrubbed animation straight to the scroll position instead of easing there from wherever it was.
@@ -57,13 +58,17 @@ export function keepStoryPositionOnResize() {
   let ratio = null;
   // The live scrollY is not trusted at refreshInit: while the viewport resizes, the browser can
   // clamp it against the reflowed page first. Only positions read at the measured size count.
+  // A mobile toolbar show/hide (small height-only change on touch) is not a resize here either:
+  // positions read through it still count, and it never moves the reader.
+  const touchOnly = ScrollTrigger.isTouch === 1;
+  const sameLayout = () => !isLayoutResize({ w, h }, currentViewport(), touchOnly);
   const onScroll = () => {
-    if (window.innerWidth === w && window.innerHeight === h) y = window.scrollY;
+    if (sameLayout()) y = window.scrollY;
   };
   const before = () => { ratio = ready && max > 0 ? y / max : null; };
   const after = () => {
     const nextMax = ScrollTrigger.maxScroll(window);
-    if (ready && ratio !== null && window.innerHeight !== h && nextMax > 0) {
+    if (ready && ratio !== null && window.innerHeight !== h && !sameLayout() && nextMax > 0) {
       window.scrollTo(0, Math.round(ratio * nextMax));
     }
     w = window.innerWidth;

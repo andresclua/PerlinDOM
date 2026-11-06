@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PerlinDOM from '../PerlinDom.js';
 import { sampleText } from './sampleText.js';
 import { createDot, mulberry32 } from './dots.js';
+import { onLayoutResize } from './viewport.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -119,15 +120,14 @@ export function mountHero(root, { still = false } = {}) {
   tl.progress(tl.scrollTrigger.progress);
 
   let destroyed = false;
-  let lastW = window.innerWidth;
-  let lastH = window.innerHeight;
+  // Mobile toolbar show/hide (small height-only change on touch) is ignored, like ScrollTrigger does.
+  const resize = onLayoutResize(() => relayout(), { touchOnly: ScrollTrigger.isTouch === 1 });
   const relayout = () => {
     if (destroyed) return;
     // Refresh first: while pinned, the pin holds the old px size until ScrollTrigger re-measures.
     // layout() only moves absolutely positioned dots, so no second refresh is needed.
     ScrollTrigger.refresh();
-    lastW = window.innerWidth;
-    lastH = window.innerHeight;
+    resize.mark();
     layout();
   };
 
@@ -138,20 +138,10 @@ export function mountHero(root, { still = false } = {}) {
     .then(() => document.fonts.ready)
     .then(relayout);
 
-  let resizeTimer = 0;
-  const onResize = () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (window.innerWidth !== lastW || window.innerHeight !== lastH) relayout();
-    }, 150);
-  };
-  window.addEventListener('resize', onResize);
-
   return {
     destroy() {
       destroyed = true;
-      clearTimeout(resizeTimer);
-      window.removeEventListener('resize', onResize);
+      resize.stop();
       tl.scrollTrigger?.kill(true);
       tl.kill();
       instances.forEach(inst => inst.destroy());
@@ -175,17 +165,11 @@ function mountStill({ layout, title, word, dots }) {
     .catch(() => {})
     .then(() => document.fonts.ready)
     .then(relayout);
-  let resizeTimer = 0;
-  const onResize = () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(relayout, 150);
-  };
-  window.addEventListener('resize', onResize);
+  const resize = onLayoutResize(relayout, { touchOnly: ScrollTrigger.isTouch === 1 });
   return {
     destroy() {
       destroyed = true;
-      clearTimeout(resizeTimer);
-      window.removeEventListener('resize', onResize);
+      resize.stop();
       dots.forEach(d => d.el.remove());
     },
   };

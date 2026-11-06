@@ -4,6 +4,7 @@ import PerlinDOM from '../PerlinDom.js';
 import { createDot, mulberry32 } from './dots.js';
 import { onRefreshJump } from './scroll.js';
 import { mountCopyButton } from './copy.js';
+import { onLayoutResize } from './viewport.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -75,16 +76,10 @@ export function mountFinale(root, { still = false } = {}) {
     () => COMMAND,
   );
   if (still) {
-    let resizeTimer = 0;
-    const onResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(layout, 150);
-    };
-    window.addEventListener('resize', onResize);
+    const resize = onLayoutResize(layout, { touchOnly: ScrollTrigger.isTouch === 1 });
     return {
       destroy() {
-        clearTimeout(resizeTimer);
-        window.removeEventListener('resize', onResize);
+        resize.stop();
         copyButton.destroy();
         dots.forEach(d => d.el.remove());
       },
