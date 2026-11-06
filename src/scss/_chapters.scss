@@ -521,11 +521,11 @@ $mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
   font-family: $mono;
   font-size: 0.95rem;
   letter-spacing: 0;
-  white-space: nowrap;
-  overflow-x: auto;
+  // Wraps instead of scrolling on very narrow screens: nothing hidden, so no focus stop needed.
+  min-width: 0;
+  overflow-wrap: anywhere;
   border-radius: 6px;
 
-  &:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 4px; }
   &::before { content: '$ '; color: var(--accent-2); }
 }
 

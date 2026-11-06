@@ -2,3 +2,4 @@
 dist-site/
 .superpowers/
 .claude/worktrees/
+.DS_Store

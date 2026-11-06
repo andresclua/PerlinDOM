@@ -36,6 +36,7 @@ export default defineConfig(({ mode }) => {
     root,
     publicDir: 'public',
     build: {
+      copyPublicDir: false, // public/ (favicon) is for the site and dev server, not the package
       lib: {
         entry: entryPath,
         name: 'PerlinDOM',
