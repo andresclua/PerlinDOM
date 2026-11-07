@@ -11,10 +11,12 @@ gsap.registerPlugin(ScrollTrigger);
 const COUNT_DESKTOP = 160;
 const COUNT_MOBILE = 45;
 const COMMAND = 'npm install @andresclua/perlindom';
+// Resting amplitude of the ring: each circle breathes a little (its own seed) instead of sitting frozen.
+const REST = 0.12;
 
 /**
  * Chapter 5: a field of circles arrives gathered in a quiet ring around the install line,
- * then the pinned scroll raises amplitude back to 1 and everything floats again.
+ * breathing gently (REST amplitude, one seed each), then the pinned scroll raises amplitude to 1 and everything floats freely.
  *
  * `still` (reduced motion / static page): the ring at rest (amplitude 0), copy visible, no pin.
  */
@@ -38,7 +40,7 @@ export function mountFinale(root, { still = false } = {}) {
     element: d.el,
     speed: 0.002 + d.depth * 0.004 + rand() * 0.0015,
     seed: 9000 + i * 7919,
-    amplitude: 0,
+    amplitude: REST,
   }));
 
   function layout() {
@@ -65,7 +67,8 @@ export function mountFinale(root, { still = false } = {}) {
       }
       inst.xRange = { min: -r, max: r };
       inst.yRange = { min: -r, max: r };
-      inst.setTarget({ x, y });
+      // offset = T(1-a) + noise*a: scale T so that at REST the ring stays on `x, y` and the noise only wobbles around it
+      inst.setTarget({ x: x / (1 - REST), y: y / (1 - REST) });
     });
   }
   layout();
@@ -86,7 +89,7 @@ export function mountFinale(root, { still = false } = {}) {
     };
   }
 
-  const state = { amp: 0 };
+  const state = { amp: REST };
   const applyAmplitude = () => instances.forEach(inst => { inst.amplitude = state.amp; });
 
   const tl = gsap.timeline({
