@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-07
+
 ### Added
 - **`amplitude` option and property**: scales movement strength, clamped to [0, 1] (1 = free drift, 0 = pinned to the target or the base position); non-number values are treated as 1, no string/null coercion
 - **`reset()` method**: rewinds the noise path to the seed and returns the element to its own transform, keeping play/pause, `amplitude` and `target`; a no-op after `destroy()`
