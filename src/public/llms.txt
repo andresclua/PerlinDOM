@@ -35,7 +35,7 @@ drift.pause(); drift.play(); drift.reset(); drift.destroy();
 - [API reference](https://perlindom.js.org/api.html): every option, method and property, with live demos
 - [Examples](https://perlindom.js.org/examples.html): twelve live examples with copyable code
 - [Showcase](https://perlindom.js.org/showcase.html): sites made with PerlinDOM
-- [README](https://raw.githubusercontent.com/andresclua/PerlinDOM/main/README.md): full documentation, including the GSAP + ScrollTrigger recipe
+- [Full documentation](https://perlindom.js.org/llms-full.txt): the whole README in one plain-text file, including the GSAP + ScrollTrigger recipe
 
 ## Optional
 

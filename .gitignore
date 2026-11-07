@@ -6,3 +6,4 @@ dist-site/
 
 # Local Netlify folder
 .netlify
+src/public/llms-full.txt
