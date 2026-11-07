@@ -1,3 +1,5 @@
+**[perlindom.js.org](https://perlindom.js.org)** · [API](https://perlindom.js.org/api.html) · [Examples](https://perlindom.js.org/examples.html) · [Showcase](https://perlindom.js.org/showcase.html)
+
 # PerlinDOM
 
 [![npm version](https://badge.fury.io/js/@andresclua%2Fperlindom.svg)](https://badge.fury.io/js/@andresclua%2Fperlindom)
