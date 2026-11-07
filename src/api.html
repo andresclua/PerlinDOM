@@ -90,6 +90,7 @@ const drift = new PerlinDOM({
 
 drift.pause();   // eases to a stop
 drift.play();    // eases back in
+drift.reset();   // rewinds to the start
 drift.destroy(); // stops and restores the original inline transform</code></pre>
                         <p>PerlinDOM writes <code>transform: translate3d(…)</code> and keeps any scale, rotate or skew your CSS already sets. If the element is <code>position: static</code> it sets <code>position: relative</code> on it for you.</p>
                     </section>
@@ -150,6 +151,10 @@ y: { min: -20, max: 20 },</code></pre>
                             <div>
                                 <dt><code>play()</code></dt>
                                 <dd>Resumes after <code>pause()</code>, easing back in. A new instance is already playing, so you do not need to call it to start.</dd>
+                            </div>
+                            <div>
+                                <dt><code>reset()</code></dt>
+                                <dd>Goes back to the starting state, as if the instance had just been created: the noise path rewinds to the seed (the same movement plays again) and the element returns to its own transform, with no drift. It keeps play and pause, <code>amplitude</code> and <code>target</code>, so a paused instance stays paused at the origin until <code>play()</code>. It does nothing after <code>destroy()</code>.</dd>
                             </div>
                             <div>
                                 <dt><code>destroy()</code></dt>

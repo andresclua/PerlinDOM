@@ -136,6 +136,7 @@ class PerlinDOM {
     this.xRange = x;
     this.yRange = y;
     this.speed = speed;
+    this.seed = seed;
     this.time = seed;
     this.isPlaying = true;
     this.lerpFactor = 1; // 1 = full speed, 0 = paused
@@ -183,6 +184,7 @@ class PerlinDOM {
   }
 
   init(seed) {
+    this._destroyed = false;
     this.noise = this.#createPerlin(PerlinDOM.#generatePermutation(seed));
     this.isPlaying = true;
     this.lerpFactor = 1;
@@ -422,7 +424,19 @@ class PerlinDOM {
     }
   }
 
+  // Back to the starting state, as if just created: the noise path rewinds to its seed and the
+  // element returns to its own transform (no drift). Keeps play/pause, amplitude and target.
+  reset() {
+    if (this._destroyed) return;
+    this.time = this.seed;
+    this.lastX = 0;
+    this.lastY = 0;
+    if (this.el) this.el.style.transform = this.originalInlineTransform || '';
+    if (this.isPlaying) activate(this);
+  }
+
   destroy() {
+    this._destroyed = true;
     deactivate(this);
     unobserve(this);
 

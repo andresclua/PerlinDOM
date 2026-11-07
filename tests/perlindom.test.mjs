@@ -376,3 +376,44 @@ test('default noise is not flat at the start (seed 42)', async () => {
   assert.notEqual(a.lastX, b.lastX);
   assert.ok(Math.abs(a.lastX) > 0.01 || Math.abs(a.lastY) > 0.01);
 });
+
+test('reset rewinds the noise path and restores the element', async () => {
+  const PerlinDOM = await load();
+  const el = fakeEl();
+  const inst = new PerlinDOM({ ...opts(el), seed: 5 });
+  const path = () => Array.from({ length: 4 }, () => (inst.step(), inst.lastX));
+  const first = path();
+  inst.reset();
+  assert.equal(el.style.transform, '');
+  assert.equal(inst.lastX, 0);
+  assert.deepEqual(path(), first);
+});
+
+test('reset while playing re-arms the loop; paused stays paused; destroyed is a no-op', async () => {
+  const PerlinDOM = await load();
+  const a = fakeEl();
+  const playing = new PerlinDOM(opts(a));
+  for (let i = 0; i < 30; i++) runFrame(); // let nothing else interfere
+  playing.reset();
+  runFrame();
+  assert.ok(a.style.transform);
+
+  const b = fakeEl();
+  const paused = new PerlinDOM(opts(b));
+  paused.pause();
+  for (let i = 0; i < 80; i++) runFrame();
+  paused.reset();
+  b.style.transform = 'sentinel';
+  runFrame();
+  assert.equal(b.style.transform, 'sentinel'); // not stepping: still paused
+  paused.play();
+  runFrame();
+  assert.notEqual(b.style.transform, 'sentinel');
+
+  const c = fakeEl();
+  const gone = new PerlinDOM(opts(c));
+  gone.destroy();
+  gone.reset();
+  runFrame();
+  assert.equal(c.style.transform, '');
+});

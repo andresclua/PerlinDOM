@@ -66,6 +66,7 @@ const animation = new PerlinDOM({
 // Control the animation
 animation.pause();  // Smooth pause
 animation.play();   // Resume
+animation.reset();  // Rewind to the start (same path again)
 animation.destroy(); // Clean up
 ```
 
@@ -319,6 +320,7 @@ new PerlinDOM(options) // options: see Configuration
 |--------|-------------|---------|
 | `play()` | Resume after `pause()` (instances start playing on construction) | `void` |
 | `pause()` | Smoothly pause animation | `void` |
+| `reset()` | Back to the starting state: the noise path rewinds to the seed and the element returns to its own transform. Keeps play/pause, `amplitude` and `target`; does nothing after `destroy()` | `void` |
 | `destroy()` | Stop animation, restore the original inline `transform` and clean up | `void` |
 | `init(seed?)` | Rebuild the noise from `seed` (without an argument: seed `0`, not the constructed seed; `time` is not reset) and restart playback, also after `destroy()` | `void` |
 | `setTarget({x, y} \| null)` | Set the target offset in px; non-finite coordinates become `0`, the object is copied, `null` removes it | `void` |
