@@ -20,6 +20,7 @@ A lightweight JavaScript library for creating smooth, organic animations on DOM 
 - [Troubleshooting](#-troubleshooting)
 - [Browser Compatibility](#-browser-compatibility)
 - [Live site](#-live-site)
+- [Contributing](#-contributing)
 - [Changelog](#-changelog)
 - [License](#-license)
 
@@ -390,6 +391,10 @@ The npm build (`dist/`) targets browsers with native ES modules and ES2020: **Ch
 ## 🔗 Live site
 
 Live site: **https://perlindom.netlify.app** · [API reference](https://perlindom.netlify.app/api.html) · [Examples](https://perlindom.netlify.app/examples.html) · [Showcase](https://perlindom.netlify.app/showcase.html) (add yours with a PR to `src/showcase.json`)
+
+## 🤝 Contributing
+
+Bug reports, fixes and showcase entries are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, tests and how to add your project to the [showcase](https://perlindom.netlify.app/showcase.html).
 
 ## 📝 Changelog
 
