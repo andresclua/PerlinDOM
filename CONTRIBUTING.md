@@ -58,6 +58,10 @@ You can do all of it from the GitHub web editor, no clone needed.
 
 Open an issue with the browser, the options you pass to `new PerlinDOM({...})`, and a minimal page or CodePen that reproduces it.
 
+## Support the project
+
+Code is not the only way to help: you can sponsor the work through [GitHub Sponsors](https://github.com/sponsors/andresclua).
+
 ## License
 
 By contributing you agree that your work is released under the project's MIT license.

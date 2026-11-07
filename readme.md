@@ -21,6 +21,7 @@ A lightweight JavaScript library for creating smooth, organic animations on DOM 
 - [Browser Compatibility](#-browser-compatibility)
 - [Live site](#-live-site)
 - [Contributing](#-contributing)
+- [Sponsor](#-sponsor)
 - [Changelog](#-changelog)
 - [License](#-license)
 
@@ -395,6 +396,10 @@ Live site: **https://perlindom.netlify.app** · [API reference](https://perlindo
 ## 🤝 Contributing
 
 Bug reports, fixes and showcase entries are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, tests and how to add your project to the [showcase](https://perlindom.netlify.app/showcase.html).
+
+## 💜 Sponsor
+
+PerlinDOM is free and MIT licensed. If it saves you time, you can support its development through [GitHub Sponsors](https://github.com/sponsors/andresclua).
 
 ## 📝 Changelog
 
