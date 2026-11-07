@@ -1,0 +1,45 @@
+# PerlinDOM
+
+> PerlinDOM is a zero-dependency JavaScript library (npm: @andresclua/perlindom, MIT) that moves DOM elements with Perlin noise. It writes `transform: translate3d(x, y, 0)` on each element, keeps the element's own scale, rotate and skew, and runs every instance on one shared requestAnimationFrame loop. Instances pause while their parent is outside the viewport.
+
+Install: `npm install @andresclua/perlindom`
+
+```js
+import PerlinDOM from '@andresclua/perlindom';
+
+const drift = new PerlinDOM({
+  element: document.querySelector('.box'),
+  x: { min: -50, max: 50 }, // px or '%' of the parent
+  y: { min: -30, max: 30 },
+  speed: 0.01,
+  seed: 123, // same seed, same path
+});
+drift.pause(); drift.play(); drift.reset(); drift.destroy();
+```
+
+## Options
+
+- `element` (required), `x` and `y` as `{ min, max }` in px or %, `speed` (0.01), `seed` (0), `lerpSpeed` (0.1, easing of pause/play)
+- `amplitude` (1): 0 to 1; 1 is free drift, 0 pins the element to `target` (or its base position). Animate it with GSAP ScrollTrigger to go from chaos to order
+- `target` (null): `{ x, y }` offset in px that `amplitude` pulls toward
+- `preserveBaseTranslation` (false), `pauseOffscreen` (true), `legacyNoise` (false; true restores the pre-0.1.0 noise rows)
+
+## Methods and properties
+
+- `play()`, `pause()` (eased), `reset()` (back to the starting state), `destroy()` (restores the original inline transform), `setTarget({x, y} | null)`, `refreshBaseTransform()`, `init(seed?)`
+- `amplitude` (read/write, clamped to [0, 1]), `target`, `speed`, `lerpSpeed`, `xRange`, `yRange`, `lastX`, `lastY`, `isPlaying`
+
+## Docs
+
+- [Website](https://perlindom.js.org/): scroll storytelling built with GSAP and PerlinDOM
+- [API reference](https://perlindom.js.org/api.html): every option, method and property, with live demos
+- [Examples](https://perlindom.js.org/examples.html): twelve live examples with copyable code
+- [Showcase](https://perlindom.js.org/showcase.html): sites made with PerlinDOM
+- [README](https://raw.githubusercontent.com/andresclua/PerlinDOM/main/README.md): full documentation, including the GSAP + ScrollTrigger recipe
+
+## Optional
+
+- [Source](https://github.com/andresclua/PerlinDOM)
+- [npm](https://www.npmjs.com/package/@andresclua/perlindom)
+- [Changelog](https://github.com/andresclua/PerlinDOM/blob/main/CHANGELOG.md)
+- [Contributing](https://github.com/andresclua/PerlinDOM/blob/main/CONTRIBUTING.md)
